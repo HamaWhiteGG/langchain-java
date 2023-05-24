@@ -12,17 +12,17 @@ import java.util.Map;
  */
 public abstract class StringPromptTemplate extends BasePromptTemplate{
 
-    public StringPromptTemplate(List<String> inputVariableList) {
-        super(inputVariableList);
+    public StringPromptTemplate(List<String> inputVariables) {
+        super(inputVariables);
     }
 
-    public StringPromptTemplate(List<String> inputVariableList, BaseOutputParser outputParser) {
-        super(inputVariableList,outputParser);
+    public StringPromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
+        super(inputVariables,outputParser);
     }
 
     @Override
-    public PromptValue formatPrompt(Map<String, Object> optionMap) {
-        return new StringPromptValue(format(optionMap));
+    public PromptValue formatPrompt(Map<String, Object> kwargs) {
+        return new StringPromptValue(format(kwargs));
     }
 
 }

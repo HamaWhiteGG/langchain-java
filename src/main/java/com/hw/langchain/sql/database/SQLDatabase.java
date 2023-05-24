@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class SQLDatabase {
 
-    public static SQLDatabase fromURI(String databaseURI, Map<String, Object> optionMap) {
+    public static SQLDatabase fromURI(String databaseURI, Map<String, Object> kwargs) {
         return new SQLDatabase();
     }
 

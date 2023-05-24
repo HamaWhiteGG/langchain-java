@@ -1,11 +1,12 @@
 package com.hw.langchain.base.language;
 
+import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 
 import java.util.List;
 
 /**
- * @description: Take in a list of prompt values and return an LLMResult.
+ * @description: BaseLanguageModel
  * @author: HamaWhite
  */
 public abstract class BaseLanguageModel {

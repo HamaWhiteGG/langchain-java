@@ -10,7 +10,7 @@ public abstract class BaseMessage {
 
     protected String content;
 
-    protected Map<String, Object> additionalOptionMap;
+    protected Map<String, Object> additionalKwargs;
 
     public BaseMessage(String content) {
         this.content = content;

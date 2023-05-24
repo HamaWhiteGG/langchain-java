@@ -15,7 +15,7 @@ public abstract class BasePromptTemplate {
     /**
      * A list of the names of the variables the prompt template expects.
      */
-    protected List<String> inputVariableList;
+    protected List<String> inputVariables;
 
     /**
      * How to parse the output of calling an LLM on this formatted prompt.
@@ -23,20 +23,20 @@ public abstract class BasePromptTemplate {
     protected BaseOutputParser outputParser;
 
 
-    public BasePromptTemplate(List<String> inputVariableList) {
-        this.inputVariableList = inputVariableList;
+    public BasePromptTemplate(List<String> inputVariables) {
+        this.inputVariables = inputVariables;
     }
 
-    public BasePromptTemplate(List<String> inputVariableList, BaseOutputParser outputParser) {
-        this.inputVariableList = inputVariableList;
+    public BasePromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
+        this.inputVariables = inputVariables;
         this.outputParser = outputParser;
     }
 
     /**
      * Create Chat Messages.
      */
-    public abstract PromptValue formatPrompt(Map<String, Object> optionMap);
+    public abstract PromptValue formatPrompt(Map<String, Object> kwargs);
 
-    public abstract String format(Map<String, Object> optionMap);
+    public abstract String format(Map<String, Object> kwargs);
 
 }

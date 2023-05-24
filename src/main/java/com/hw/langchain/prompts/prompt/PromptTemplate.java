@@ -23,17 +23,17 @@ public class PromptTemplate extends StringPromptTemplate {
     private boolean validateTemplate;
 
 
-    public PromptTemplate(List<String> inputVariableList, String template) {
-        super(inputVariableList);
+    public PromptTemplate(List<String> inputVariables, String template) {
+        super(inputVariables);
         this.template = template;
     }
 
-    public PromptTemplate(List<String> inputVariableList, String template, BaseOutputParser outputParser) {
-        super(inputVariableList, outputParser);
+    public PromptTemplate(List<String> inputVariables, String template, BaseOutputParser outputParser) {
+        super(inputVariables, outputParser);
         this.template = template;
     }
 
     @Override
-    public String format(Map<String, Object> optionMap) {
+    public String format(Map<String, Object> kwargs) {
     }
 }
