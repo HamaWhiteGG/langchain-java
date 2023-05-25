@@ -14,5 +14,5 @@ public abstract class BaseLanguageModel {
     /**
      * Take in a list of prompt values and return an LLMResult.
      */
-    public abstract LLMResult generatePrompt(List<PromptValue> promptList, List<String> stopList, Callbacks callbacks);
+    public abstract LLMResult generatePrompt(List<PromptValue> promptList, List<String> stopList);
 }

@@ -6,6 +6,10 @@ package com.hw.langchain.schema;
  */
 public class SystemMessage extends BaseMessage {
 
+    public SystemMessage(String content) {
+        super(content);
+    }
+
     @Override
     public String type() {
         return "system";

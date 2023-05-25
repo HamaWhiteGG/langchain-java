@@ -4,6 +4,7 @@ import com.hw.langchain.output.parsers.list.CommaSeparatedListOutputParser;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "dialect", "top_k"),
+    public static PromptTemplate PROMPT = new PromptTemplate(List.of("input", "table_info", "dialect", "top_k"),
             _DEFAULT_TEMPLATE + PROMPT_SUFFIX);
 
 
@@ -49,7 +50,7 @@ public class Prompt {
             Relevant Table Names:
             """;
 
-    public static PromptTemplate DECIDER_PROMPT = new PromptTemplate(Arrays.asList("query", "table_names"),
+    public static PromptTemplate DECIDER_PROMPT = new PromptTemplate(List.of("query", "table_names"),
             _DECIDER_TEMPLATE,
             new CommaSeparatedListOutputParser());
 
@@ -70,7 +71,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate MYSQL_PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "top_k"), _mysql_prompt + PROMPT_SUFFIX);
+    public static PromptTemplate MYSQL_PROMPT = new PromptTemplate(List.of("input", "table_info", "top_k"), _mysql_prompt + PROMPT_SUFFIX);
 
 
     private static String _mariadb_prompt = """
@@ -89,7 +90,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate MARIADB_PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "top_k"), _mariadb_prompt + PROMPT_SUFFIX);
+    public static PromptTemplate MARIADB_PROMPT = new PromptTemplate(List.of("input", "table_info", "top_k"), _mariadb_prompt + PROMPT_SUFFIX);
 
     private static String _oracle_prompt = """
             You are an Oracle SQL expert. Given an input question, first create a syntactically correct Oracle SQL query to run, then look at the results of the query and return the answer to the input question.
@@ -107,7 +108,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate ORACLE_PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "top_k"), _oracle_prompt + PROMPT_SUFFIX);
+    public static PromptTemplate ORACLE_PROMPT = new PromptTemplate(List.of("input", "table_info", "top_k"), _oracle_prompt + PROMPT_SUFFIX);
 
     private static String _postgres_prompt = """
             You are a PostgreSQL expert. Given an input question, first create a syntactically correct PostgreSQL query to run, then look at the results of the query and return the answer to the input question.
@@ -125,7 +126,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate POSTGRES_PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "top_k"), _postgres_prompt + PROMPT_SUFFIX);
+    public static PromptTemplate POSTGRES_PROMPT = new PromptTemplate(List.of("input", "table_info", "top_k"), _postgres_prompt + PROMPT_SUFFIX);
 
     private static String _sqlite_prompt = """
             You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question.
@@ -143,7 +144,7 @@ public class Prompt {
 
             """;
 
-    public static PromptTemplate SQLITE_PROMPT = new PromptTemplate(Arrays.asList("input", "table_info", "top_k"), _sqlite_prompt + PROMPT_SUFFIX);
+    public static PromptTemplate SQLITE_PROMPT = new PromptTemplate(List.of("input", "table_info", "top_k"), _sqlite_prompt + PROMPT_SUFFIX);
 
     public static final Map<String, PromptTemplate> SQL_PROMPTS = Map.of(
             "mysql", MYSQL_PROMPT,

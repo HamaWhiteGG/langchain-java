@@ -8,6 +8,10 @@ public class AIMessage extends BaseMessage {
 
     private boolean example;
 
+    public AIMessage(String content) {
+        super(content);
+    }
+
     @Override
     public String type() {
         return "ai";

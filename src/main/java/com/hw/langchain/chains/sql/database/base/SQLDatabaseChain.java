@@ -59,10 +59,11 @@ public class SQLDatabaseChain implements Chain {
     }
 
     public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database, BasePromptTemplate prompt, Map<String, Object> kwargs) {
-        if (prompt == null) {
-            prompt = SQL_PROMPTS.getOrDefault(database.getDialect(), PROMPT);
-        }
-        LLMChain llmChain = new LLMChain(llm, prompt);
-        return new SQLDatabaseChain(llmChain, database, kwargs);
+//        if (prompt == null) {
+//            prompt = SQL_PROMPTS.getOrDefault(database.getDialect(), PROMPT);
+//        }
+//        LLMChain llmChain = new LLMChain(llm, prompt);
+//        return new SQLDatabaseChain(llmChain, database, kwargs);
+        return null;
     }
 }

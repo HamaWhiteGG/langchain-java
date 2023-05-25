@@ -14,6 +14,8 @@
         <lombok.version>1.18.26</lombok.version>
         <chatgpt.version>4.0.8</chatgpt.version>
         <assertj.version>3.24.2</assertj.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
 
         <target.java.version>17</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -24,6 +26,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.github.plexpt</groupId>
             <artifactId>chatgpt</artifactId>

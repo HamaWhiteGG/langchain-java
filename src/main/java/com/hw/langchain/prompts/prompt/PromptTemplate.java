@@ -35,5 +35,6 @@ public class PromptTemplate extends StringPromptTemplate {
 
     @Override
     public String format(Map<String, Object> kwargs) {
+        return "";
     }
 }
