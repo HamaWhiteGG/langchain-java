@@ -20,10 +20,12 @@ package com.hw.langchain.sql.database;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @description: SQLAlchemy wrapper around a database.
@@ -33,9 +35,9 @@ public class SQLDatabase {
 
     private Connection connection;
 
-    private List<String> includeTables;
+    private Set<String> includeTables;
 
-    private List<String> ignoreTables;
+    private Set<String> ignoreTables;
 
     private int sampleRowsInTableInfo = 3;
 
@@ -43,8 +45,8 @@ public class SQLDatabase {
         this.connection = DriverManager.getConnection(url, username, password);
     }
 
-    public SQLDatabase(String url, String username, String password, List<String> includeTables,
-            List<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
+    public SQLDatabase(String url, String username, String password, Set<String> includeTables,
+                       Set<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
         this(url, username, password);
         if (CollectionUtils.isNotEmpty(includeTables) && CollectionUtils.isNotEmpty(ignoreTables)) {
             throw new IllegalArgumentException("Cannot specify both includeTables and ignoreTables");
@@ -55,8 +57,64 @@ public class SQLDatabase {
         this.sampleRowsInTableInfo = sampleRowsInTableInfo;
     }
 
+    /**
+     * Dialect will convert to lowercase
+     */
     public String getDialect() throws SQLException {
-        return connection.getMetaData().getDatabaseProductName();
+        return connection.getMetaData()
+                .getDatabaseProductName()
+                .toLowerCase();
+    }
+
+    /**
+     * Get names of tables available.
+     */
+    public Set<String> getUsableTableNames() throws SQLException {
+        if (CollectionUtils.isNotEmpty(includeTables)) {
+            return includeTables;
+        }
+
+        Set<String> allTables = new HashSet<>();
+        DatabaseMetaData metaData = connection.getMetaData();
+        try (ResultSet resultSet = metaData.getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"})) {
+            while (resultSet.next()) {
+                allTables.add(resultSet.getString("TABLE_NAME"));
+            }
+        }
+        if (CollectionUtils.isNotEmpty(ignoreTables)) {
+            allTables.removeAll(ignoreTables);
+        }
+        return allTables;
+    }
+
+    /**
+     * Execute a SQL command and return a string representing the results.
+     *
+     * <p>If the statement returns rows, a string of the results is returned.
+     * <p>If the statement returns no rows, an empty string is returned.
+     */
+    public String run(String command) throws SQLException {
+        List<String> resultList = new ArrayList<>();
+        try (Statement stmt = connection.createStatement()) {
+            if (stmt.execute(command)) {
+                ResultSet rs = stmt.getResultSet();
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    List<Object> rowList = new ArrayList<>();
+                    for (int i = 1; i <= columnCount; i++) {
+                        rowList.add(rs.getObject(i));
+                    }
+                    String row = rowList.stream()
+                            .map(e -> String.format("'%s'", e.toString()))
+                            .collect(Collectors.joining(", ", "(", ")"));
+                    resultList.add(row);
+                }
+            } else {
+                int updateCount = stmt.getUpdateCount();
+                resultList.add("Update Count: " + updateCount);
+            }
+        }
+        return resultList.toString();
     }
 
     public void close() throws SQLException {

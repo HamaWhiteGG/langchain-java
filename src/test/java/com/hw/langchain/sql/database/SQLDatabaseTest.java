@@ -20,8 +20,14 @@ package com.hw.langchain.sql.database;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * @description: SQLDatabaseTest
@@ -33,7 +39,10 @@ public class SQLDatabaseTest {
 
     @BeforeAll
     public static void setup() throws SQLException {
-        database = new SQLDatabase("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "demo", "demo");
+        database = new SQLDatabase("jdbc:h2:mem:demo;DATABASE_TO_UPPER=false", "root", "123456");
+
+        database.run("RUNSCRIPT FROM 'scripts/h2/schema.sql'");
+        database.run("RUNSCRIPT FROM 'scripts/h2/data.sql'");
     }
 
     @AfterAll
@@ -41,4 +50,15 @@ public class SQLDatabaseTest {
         database.close();
     }
 
+    @Test
+    public void testGetDialect() throws SQLException {
+        assertThat(database.getDialect())
+                .isEqualTo("h2");
+    }
+
+    @Test
+    public void getUsableTableNames() throws SQLException {
+        assertThat(database.getUsableTableNames())
+                .isEqualTo(Set.of("students", "parents"));
+    }
 }
