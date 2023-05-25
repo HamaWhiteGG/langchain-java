@@ -30,7 +30,6 @@ public class HumanMessage extends BaseMessage {
         super(content);
     }
 
-
     @Override
     public String type() {
         return "human";

@@ -43,7 +43,8 @@ public class SQLDatabase {
         this.connection = DriverManager.getConnection(url, username, password);
     }
 
-    public SQLDatabase(String url, String username, String password, List<String> includeTables, List<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
+    public SQLDatabase(String url, String username, String password, List<String> includeTables,
+            List<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
         this(url, username, password);
         if (CollectionUtils.isNotEmpty(includeTables) && CollectionUtils.isNotEmpty(ignoreTables)) {
             throw new IllegalArgumentException("Cannot specify both includeTables and ignoreTables");
@@ -58,9 +59,8 @@ public class SQLDatabase {
         return connection.getMetaData().getDatabaseProductName();
     }
 
-
     public void close() throws SQLException {
-        if(connection!=null) {
+        if (connection != null) {
             connection.close();
         }
     }

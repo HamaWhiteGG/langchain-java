@@ -25,7 +25,7 @@ import com.hw.langchain.prompts.base.BasePromptTemplate;
  * @description: Chain to run queries against LLMs
  * @author: HamaWhite
  */
-public class LLMChain implements Chain{
+public class LLMChain implements Chain {
 
     private BaseLanguageModel llm;
 

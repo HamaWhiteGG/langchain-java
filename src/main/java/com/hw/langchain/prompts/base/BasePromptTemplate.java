@@ -40,7 +40,6 @@ public abstract class BasePromptTemplate {
      */
     protected BaseOutputParser outputParser;
 
-
     public BasePromptTemplate(List<String> inputVariables) {
         this.inputVariables = inputVariables;
     }

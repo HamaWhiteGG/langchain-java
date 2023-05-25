@@ -57,17 +57,18 @@ public class SQLDatabaseSequentialChain implements Chain {
      * Load the necessary chains.
      */
     public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm,
-                                                     SQLDatabase database,
-                                                     BasePromptTemplate queryPrompt,
-                                                     BasePromptTemplate deciderPrompt,
-                                                     Map<String, Object> kwargs) {
+            SQLDatabase database,
+            BasePromptTemplate queryPrompt,
+            BasePromptTemplate deciderPrompt,
+            Map<String, Object> kwargs) {
         SQLDatabaseChain sqlChain = SQLDatabaseChain.fromLLM(llm, database, queryPrompt, kwargs);
         LLMChain deciderChain = new LLMChain(llm, deciderPrompt, "table_names");
 
         return null;
     }
 
-    public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm, SQLDatabase database, Map<String, Object> kwargs) {
+    public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm, SQLDatabase database,
+            Map<String, Object> kwargs) {
         return fromLLM(llm, database, PROMPT, DECIDER_PROMPT, kwargs);
     }
 }

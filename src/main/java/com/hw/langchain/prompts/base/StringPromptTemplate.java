@@ -28,14 +28,14 @@ import java.util.Map;
  * @description: String prompt should expose the format method, returning a prompt.
  * @author: HamaWhite
  */
-public abstract class StringPromptTemplate extends BasePromptTemplate{
+public abstract class StringPromptTemplate extends BasePromptTemplate {
 
     public StringPromptTemplate(List<String> inputVariables) {
         super(inputVariables);
     }
 
     public StringPromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
-        super(inputVariables,outputParser);
+        super(inputVariables, outputParser);
     }
 
     @Override

@@ -26,9 +26,6 @@ import com.hw.langchain.sql.database.SQLDatabase;
 
 import java.util.Map;
 
-import static com.hw.langchain.chains.sql.database.prompt.Prompt.PROMPT;
-import static com.hw.langchain.chains.sql.database.prompt.Prompt.SQL_PROMPTS;
-
 /**
  * @description: Chain for interacting with SQL Database.
  * @author: HamaWhite
@@ -76,12 +73,13 @@ public class SQLDatabaseChain implements Chain {
         this.database = database;
     }
 
-    public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database, BasePromptTemplate prompt, Map<String, Object> kwargs) {
-//        if (prompt == null) {
-//            prompt = SQL_PROMPTS.getOrDefault(database.getDialect(), PROMPT);
-//        }
-//        LLMChain llmChain = new LLMChain(llm, prompt);
-//        return new SQLDatabaseChain(llmChain, database, kwargs);
+    public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database, BasePromptTemplate prompt,
+            Map<String, Object> kwargs) {
+        // if (prompt == null) {
+        // prompt = SQL_PROMPTS.getOrDefault(database.getDialect(), PROMPT);
+        // }
+        // LLMChain llmChain = new LLMChain(llm, prompt);
+        // return new SQLDatabaseChain(llmChain, database, kwargs);
         return null;
     }
 }

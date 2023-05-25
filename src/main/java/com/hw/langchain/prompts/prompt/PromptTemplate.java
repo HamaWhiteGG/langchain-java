@@ -40,7 +40,6 @@ public class PromptTemplate extends StringPromptTemplate {
      */
     private boolean validateTemplate;
 
-
     public PromptTemplate(List<String> inputVariables, String template) {
         super(inputVariables);
         this.template = template;

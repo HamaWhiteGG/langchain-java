@@ -20,7 +20,6 @@ package com.hw.langchain.schema;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @description: Class that contains all relevant information for an LLM Result.
