@@ -12,9 +12,10 @@
         <junit.version>5.9.3</junit.version>
         <mysql.version>8.0.32</mysql.version>
         <lombok.version>1.18.26</lombok.version>
-        <chatgpt.version>4.0.8</chatgpt.version>
         <assertj.version>3.24.2</assertj.version>
+        <retrofit.version>2.9.0</retrofit.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
+        <jackson-annotation.version>2.15.1</jackson-annotation.version>
         <commons-collections4.version>4.4</commons-collections4.version>
 
         <target.java.version>17</target.java.version>
@@ -26,6 +27,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotation.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -39,15 +52,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.plexpt</groupId>
-            <artifactId>chatgpt</artifactId>
-            <version>${chatgpt.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
