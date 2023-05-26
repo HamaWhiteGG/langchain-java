@@ -46,7 +46,7 @@ public class SQLDatabase {
     }
 
     public SQLDatabase(String url, String username, String password, Set<String> includeTables,
-                       Set<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
+            Set<String> ignoreTables, int sampleRowsInTableInfo) throws SQLException {
         this(url, username, password);
         if (CollectionUtils.isNotEmpty(includeTables) && CollectionUtils.isNotEmpty(ignoreTables)) {
             throw new IllegalArgumentException("Cannot specify both includeTables and ignoreTables");
@@ -76,7 +76,8 @@ public class SQLDatabase {
 
         Set<String> allTables = new HashSet<>();
         DatabaseMetaData metaData = connection.getMetaData();
-        try (ResultSet resultSet = metaData.getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"})) {
+        try (ResultSet resultSet =
+                metaData.getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"})) {
             while (resultSet.next()) {
                 allTables.add(resultSet.getString("TABLE_NAME"));
             }

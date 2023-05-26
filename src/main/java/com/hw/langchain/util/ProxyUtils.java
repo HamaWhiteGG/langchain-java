@@ -16,22 +16,26 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai.entity.response;
+package com.hw.langchain.util;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.experimental.UtilityClass;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 /**
- * @description: Usage
+ * @description: ProxyUtils
  * @author: HamaWhite
  */
-public class Usage {
+@UtilityClass
+public class ProxyUtils {
 
-    @JsonProperty("prompt_tokens")
-    private Long promptTokens;
+    public Proxy http(String hostname, int port) {
+        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostname, port));
+    }
 
-    @JsonProperty("completion_tokens")
-    private Long completionTokens;
+    public Proxy socks5(String hostname, int port) {
+        return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(hostname, port));
+    }
 
-    @JsonProperty("total_tokens")
-    private Long totalTokens;
 }

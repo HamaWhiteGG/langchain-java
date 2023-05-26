@@ -23,17 +23,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 /**
  * @description: SQLDatabaseTest
  * @author: HamaWhite
  */
-public class SQLDatabaseTest {
+class SQLDatabaseTest {
 
     private static SQLDatabase database;
 
@@ -46,19 +44,17 @@ public class SQLDatabaseTest {
     }
 
     @AfterAll
-    public static void cleanup() throws SQLException {
+    static void cleanup() throws SQLException {
         database.close();
     }
 
     @Test
-    public void testGetDialect() throws SQLException {
-        assertThat(database.getDialect())
-                .isEqualTo("h2");
+    void testGetDialect() throws SQLException {
+        assertThat(database.getDialect()).isEqualTo("h2");
     }
 
     @Test
-    public void getUsableTableNames() throws SQLException {
-        assertThat(database.getUsableTableNames())
-                .isEqualTo(Set.of("students", "parents"));
+    void getUsableTableNames() throws SQLException {
+        assertThat(database.getUsableTableNames()).isEqualTo(Set.of("students", "parents"));
     }
 }

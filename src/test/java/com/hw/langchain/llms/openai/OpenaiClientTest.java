@@ -16,22 +16,36 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai.service;
+package com.hw.langchain.llms.openai;
 
 import com.hw.langchain.llms.openai.entity.request.Completion;
-import com.hw.langchain.llms.openai.entity.response.CompletionResp;
+import com.hw.langchain.util.ProxyUtils;
 
-import io.reactivex.Single;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @description: OpenaiService
+ * @description: OpenaiClientTest
  * @author: HamaWhite
  */
-public interface OpenaiService {
+class OpenaiClientTest {
 
-    @POST("v1/completions")
-    Single<CompletionResp> completion(@Body Completion completion);
+    @Test
+    void testCompletion() {
+        OpenaiClient openai = OpenaiClient.builder()
+                .apiKey("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")
+                .proxy(ProxyUtils.http("127.0.0.1", 1087))
+                .build()
+                .init();
 
+        Completion completion = Completion.builder()
+                .model("text-davinci-003")
+                .prompt("Say this is a test")
+                .maxTokens(700)
+                .temperature(0)
+                .build();
+
+        assertThat(openai.completion(completion)).isEqualTo("This is indeed a test.");
+    }
 }
