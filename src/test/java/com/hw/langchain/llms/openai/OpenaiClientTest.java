@@ -34,7 +34,7 @@ class OpenaiClientTest {
     @Test
     void testCompletion() {
         OpenaiClient openai = OpenaiClient.builder()
-                .apiKey("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")
+                .apiKey("xx-xxxxxx")
                 .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
