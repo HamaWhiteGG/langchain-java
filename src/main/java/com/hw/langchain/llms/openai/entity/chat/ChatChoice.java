@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai.entity.response;
+package com.hw.langchain.llms.openai.entity.chat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
- * @description: Usage
+ * @description: ChatChoice
  * @author: HamaWhite
  */
-public class Usage {
+@Data
+public class ChatChoice {
 
-    @JsonProperty("prompt_tokens")
-    private Long promptTokens;
+    private Integer index;
 
-    @JsonProperty("completion_tokens")
-    private Long completionTokens;
+    @JsonProperty("message")
+    private Message message;
 
-    @JsonProperty("total_tokens")
-    private Long totalTokens;
+    @JsonProperty("finish_reason")
+    private String finishReason;
 }

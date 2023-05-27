@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai.entity.response;
+package com.hw.langchain.llms.openai.entity.completions;
 
 import lombok.Data;
 

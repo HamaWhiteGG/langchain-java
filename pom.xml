@@ -13,10 +13,14 @@
         <mysql.version>8.0.32</mysql.version>
         <lombok.version>1.18.26</lombok.version>
         <assertj.version>3.24.2</assertj.version>
+        <okhttp3.version>3.14.9</okhttp3.version>
         <retrofit.version>2.9.0</retrofit.version>
+        <slf4j-api.version>1.7.32</slf4j-api.version>
+        <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <jackson-annotation.version>2.15.1</jackson-annotation.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
 
         <target.java.version>17</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -46,9 +50,21 @@
         </dependency>
 
         <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>${okhttp3.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson-annotation.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
         </dependency>
 
         <dependency>
@@ -61,6 +77,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-log4j12.version}</version>
         </dependency>
 
         <dependency>

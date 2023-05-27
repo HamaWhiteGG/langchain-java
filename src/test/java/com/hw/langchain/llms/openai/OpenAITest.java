@@ -18,27 +18,38 @@
 
 package com.hw.langchain.llms.openai;
 
-import com.hw.langchain.llms.openai.entity.request.Completion;
+import com.hw.langchain.llms.openai.entity.chat.ChatCompletion;
+import com.hw.langchain.llms.openai.entity.chat.Message;
+import com.hw.langchain.llms.openai.entity.completions.Completion;
 import com.hw.langchain.util.ProxyUtils;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @description: OpenaiClientTest
+ * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
+ *
+ * @description: OpenAITest
  * @author: HamaWhite
  */
-class OpenaiClientTest {
+class OpenAITest {
 
-    @Test
-    void testCompletion() {
-        OpenaiClient openai = OpenaiClient.builder()
-                .apiKey("xx-xxxxxx")
+    private static OpenAI openai;
+
+    @BeforeAll
+    static void setup() {
+        openai = OpenAI.builder()
                 .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
+    }
 
+    @Test
+    void testCompletion() {
         Completion completion = Completion.builder()
                 .model("text-davinci-003")
                 .prompt("Say this is a test")
@@ -47,5 +58,18 @@ class OpenaiClientTest {
                 .build();
 
         assertThat(openai.completion(completion)).isEqualTo("This is indeed a test.");
+    }
+
+    @Test
+    void testChatCompletion() {
+        Message message = Message.of("Hello!");
+
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model("gpt-3.5-turbo")
+                .messages(List.of(message))
+                .build();
+
+        assertThat(openai.chatCompletion(chatCompletion))
+                .isEqualTo("Hello there! How can I assist you today?");
     }
 }

@@ -18,20 +18,24 @@
 
 package com.hw.langchain.llms.openai.service;
 
-import com.hw.langchain.llms.openai.entity.request.Completion;
-import com.hw.langchain.llms.openai.entity.response.CompletionResp;
+import com.hw.langchain.llms.openai.entity.chat.ChatCompletion;
+import com.hw.langchain.llms.openai.entity.chat.ChatCompletionResp;
+import com.hw.langchain.llms.openai.entity.completions.Completion;
+import com.hw.langchain.llms.openai.entity.completions.CompletionResp;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 /**
- * @description: OpenaiService
+ * @description: OpenAIService
  * @author: HamaWhite
  */
-public interface OpenaiService {
+public interface OpenAIService {
 
     @POST("v1/completions")
     Single<CompletionResp> completion(@Body Completion completion);
 
+    @POST("v1/chat/completions")
+    Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);
 }

@@ -18,19 +18,98 @@
 
 package com.hw.langchain.llms.openai;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hw.langchain.llms.openai.entity.chat.ChatCompletion;
+import com.hw.langchain.llms.openai.entity.chat.ChatCompletionResp;
+import com.hw.langchain.llms.openai.entity.completions.Completion;
+import com.hw.langchain.llms.openai.entity.completions.CompletionResp;
+import com.hw.langchain.llms.openai.service.OpenAIService;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import lombok.Builder;
+import lombok.Data;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.net.Proxy;
+
 /**
- * Wrapper around OpenAI large language models.
- * <p>
- * To use, you should have the environment variable "OPENAI_API_KEY" set with your API key.
- * <p>
- * Any parameters that are valid to be passed to the openai.create call can be passed
- * in, even if not explicitly saved on this class.
- * <p>
- * Example:
- * <p>
- *      OpenAI openai = new OpenAI("text-davinci-003");
- *
+ * @description: OpenaiClient
  * @author: HamaWhite
  */
-public class OpenAI extends BaseOpenAI {
+@Data
+@Builder
+public class OpenAI {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OpenAI.class);
+
+    private static final String BASE_URL = "https://api.openai.com/";
+
+    private String openaiApiKey;
+
+    private Proxy proxy;
+
+    private OpenAIService service;
+
+    public OpenAI init() {
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+
+        httpClientBuilder.addInterceptor(chain -> {
+            Request originalRequest = chain.request();
+
+            // If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
+            if (StringUtils.isBlank(openaiApiKey)) {
+                openaiApiKey = System.getenv("OPENAI_API_KEY");
+            }
+            Request.Builder requestBuilder = originalRequest.newBuilder()
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + openaiApiKey);
+            Request newRequest = requestBuilder.build();
+            return chain.proceed(newRequest);
+        });
+
+        // Add HttpLogging interceptor
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        httpClientBuilder.addInterceptor(loggingInterceptor);
+
+        if (proxy != null) {
+            httpClientBuilder.proxy(proxy);
+        }
+
+        // Used for automatic discovery and registration of Jackson modules
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .client(httpClientBuilder.build())
+                .build();
+
+        this.service = retrofit.create(OpenAIService.class);
+        return this;
+    }
+
+    public String completion(Completion completion) {
+        CompletionResp response = service.completion(completion).blockingGet();
+
+        String text = response.getChoices().get(0).getText();
+        return StringUtils.trim(text);
+    }
+
+    public String chatCompletion(ChatCompletion chatCompletion) {
+        ChatCompletionResp response = service.chatCompletion(chatCompletion).blockingGet();
+
+        String content = response.getChoices().get(0).getMessage().getContent();
+        return StringUtils.trim(content);
+    }
 }

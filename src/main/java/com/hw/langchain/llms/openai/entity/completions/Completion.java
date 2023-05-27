@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai.entity.request;
+package com.hw.langchain.llms.openai.entity.completions;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -42,6 +43,7 @@ public class Completion implements Serializable {
     /**
      * ID of the model to use.
      */
+    @NotEmpty
     private String model;
 
     /**
