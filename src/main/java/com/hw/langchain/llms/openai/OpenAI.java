@@ -68,10 +68,11 @@ public class OpenAI {
             if (StringUtils.isBlank(openaiApiKey)) {
                 openaiApiKey = System.getenv("OPENAI_API_KEY");
             }
-            Request.Builder requestBuilder = originalRequest.newBuilder()
+            Request newRequest = originalRequest.newBuilder()
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + openaiApiKey);
-            Request newRequest = requestBuilder.build();
+                    .header("Authorization", "Bearer " + openaiApiKey)
+                    .build();
+
             return chain.proceed(newRequest);
         });
 
