@@ -46,34 +46,35 @@ import java.net.Proxy;
  */
 @Data
 @Builder
-public class OpenAI {
+public class OpenAIClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenAI.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenAIClient.class);
 
     private static final String BASE_URL = "https://api.openai.com/";
 
     private String openaiApiKey;
 
+    private String openaiOrganization;
+
     private Proxy proxy;
 
     private OpenAIService service;
 
-    public OpenAI init() {
+    public OpenAIClient init() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
 
         httpClientBuilder.addInterceptor(chain -> {
-            Request originalRequest = chain.request();
-
             // If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
-            if (StringUtils.isBlank(openaiApiKey)) {
-                openaiApiKey = System.getenv("OPENAI_API_KEY");
-            }
-            Request newRequest = originalRequest.newBuilder()
+            openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
+            openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
+
+            Request request = chain.request().newBuilder()
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + openaiApiKey)
+                    .header("OpenAI-Organization", openaiOrganization)
                     .build();
 
-            return chain.proceed(newRequest);
+            return chain.proceed(request);
         });
 
         // Add HttpLogging interceptor
@@ -98,6 +99,20 @@ public class OpenAI {
 
         this.service = retrofit.create(OpenAIService.class);
         return this;
+    }
+
+    private String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
+        if (StringUtils.isNotEmpty(originalValue)) {
+            return originalValue;
+        }
+        String envValue = System.getenv(envKey);
+        if (StringUtils.isNotEmpty(envValue)) {
+            return envValue;
+        }
+        if (defaultValue.length > 0) {
+            return defaultValue[0];
+        }
+        return null;
     }
 
     public String completion(Completion completion) {

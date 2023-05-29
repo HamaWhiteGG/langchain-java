@@ -22,9 +22,11 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
+import com.hw.openai.entity.models.ModelResp;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -33,9 +35,22 @@ import retrofit2.http.POST;
  */
 public interface OpenAIService {
 
+    /**
+     * Lists the currently available models, and provides basic information about each one
+     * such as the owner and availability.
+     */
+    @GET("v1/models")
+    Single<ModelResp> listModels();
+
+    /**
+     * Creates a completion for the provided prompt and parameters.
+     */
     @POST("v1/completions")
     Single<CompletionResp> completion(@Body Completion completion);
 
+    /**
+     * Creates a model response for the given chat conversation.
+     */
     @POST("v1/chat/completions")
     Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);
 }

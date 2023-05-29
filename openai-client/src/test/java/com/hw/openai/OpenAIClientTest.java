@@ -36,13 +36,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @description: OpenAITest
  * @author: HamaWhite
  */
-class OpenAITest {
+class OpenAIClientTest {
 
-    private static OpenAI openai;
+    private static OpenAIClient client;
 
     @BeforeAll
     static void setup() {
-        openai = OpenAI.builder()
+        client = OpenAIClient.builder()
                 .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
@@ -57,7 +57,7 @@ class OpenAITest {
                 .temperature(0)
                 .build();
 
-        assertThat(openai.completion(completion)).isEqualTo("This is indeed a test.");
+        assertThat(client.completion(completion)).isEqualTo("This is indeed a test.");
     }
 
     @Test
@@ -69,7 +69,7 @@ class OpenAITest {
                 .messages(List.of(message))
                 .build();
 
-        assertThat(openai.chatCompletion(chatCompletion))
+        assertThat(client.chatCompletion(chatCompletion))
                 .isEqualTo("Hello there! How can I assist you today?");
     }
 }
