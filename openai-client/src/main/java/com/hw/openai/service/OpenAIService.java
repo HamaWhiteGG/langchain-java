@@ -22,12 +22,14 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
+import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * @description: OpenAIService
@@ -41,6 +43,12 @@ public interface OpenAIService {
      */
     @GET("v1/models")
     Single<ModelResp> listModels();
+
+    /**
+     * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
+     */
+    @GET("v1/models/{model}")
+    Single<Model> retrieveModel(@Path("model") String model);
 
     /**
      * Creates a completion for the provided prompt and parameters.

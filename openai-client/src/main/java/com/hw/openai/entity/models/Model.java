@@ -35,10 +35,16 @@ public class Model {
 
     private String object;
 
+    private Long created;
+
     @JsonProperty("owned_by")
     private String ownedBy;
 
     @JsonProperty("permission")
-    private List<Model> permissionList;
+    private List<Permission> permissionList;
+
+    private String root;
+
+    private String parent;
 
 }

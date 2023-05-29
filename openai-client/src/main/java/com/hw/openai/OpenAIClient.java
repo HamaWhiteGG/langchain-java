@@ -23,6 +23,8 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
+import com.hw.openai.entity.models.Model;
+import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.service.OpenAIService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -115,6 +117,24 @@ public class OpenAIClient {
         return null;
     }
 
+    /**
+     * Lists the currently available models, and provides basic information about each one
+     * such as the owner and availability.
+     */
+    public ModelResp listModels() {
+        return service.listModels().blockingGet();
+    }
+
+    /**
+     * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
+     */
+    public Model retrieveModel(String model) {
+        return service.retrieveModel(model).blockingGet();
+    }
+
+    /**
+     * Creates a completion for the provided prompt and parameters.
+     */
     public String completion(Completion completion) {
         CompletionResp response = service.completion(completion).blockingGet();
 
@@ -122,6 +142,9 @@ public class OpenAIClient {
         return StringUtils.trim(text);
     }
 
+    /**
+     * Creates a model response for the given chat conversation.
+     */
     public String chatCompletion(ChatCompletion chatCompletion) {
         ChatCompletionResp response = service.chatCompletion(chatCompletion).blockingGet();
 

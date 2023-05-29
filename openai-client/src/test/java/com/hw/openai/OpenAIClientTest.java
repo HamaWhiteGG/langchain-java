@@ -21,12 +21,15 @@ package com.hw.openai;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
+import com.hw.openai.entity.models.Model;
+import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.util.ProxyUtils;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,6 +49,29 @@ class OpenAIClientTest {
                 .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
+    }
+
+    @Test
+    void testListModels() {
+        ModelResp moduleResp = client.listModels();
+
+        assertThat(moduleResp).isNotNull();
+        List<Model> dataList = moduleResp.getDataList();
+        assertThat(dataList).isNotNull();
+
+        List<String> modelIdList = dataList.stream()
+                .map(Model::getId)
+                .collect(Collectors.toList());
+        assertThat(modelIdList).contains("text-davinci-003", "gpt-3.5-turbo");
+    }
+
+    @Test
+    void testRetrieveModel() {
+        Model model = client.retrieveModel("text-davinci-003");
+
+        assertThat(model).isNotNull();
+        assertThat(model.getId()).isEqualTo("text-davinci-003");
+        assertThat(model.getOwnedBy()).isEqualTo("openai-internal");
     }
 
     @Test
@@ -69,7 +95,6 @@ class OpenAIClientTest {
                 .messages(List.of(message))
                 .build();
 
-        assertThat(client.chatCompletion(chatCompletion))
-                .isEqualTo("Hello there! How can I assist you today?");
+        assertThat(client.chatCompletion(chatCompletion)).isEqualTo("Hello there! How can I assist you today?");
     }
 }
