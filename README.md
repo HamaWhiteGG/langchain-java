@@ -1,4 +1,4 @@
-# 🦜️🔗 LangChain Java
+# 🦜️ LangChain Java
 
 ⚡ Building applications with LLMs through composability ⚡
  
@@ -13,7 +13,7 @@ This library is aimed at assisting in the development of those types of applicat
 Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).
  
  ## Examples
-Here's a simple example of using langchain-java to interact with OpenAI:
+Here's a simple [example](https://sourcegraph.com/github.com/HamaWhiteGG/langchain-java@main/-/blob/langchain-core/src/test/java/com/hw/langchain/llms/openai/OpenAiTest.java?L34:10&popover=pinned) of using langchain-java to interact with OpenAI:
  
  ```java
 @Test
@@ -31,7 +31,7 @@ void testOpenAiCall() {
 ## Run Test from Source
 Prerequisites for building:
 * Git
-* Java 17
+* Java 17 or later
 * Unix-like environment (we use Linux, Mac OS X)
 * Maven (we recommend version 3.8.6 and require at least 3.5.4)
 
@@ -39,7 +39,9 @@ Prerequisites for building:
 git clone https://github.com/HamaWhiteGG/langchain-java.git
 cd langchain-java
 
-# export JAVA_HOME=JDK17_INSTALL_DIR && mvn clean test
+# Set the environment variable OPENAI_API_KEY, using the command 'export OPENAI_API_KEY=xxx'
+
+# export JAVA_HOME=JDK17_INSTALL_HOME && mvn clean test
 mvn clean test
 ```
 
