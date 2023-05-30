@@ -1,13 +1,19 @@
-# LangChain Java
+# 🦜️🔗 LangChain Java
 
- Building applications with LLMs through composability.
+⚡ Building applications with LLMs through composability ⚡
  
  ## What is this?
  
- This is the Java language implementation of LangChain.
+This is the Java language implementation of LangChain.
+
+Large language models (LLMs) are emerging as a transformative technology, enabling developers to build applications that they previously could not. But using these LLMs in isolation is often not enough to create a truly powerful app - the real power comes when you can combine them with other sources of computation or knowledge.
+
+This library is aimed at assisting in the development of those types of applications.
+
+Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).
  
  ## Examples
- Here's a simple example of using langchain-java to interact with OpenAI:
+Here's a simple example of using langchain-java to interact with OpenAI:
  
  ```java
 @Test
@@ -39,6 +45,7 @@ mvn clean test
 
 ## Support
 Don’t hesitate to ask!
+
 [Open an issue](https://github.com/HamaWhiteGG/langchain-java/issues) if you find a bug in Flink.
 
 
