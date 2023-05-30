@@ -16,32 +16,11 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.base.language;
-
-import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
-
-import java.util.List;
+package com.hw.langchain.callbacks.manager;
 
 /**
- * @description: BaseLanguageModel
+ * @description: Callbacks
  * @author: HamaWhite
  */
-public interface BaseLanguageModel {
-
-    /**
-     * Take in a list of prompt values and return an LLMResult.
-     */
-    LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop);
-
-    /**
-     * Predict text from text.
-     */
-    String predict(String text, List<String> stop);
-
-    /**
-     * Predict message from messages.
-     */
-    BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+public class Callbacks {
 }

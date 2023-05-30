@@ -18,13 +18,17 @@
 
 package com.hw.langchain.schema;
 
-import java.util.Dictionary;
-import java.util.Optional;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.Map;
 
 /**
  * @description: Output of a single generation.
  * @author: HamaWhite
  */
+@Data
+@Builder
 public class Generation {
 
     /**
@@ -36,5 +40,5 @@ public class Generation {
      * Raw generation info response from the provider.
      * May include things like reason for finishing (e.g. in OpenAI)
      */
-    private Optional<Dictionary<String, Object>> generationInfo;
+    private Map<String, Object> generationInfo;
 }

@@ -16,32 +16,30 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.base.language;
+package com.hw.langchain.utils;
 
-import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
+import lombok.experimental.UtilityClass;
 
-import java.util.List;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
- * @description: BaseLanguageModel
+ * @description: Utils
  * @author: HamaWhite
  */
-public interface BaseLanguageModel {
+@UtilityClass
+public class Utils {
 
-    /**
-     * Take in a list of prompt values and return an LLMResult.
-     */
-    LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop);
-
-    /**
-     * Predict text from text.
-     */
-    String predict(String text, List<String> stop);
-
-    /**
-     * Predict message from messages.
-     */
-    BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+    public static String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
+        if (isNotEmpty(originalValue)) {
+            return originalValue;
+        }
+        String envValue = System.getenv(envKey);
+        if (isNotEmpty(envValue)) {
+            return envValue;
+        }
+        if (defaultValue.length > 0) {
+            return defaultValue[0];
+        }
+        return null;
+    }
 }

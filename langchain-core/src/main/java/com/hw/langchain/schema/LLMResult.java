@@ -18,6 +18,9 @@
 
 package com.hw.langchain.schema;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +28,8 @@ import java.util.Map;
  * @description: Class that contains all relevant information for an LLM Result.
  * @author: HamaWhite
  */
+@Data
+@AllArgsConstructor
 public class LLMResult {
 
     /**

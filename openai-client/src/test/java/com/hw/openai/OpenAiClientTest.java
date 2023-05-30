@@ -23,7 +23,7 @@ import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
-import com.hw.openai.util.ProxyUtils;
+import com.hw.openai.utils.ProxyUtils;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,16 +36,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
  *
- * @description: OpenAITest
+ * @description: OpenAiClientTest
  * @author: HamaWhite
  */
-class OpenAIClientTest {
+class OpenAiClientTest {
 
-    private static OpenAIClient client;
+    private static OpenAiClient client;
 
     @BeforeAll
     static void setup() {
-        client = OpenAIClient.builder()
+        client = OpenAiClient.builder()
                 .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
@@ -78,7 +78,7 @@ class OpenAIClientTest {
     void testCompletion() {
         Completion completion = Completion.builder()
                 .model("text-davinci-003")
-                .prompt("Say this is a test")
+                .prompt(List.of("Say this is a test"))
                 .maxTokens(700)
                 .temperature(0)
                 .build();
@@ -92,6 +92,7 @@ class OpenAIClientTest {
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-3.5-turbo")
+                .temperature(0)
                 .messages(List.of(message))
                 .build();
 

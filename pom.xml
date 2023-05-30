@@ -18,7 +18,8 @@
         <h2.version>2.1.214</h2.version>
         <junit.version>5.9.3</junit.version>
         <mysql.version>8.0.32</mysql.version>
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.28</lombok.version>
+        <guava.version>31.0-jre</guava.version>
         <assertj.version>3.24.2</assertj.version>
         <okhttp3.version>3.14.9</okhttp3.version>
         <retrofit.version>2.9.0</retrofit.version>
@@ -73,6 +74,12 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <dependency>

@@ -16,32 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.base.language;
+package com.hw.langchain.llms.openai;
 
-import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
+import com.hw.openai.utils.ProxyUtils;
 
-import java.util.List;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @description: BaseLanguageModel
+ * @description: OpenAiTest
  * @author: HamaWhite
  */
-public interface BaseLanguageModel {
+class OpenAiTest {
 
-    /**
-     * Take in a list of prompt values and return an LLMResult.
-     */
-    LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop);
+    @Test
+    void testOpenAiCall() {
+        OpenAI openAI = OpenAI.builder()
+                .proxy(ProxyUtils.http("127.0.0.1", 1087))
+                .maxTokens(10)
+                .build()
+                .init();
 
-    /**
-     * Predict text from text.
-     */
-    String predict(String text, List<String> stop);
-
-    /**
-     * Predict message from messages.
-     */
-    BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+        assertThat(openAI.call("Say foo:")).isEqualTo("\n\nFoo!");
+    }
 }

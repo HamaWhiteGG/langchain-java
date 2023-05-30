@@ -32,10 +32,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * @description: OpenAIService
+ * @description: OpenAiService
  * @author: HamaWhite
  */
-public interface OpenAIService {
+public interface OpenAiService {
 
     /**
      * Lists the currently available models, and provides basic information about each one

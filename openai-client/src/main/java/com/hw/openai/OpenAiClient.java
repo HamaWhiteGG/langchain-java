@@ -25,7 +25,7 @@ import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
-import com.hw.openai.service.OpenAIService;
+import com.hw.openai.service.OpenAiService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,14 +43,14 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.net.Proxy;
 
 /**
- * @description: OpenaiClient
+ * @description: OpenAiClient
  * @author: HamaWhite
  */
 @Data
 @Builder
-public class OpenAIClient {
+public class OpenAiClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OpenAIClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenAiClient.class);
 
     private static final String BASE_URL = "https://api.openai.com/";
 
@@ -60,9 +60,9 @@ public class OpenAIClient {
 
     private Proxy proxy;
 
-    private OpenAIService service;
+    private OpenAiService service;
 
-    public OpenAIClient init() {
+    public OpenAiClient init() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
 
         httpClientBuilder.addInterceptor(chain -> {
@@ -99,7 +99,7 @@ public class OpenAIClient {
                 .client(httpClientBuilder.build())
                 .build();
 
-        this.service = retrofit.create(OpenAIService.class);
+        this.service = retrofit.create(OpenAiService.class);
         return this;
     }
 
@@ -140,6 +140,10 @@ public class OpenAIClient {
 
         String text = response.getChoices().get(0).getText();
         return StringUtils.trim(text);
+    }
+
+    public CompletionResp create(Completion completion) {
+        return service.completion(completion).blockingGet();
     }
 
     /**

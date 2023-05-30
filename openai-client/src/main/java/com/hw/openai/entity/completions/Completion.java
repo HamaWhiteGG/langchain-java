@@ -50,7 +50,7 @@ public class Completion implements Serializable {
      * The prompt(s) to generate completions for, encoded as a string, array of strings,
      * array of tokens, or array of token arrays.
      */
-    private String prompt;
+    private List<String> prompt;
 
     /**
      * The suffix that comes after a completion of inserted text.
@@ -60,6 +60,7 @@ public class Completion implements Serializable {
     /**
      * The maximum number of tokens to generate in the completion.
      */
+    @Builder.Default
     @JsonProperty("max_tokens")
     private Integer maxTokens = 16;
 
@@ -69,7 +70,8 @@ public class Completion implements Serializable {
      * <p>
      * We generally recommend altering this or top_p but not both.
      */
-    private double temperature = 1.0;
+    @Builder.Default
+    private float temperature = 1.0f;
 
     /**
      * An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of
@@ -77,12 +79,14 @@ public class Completion implements Serializable {
      * <p>
      * We generally recommend altering this or temperature but not both.
      */
+    @Builder.Default
     @JsonProperty("top_p")
-    private double topP = 1.0;
+    private float topP = 1.0f;
 
     /**
      * How many completions to generate for each prompt.
      */
+    @Builder.Default
     private Integer n = 1;
 
     /**
@@ -105,22 +109,21 @@ public class Completion implements Serializable {
     /**
      * Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
      */
-    @JsonProperty("stop")
-    private List<String> stopList;
+    private List<String> stop;
 
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
      * increasing the model's likelihood to talk about new topics.
      */
     @JsonProperty("presence_penalty")
-    private double presencePenalty = 0;
+    private float presencePenalty;
 
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency
      * in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
      */
     @JsonProperty("frequency_penalty")
-    private double frequencyPenalty;
+    private float frequencyPenalty;
 
     /**
      * Generates best_of completions server-side and returns the "best" (the one with the highest log probability per token).
@@ -129,6 +132,7 @@ public class Completion implements Serializable {
      * When used with n, best_of controls the number of candidate completions and n specifies how many to return
      * – best_of must be greater than n.
      */
+    @Builder.Default
     @JsonProperty("best_of")
     private Integer bestOf = 1;
 
@@ -136,7 +140,7 @@ public class Completion implements Serializable {
      * Modify the likelihood of specified tokens appearing in the completion.
      */
     @JsonProperty("logit_bias")
-    private Map<String, Object> logitBias;
+    private Map<String, Float> logitBias;
 
     /**
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.

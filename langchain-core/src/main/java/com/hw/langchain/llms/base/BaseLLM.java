@@ -19,8 +19,10 @@
 package com.hw.langchain.llms.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.callbacks.manager.Callbacks;
 import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
+
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -28,10 +30,34 @@ import java.util.List;
  * @description: LLM wrapper should take in a prompt and return a string.
  * @author: HamaWhite
  */
-public class BaseLLM extends BaseLanguageModel {
+@SuperBuilder
+public abstract class BaseLLM implements BaseLanguageModel {
 
-    @Override
-    public LLMResult generatePrompt(List<PromptValue> promptList, List<String> stopList) {
-        return null;
+    /**
+     * Return type of llm.
+     */
+    public abstract String llmType();
+
+    /**
+     * Run the LLM on the given prompts.
+     */
+    protected abstract LLMResult _generate(List<String> prompts, List<String> stop);
+
+    /**
+     * Check Cache and run the LLM on the given prompt and input.
+     */
+    public String call(String prompt, List<String> stop, Callbacks callbacks) {
+        return generate(List.of(prompt), stop, callbacks).getGenerations().get(0).get(0).getText();
+    }
+
+    public String call(String prompt) {
+        return call(prompt, null, null);
+    }
+
+    /**
+     * Run the LLM on the given prompt and input.
+     */
+    public LLMResult generate(List<String> prompts, List<String> stop, Callbacks callbacks) {
+        return _generate(prompts, stop);
     }
 }

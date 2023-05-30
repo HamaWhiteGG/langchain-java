@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hw.openai.util;
+package com.hw.openai.utils;
 
 import lombok.experimental.UtilityClass;
 

@@ -57,7 +57,8 @@ public class ChatCompletion implements Serializable {
      * <p>
      * We generally recommend altering this or top_p but not both.
      */
-    private double temperature = 1.0;
+    @Builder.Default
+    private float temperature = 1.0f;
 
     /**
      * An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of
@@ -65,12 +66,14 @@ public class ChatCompletion implements Serializable {
      * <p>
      * We generally recommend altering this or temperature but not both.
      */
+    @Builder.Default
     @JsonProperty("top_p")
-    private double topP = 1.0;
+    private float topP = 1.0f;
 
     /**
      * How many chat completion choices to generate for each input message.
      */
+    @Builder.Default
     private Integer n = 1;
 
     /**
@@ -82,8 +85,7 @@ public class ChatCompletion implements Serializable {
     /**
      * Up to 4 sequences where the API will stop generating further tokens.
      */
-    @JsonProperty("stop")
-    private List<String> stopList;
+    private List<String> stop;
 
     /**
      * The maximum number of tokens to generate in the chat completion.
@@ -98,20 +100,20 @@ public class ChatCompletion implements Serializable {
      * increasing the model's likelihood to talk about new topics.
      */
     @JsonProperty("presence_penalty")
-    private double presencePenalty = 0;
+    private float presencePenalty;
 
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text
      * so far, decreasing the model's likelihood to repeat the same line verbatim.
      */
     @JsonProperty("frequency_penalty")
-    private double frequencyPenalty;
+    private float frequencyPenalty;
 
     /**
      * Modify the likelihood of specified tokens appearing in the completion.
      */
     @JsonProperty("logit_bias")
-    private Map<String, Object> logitBias;
+    private Map<String, Float> logitBias;
 
     /**
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
