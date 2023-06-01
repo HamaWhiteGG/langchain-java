@@ -30,8 +30,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class OpenAIChatTest {
 
+    /**
+     * Test OpenAIChat
+     */
     @Test
-    void testOpenAIChatCall() {
+    void testOpenAIChat() {
         OpenAIChat llm = OpenAIChat.builder()
                 .openaiProxy(ProxyUtils.http("127.0.0.1", 1087))
                 .maxTokens(10)

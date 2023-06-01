@@ -30,6 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class OpenAITest {
 
+    /**
+     * Test valid call to openai
+     */
     @Test
     void testOpenAICall() {
         OpenAI llm = OpenAI.builder()
