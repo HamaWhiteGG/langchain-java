@@ -142,6 +142,9 @@ public class OpenAiClient {
         return StringUtils.trim(text);
     }
 
+    /**
+     * Creates a completion for the provided prompt and parameters.
+     */
     public CompletionResp create(Completion completion) {
         return service.completion(completion).blockingGet();
     }
@@ -154,5 +157,12 @@ public class OpenAiClient {
 
         String content = response.getChoices().get(0).getMessage().getContent();
         return StringUtils.trim(content);
+    }
+
+    /**
+     * Creates a model response for the given chat conversation.
+     */
+    public ChatCompletionResp create(ChatCompletion chatCompletion) {
+        return service.chatCompletion(chatCompletion).blockingGet();
     }
 }

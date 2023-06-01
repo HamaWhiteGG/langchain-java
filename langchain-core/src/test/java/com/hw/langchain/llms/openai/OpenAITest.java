@@ -25,19 +25,19 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @description: OpenAiTest
+ * @description: OpenAITest
  * @author: HamaWhite
  */
-class OpenAiTest {
+class OpenAITest {
 
     @Test
-    void testOpenAiCall() {
-        OpenAI openAI = OpenAI.builder()
-                .proxy(ProxyUtils.http("127.0.0.1", 1087))
+    void testOpenAICall() {
+        OpenAI llm = OpenAI.builder()
+                .openaiProxy(ProxyUtils.http("127.0.0.1", 1087))
                 .maxTokens(10)
                 .build()
                 .init();
 
-        assertThat(openAI.call("Say foo:")).isEqualTo("\n\nFoo!");
+        assertThat(llm.call("Say foo:")).isEqualTo("\n\nFoo!");
     }
 }

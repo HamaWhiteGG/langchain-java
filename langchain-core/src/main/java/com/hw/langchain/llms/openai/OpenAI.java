@@ -46,7 +46,7 @@ public class OpenAI extends BaseOpenAI {
         this.client = OpenAiClient.builder()
                 .openaiApiKey(openaiApiKey)
                 .openaiOrganization(openaiOrganization)
-                .proxy(proxy)
+                .proxy(openaiProxy)
                 .build()
                 .init();
         return this;

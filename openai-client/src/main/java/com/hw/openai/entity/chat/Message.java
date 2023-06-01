@@ -61,7 +61,6 @@ public class Message implements Serializable {
     }
 
     public static Message of(String content) {
-
         return new Message(Role.USER, content);
     }
 
