@@ -13,19 +13,19 @@ This library is aimed at assisting in the development of those types of applicat
 Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).
  
  ## Examples
-Here's a simple [example](https://sourcegraph.com/github.com/HamaWhiteGG/langchain-java@main/-/blob/langchain-core/src/test/java/com/hw/langchain/llms/openai/OpenAiTest.java?L34:10&popover=pinned) of using langchain-java to interact with OpenAI:
+Here's a simple example of using langchain-java to interact with OpenAI:
  
  ```java
-@Test
-void testOpenAiCall() {
-    OpenAI openAI = OpenAI.builder()
-            .proxy(ProxyUtils.http("127.0.0.1", 1087))
+    @Test
+    void testOpenAICall() {
+            OpenAI llm = OpenAI.builder()
+            .openaiProxy(ProxyUtils.http("127.0.0.1", 1087))
             .maxTokens(10)
             .build()
             .init();
 
-    assertThat(openAI.call("Say foo:")).isEqualTo("\n\nFoo!");
-}
+            assertThat(llm.call("Say foo:")).isEqualTo("\n\nFoo!");
+            }
  ```
  
 ## Run Test from Source
