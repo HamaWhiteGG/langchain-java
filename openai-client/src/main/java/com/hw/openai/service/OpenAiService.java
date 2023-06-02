@@ -41,24 +41,24 @@ public interface OpenAiService {
      * Lists the currently available models, and provides basic information about each one
      * such as the owner and availability.
      */
-    @GET("v1/models")
+    @GET("models")
     Single<ModelResp> listModels();
 
     /**
      * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
      */
-    @GET("v1/models/{model}")
+    @GET("models/{model}")
     Single<Model> retrieveModel(@Path("model") String model);
 
     /**
      * Creates a completion for the provided prompt and parameters.
      */
-    @POST("v1/completions")
+    @POST("completions")
     Single<CompletionResp> completion(@Body Completion completion);
 
     /**
      * Creates a model response for the given chat conversation.
      */
-    @POST("v1/chat/completions")
+    @POST("chat/completions")
     Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);
 }

@@ -16,36 +16,18 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.prompts.base;
+package com.hw.langchain.llms.openai;
 
-import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.HumanMessage;
-import com.hw.langchain.schema.PromptValue;
-
-import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /**
- * @description: StringPromptValue
+ * @description: DemoTest
  * @author: HamaWhite
  */
-public class StringPromptValue implements PromptValue {
+public class DemoTest {
 
-    private String text;
-
-    public StringPromptValue(String text) {
-        this.text = text;
-    }
-
-    @Override
-    public List<BaseMessage> toMessages() {
-        return List.of(new HumanMessage(text));
-    }
-
-    /**
-     * Return prompt as string.
-     */
-    @Override
-    public String toString() {
-        return text;
+    @Test
+    public void test() {
+        System.out.println("hello world");
     }
 }

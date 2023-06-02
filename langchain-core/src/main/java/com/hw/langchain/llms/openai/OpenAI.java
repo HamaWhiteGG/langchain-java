@@ -44,6 +44,7 @@ public class OpenAI extends BaseOpenAI {
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
 
         this.client = OpenAiClient.builder()
+                .openaiApiBase(openaiApiBase)
                 .openaiApiKey(openaiApiKey)
                 .openaiOrganization(openaiOrganization)
                 .proxy(openaiProxy)

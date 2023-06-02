@@ -21,6 +21,9 @@ package com.hw.langchain.prompts.base;
 import com.hw.langchain.schema.BaseOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
+import lombok.Data;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +31,7 @@ import java.util.Map;
  * @description: Base class for all prompt templates, returning a prompt.
  * @author: HamaWhite
  */
+@Data
 public abstract class BasePromptTemplate {
 
     /**
@@ -39,6 +43,8 @@ public abstract class BasePromptTemplate {
      * How to parse the output of calling an LLM on this formatted prompt.
      */
     protected BaseOutputParser outputParser;
+
+    private Map<String, Object> partialVariables = new HashMap<>();
 
     public BasePromptTemplate(List<String> inputVariables) {
         this.inputVariables = inputVariables;
@@ -54,6 +60,11 @@ public abstract class BasePromptTemplate {
      */
     public abstract PromptValue formatPrompt(Map<String, Object> kwargs);
 
+    /**
+     * Format the prompt with the inputs.
+     * @param kwargs Any arguments to be passed to the prompt template.
+     * @return  A formatted string.
+     */
     public abstract String format(Map<String, Object> kwargs);
 
 }

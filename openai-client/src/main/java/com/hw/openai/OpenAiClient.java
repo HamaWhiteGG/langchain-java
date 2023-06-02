@@ -52,7 +52,8 @@ public class OpenAiClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenAiClient.class);
 
-    private static final String BASE_URL = "https://api.openai.com/";
+    @Builder.Default
+    private String openaiApiBase;
 
     private String openaiApiKey;
 
@@ -63,8 +64,9 @@ public class OpenAiClient {
     private OpenAiService service;
 
     public OpenAiClient init() {
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
 
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.addInterceptor(chain -> {
             // If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
             openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
@@ -93,7 +95,7 @@ public class OpenAiClient {
         objectMapper.findAndRegisterModules();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(openaiApiBase)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(httpClientBuilder.build())

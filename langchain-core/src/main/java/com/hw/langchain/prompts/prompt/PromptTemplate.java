@@ -21,6 +21,9 @@ package com.hw.langchain.prompts.prompt;
 import com.hw.langchain.prompts.base.StringPromptTemplate;
 import com.hw.langchain.schema.BaseOutputParser;
 
+import org.apache.commons.text.StringSubstitutor;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ public class PromptTemplate extends StringPromptTemplate {
     /**
      * The prompt template.
      */
-    private String template;
+    private final String template;
 
     /**
      * Whether or not to try validating the template.
@@ -52,6 +55,18 @@ public class PromptTemplate extends StringPromptTemplate {
 
     @Override
     public String format(Map<String, Object> kwargs) {
-        return "";
+        return StringSubstitutor.replace(template, kwargs, "{", "}");
+    }
+
+    public static PromptTemplate fromTemplate(String template) {
+        List<String> variableNames = new ArrayList<>();
+        StringSubstitutor substitutor = new StringSubstitutor(variable -> {
+            variableNames.add(variable);
+            return null;
+        });
+        substitutor.setVariablePrefix("{");
+        substitutor.setVariableSuffix("}");
+        substitutor.replace(template);
+        return new PromptTemplate(variableNames, template);
     }
 }

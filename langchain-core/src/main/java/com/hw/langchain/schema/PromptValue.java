@@ -27,7 +27,7 @@ import java.util.List;
 public interface PromptValue {
 
     /**
-     * Returns the prompt as a list of messages.
+     * Return prompt as messages.
      */
-    List<BaseMessage> toMessageList();
+    List<BaseMessage> toMessages();
 }

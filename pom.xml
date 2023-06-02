@@ -25,6 +25,7 @@
         <retrofit.version>2.9.0</retrofit.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
+        <commons-text.version>1.10.0</commons-text.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <jackson-annotation.version>2.15.1</jackson-annotation.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -80,6 +81,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
             </dependency>
 
             <dependency>
