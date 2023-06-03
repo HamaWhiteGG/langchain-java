@@ -102,7 +102,7 @@ System.out.println(chain.run("colorful socks"));
 ```
 There we go! There’s the first chain - an LLM Chain. This is one of the simpler types of chains, but understanding how it works will set you up well for working with more complex chains.
  
-### 3. Run Test Cases from Source
+## 3. Run Test Cases from Source
 ```
 cd langchain-java
 
@@ -110,7 +110,7 @@ cd langchain-java
 mvn clean test
 ```
 
-### 4. Apply Spotless
+## 4. Apply Spotless
 ```
 cd langchain-java
 
