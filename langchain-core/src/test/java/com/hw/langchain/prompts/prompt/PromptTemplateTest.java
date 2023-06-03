@@ -26,7 +26,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
+ * <a href="https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html">Prompt Templates Started </a>
  *
  * @description: PromptTemplateTest
  * @author: HamaWhite
@@ -67,7 +67,8 @@ class PromptTemplateTest {
      */
     @Test
     void testPromptWithOneInputVariables() {
-        PromptTemplate oneInputPrompt = new PromptTemplate(List.of("adjective"), "Tell me a {adjective} joke.");
+        PromptTemplate oneInputPrompt = new PromptTemplate(List.of("adjective"),
+                "Tell me a {adjective} joke.");
 
         String actual = oneInputPrompt.format(Map.of("adjective", "funny"));
         String expected = "Tell me a funny joke.";
@@ -80,7 +81,8 @@ class PromptTemplateTest {
     @Test
     void testPromptWithMultipleInputVariables() {
         PromptTemplate oneInputPrompt =
-                new PromptTemplate(List.of("adjective", "content"), "Tell me a {adjective} joke about {content}.");
+                new PromptTemplate(List.of("adjective", "content"),
+                        "Tell me a {adjective} joke about {content}.");
 
         String actual = oneInputPrompt.format(Map.of("adjective", "funny", "content", "chickens"));
         String expected = "Tell me a funny joke about chickens.";

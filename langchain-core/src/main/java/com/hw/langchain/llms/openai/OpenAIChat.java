@@ -22,7 +22,6 @@ import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
 import com.hw.langchain.utils.Utils;
 import com.hw.openai.OpenAiClient;
 import com.hw.openai.entity.chat.ChatCompletion;
@@ -142,11 +141,6 @@ public class OpenAIChat extends BaseLLM {
                 .build()
                 .init();
         return this;
-    }
-
-    @Override
-    public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
-        return null;
     }
 
     @Override

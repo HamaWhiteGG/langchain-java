@@ -21,6 +21,7 @@ package com.hw.langchain.llms.base;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.callbacks.manager.Callbacks;
 import com.hw.langchain.schema.LLMResult;
+import com.hw.langchain.schema.PromptValue;
 
 import lombok.experimental.SuperBuilder;
 
@@ -59,5 +60,13 @@ public abstract class BaseLLM implements BaseLanguageModel {
      */
     public LLMResult generate(List<String> prompts, List<String> stop, Callbacks callbacks) {
         return _generate(prompts, stop);
+    }
+
+    @Override
+    public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
+        List<String> promptStrings = prompts.stream()
+                .map(PromptValue::toString)
+                .toList();
+        return generate(promptStrings, stop, null);
     }
 }

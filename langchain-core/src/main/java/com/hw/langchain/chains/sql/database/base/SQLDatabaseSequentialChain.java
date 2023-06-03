@@ -19,11 +19,12 @@
 package com.hw.langchain.chains.sql.database.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
-import com.hw.langchain.chains.llm.Chain;
+import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.sql.database.SQLDatabase;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.hw.langchain.chains.sql.database.prompt.Prompt.DECIDER_PROMPT;
@@ -41,7 +42,7 @@ import static com.hw.langchain.chains.sql.database.prompt.Prompt.PROMPT;
  *
  * @author: HamaWhite
  */
-public class SQLDatabaseSequentialChain implements Chain {
+public class SQLDatabaseSequentialChain extends Chain {
 
     private SQLDatabaseChain sqlChain;
 
@@ -70,5 +71,20 @@ public class SQLDatabaseSequentialChain implements Chain {
     public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm, SQLDatabase database,
             Map<String, Object> kwargs) {
         return fromLLM(llm, database, PROMPT, DECIDER_PROMPT, kwargs);
+    }
+
+    @Override
+    public List<String> inputKeys() {
+        return null;
+    }
+
+    @Override
+    public List<String> outputKeys() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> _call(Map<String, ?> inputs) {
+        return null;
     }
 }

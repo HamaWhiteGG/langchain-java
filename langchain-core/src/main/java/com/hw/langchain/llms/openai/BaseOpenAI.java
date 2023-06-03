@@ -22,7 +22,6 @@ import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
 import com.hw.openai.OpenAiClient;
 import com.hw.openai.entity.completions.Choice;
 import com.hw.openai.entity.completions.Completion;
@@ -148,11 +147,6 @@ public class BaseOpenAI extends BaseLLM {
      * Set of special tokens that are not allowed.
      */
     protected Set<String> disallowedSpecial;
-
-    @Override
-    public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
-        return null;
-    }
 
     @Override
     public String predict(String text, List<String> stop) {

@@ -19,18 +19,19 @@
 package com.hw.langchain.chains.sql.database.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
-import com.hw.langchain.chains.llm.Chain;
+import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.sql.database.SQLDatabase;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * @description: Chain for interacting with SQL Database.
  * @author: HamaWhite
  */
-public class SQLDatabaseChain implements Chain {
+public class SQLDatabaseChain extends Chain {
 
     private LLMChain llmChain;
 
@@ -80,6 +81,21 @@ public class SQLDatabaseChain implements Chain {
         // }
         // LLMChain llmChain = new LLMChain(llm, prompt);
         // return new SQLDatabaseChain(llmChain, database, kwargs);
+        return null;
+    }
+
+    @Override
+    public List<String> inputKeys() {
+        return null;
+    }
+
+    @Override
+    public List<String> outputKeys() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> _call(Map<String, ?> inputs) {
         return null;
     }
 }
