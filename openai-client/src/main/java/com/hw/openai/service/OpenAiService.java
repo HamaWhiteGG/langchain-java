@@ -32,7 +32,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * @description: OpenAiService
+ * @description: Service interface for interacting with the OpenAI API.
  * @author: HamaWhite
  */
 public interface OpenAiService {
@@ -40,24 +40,36 @@ public interface OpenAiService {
     /**
      * Lists the currently available models, and provides basic information about each one
      * such as the owner and availability.
+     *
+     * @return a Single emitting the response containing the list of available models
      */
     @GET("models")
     Single<ModelResp> listModels();
 
     /**
      * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
+     *
+     * @param model the ID of the model to use for this request
+     * @return a Single emitting the response containing the retrieved model
      */
     @GET("models/{model}")
     Single<Model> retrieveModel(@Path("model") String model);
 
     /**
      * Creates a completion for the provided prompt and parameters.
+     *
+     * @param completion the completion request object containing the prompt and parameters
+     * @return a Single emitting the response containing the completion result
      */
     @POST("completions")
     Single<CompletionResp> completion(@Body Completion completion);
 
     /**
      * Creates a model response for the given chat conversation.
+     *
+     * @param chatCompletion the chat completion request object containing the chat conversation
+     * @return a Single emitting the response containing the chat completion result
+    
      */
     @POST("chat/completions")
     Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);

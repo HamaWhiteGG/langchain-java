@@ -18,8 +18,6 @@
 
 package com.hw.langchain.llms.openai;
 
-import com.hw.openai.utils.ProxyUtils;
-
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +34,6 @@ class OpenAITest {
     @Test
     void testOpenAICall() {
         OpenAI llm = OpenAI.builder()
-                .openaiProxy(ProxyUtils.http("127.0.0.1", 1087))
                 .maxTokens(10)
                 .build()
                 .init();

@@ -22,7 +22,6 @@ import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
-import com.hw.openai.utils.ProxyUtils;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,6 @@ class LLMChainTest {
     @BeforeAll
     public static void setup() throws SQLException {
         llm = OpenAI.builder()
-                .openaiProxy(ProxyUtils.http("127.0.0.1", 1087))
                 .temperature(0)
                 .build()
                 .init();

@@ -22,20 +22,28 @@ import lombok.experimental.UtilityClass;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.URI;
 
 /**
- * @description: ProxyUtils
+ * @description: A utility class for creating HTTP proxies.
  * @author: HamaWhite
  */
 @UtilityClass
 public class ProxyUtils {
 
-    public Proxy http(String hostname, int port) {
+    /**
+     * Creates an HTTP proxy object based on the provided address.
+     *
+     * @param address the address of the proxy server in the format 'http://host:port'
+     * @return the Proxy object representing the HTTP proxy server
+     */
+    public Proxy http(String address) {
+        // Parse the proxy server address
+        URI uri = URI.create(address);
+        String hostname = uri.getHost();
+        int port = uri.getPort();
+
+        // Create the Proxy object
         return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostname, port));
     }
-
-    public Proxy socks5(String hostname, int port) {
-        return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(hostname, port));
-    }
-
 }

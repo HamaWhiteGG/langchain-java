@@ -23,7 +23,6 @@ import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
-import com.hw.openai.utils.ProxyUtils;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,6 @@ class OpenAiClientTest {
     @BeforeAll
     static void setup() {
         client = OpenAiClient.builder()
-                .proxy(ProxyUtils.http("127.0.0.1", 1087))
                 .build()
                 .init();
     }

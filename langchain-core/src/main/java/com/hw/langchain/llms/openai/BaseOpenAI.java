@@ -30,7 +30,6 @@ import com.hw.openai.entity.completions.CompletionResp;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
-import java.net.Proxy;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -109,7 +108,7 @@ public class BaseOpenAI extends BaseLLM {
     /**
      * Support explicit proxy for OpenAI
      */
-    protected Proxy openaiProxy;
+    protected String openaiProxy;
 
     /**
      * Batch size to use when passing multiple documents to generate.

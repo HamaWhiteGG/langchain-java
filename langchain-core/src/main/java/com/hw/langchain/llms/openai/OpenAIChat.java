@@ -31,7 +31,6 @@ import com.hw.openai.entity.chat.Message;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
-import java.net.Proxy;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -104,7 +103,7 @@ public class OpenAIChat extends BaseLLM {
     /**
      * Support explicit proxy for OpenAI
      */
-    protected Proxy openaiProxy;
+    protected String openaiProxy;
 
     /**
      * Maximum number of retries to make when generating.
@@ -132,12 +131,13 @@ public class OpenAIChat extends BaseLLM {
         openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE");
         openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
+        openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
 
         this.client = OpenAiClient.builder()
                 .openaiApiBase(openaiApiBase)
                 .openaiApiKey(openaiApiKey)
                 .openaiOrganization(openaiOrganization)
-                .proxy(openaiProxy)
+                .openaiProxy(openaiProxy)
                 .build()
                 .init();
         return this;
