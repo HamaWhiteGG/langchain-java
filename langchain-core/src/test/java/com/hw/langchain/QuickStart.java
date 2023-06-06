@@ -24,8 +24,8 @@ import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.chains.sql.database.base.SQLDatabaseChain;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
-
 import com.hw.langchain.sql.database.SQLDatabase;
+
 import lombok.experimental.UtilityClass;
 
 import java.util.List;

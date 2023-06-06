@@ -104,7 +104,7 @@ System.out.println(chain.run("colorful socks"));
 #### 2.5.2 SQL Chain
 This example demonstrates the use of the SQLDatabaseChain for answering questions over a database.
 ```java
-SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "xxx", "xxx");
 
 BaseLanguageModel llm = OpenAI.builder()
         .temperature(0)
