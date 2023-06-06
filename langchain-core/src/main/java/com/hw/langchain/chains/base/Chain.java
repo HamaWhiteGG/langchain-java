@@ -18,6 +18,8 @@
 
 package com.hw.langchain.chains.base;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +86,7 @@ public abstract class Chain {
     /**
      * Run the chain as multiple variables, text out.
      */
-    public String run(Map<String, String> args) {
+    public String run(Map<String, ?> args) {
         validateOutputKeys();
         return call(args, false).get(outputKeys().get(0));
     }
@@ -110,7 +112,7 @@ public abstract class Chain {
      * Validate and prep outputs.
      */
     private Map<String, String> prepOutputs(Map<String, ?> inputs, Map<String, String> outputs,
-            boolean returnOnlyOutputs) {
+                                            boolean returnOnlyOutputs) {
         if (returnOnlyOutputs) {
             return outputs;
         }
