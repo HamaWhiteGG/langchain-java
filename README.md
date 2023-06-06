@@ -84,6 +84,7 @@ Up until now, we’ve worked with the PromptTemplate and LLM primitives by thems
 
 A chain in LangChain is made up of links, which can be either primitives like LLMs or other chains.
 
+#### 2.5.1 LLM Chain
 The most core type of chain is an LLMChain, which consists of a PromptTemplate and an LLM.
 ```java
 OpenAI llm = OpenAI.builder()
@@ -100,7 +101,22 @@ System.out.println(chain.run("colorful socks"));
 ```shell
 \n\nSocktastic!
 ```
-There we go! There’s the first chain - an LLM Chain. This is one of the simpler types of chains, but understanding how it works will set you up well for working with more complex chains.
+#### 2.5.2 SQL Chain
+This example demonstrates the use of the SQLDatabaseChain for answering questions over a database.
+```java
+SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+
+BaseLanguageModel llm = OpenAI.builder()
+        .temperature(0)
+        .build()
+        .init();
+
+Chain chain = SQLDatabaseChain.fromLLM(llm, database);
+System.out.println(chain.run("How many students are there?"));
+```
+```shell
+There are 6 students.
+```
  
 ## 3. Run Test Cases from Source
 ```

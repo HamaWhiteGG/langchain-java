@@ -18,11 +18,14 @@
 
 package com.hw.langchain;
 
+import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
+import com.hw.langchain.chains.sql.database.base.SQLDatabaseChain;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
+import com.hw.langchain.sql.database.SQLDatabase;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -67,9 +70,22 @@ public class QuickStart {
         System.out.println(chain.run("colorful socks"));
     }
 
+    private void sqlChain() {
+        SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+
+        BaseLanguageModel llm = OpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
+
+        Chain chain = SQLDatabaseChain.fromLLM(llm, database);
+        System.out.println(chain.run("How many students are there?"));
+    }
+
     public static void main(String[] args) {
         llm();
         promptTemplate();
         llmChain();
+        sqlChain();
     }
 }
