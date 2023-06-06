@@ -246,6 +246,6 @@ public class BaseOpenAI extends BaseLLM {
      */
     private int maxTokensForPrompt(String prompt) {
         // TODO
-        return 100;
+        return 0;
     }
 }

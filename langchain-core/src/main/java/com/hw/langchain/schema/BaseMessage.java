@@ -30,7 +30,7 @@ public abstract class BaseMessage {
 
     protected Map<String, Object> additionalKwargs;
 
-    public BaseMessage(String content) {
+    protected BaseMessage(String content) {
         this.content = content;
     }
 

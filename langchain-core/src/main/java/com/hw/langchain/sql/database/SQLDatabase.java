@@ -46,12 +46,12 @@ public class SQLDatabase {
 
     @SneakyThrows(SQLException.class)
     public SQLDatabase(String url, String username, String password) {
-        this(url, username, password, null, null, 3);
+        this(url, username, password, null, null, 3, false);
     }
 
     @SneakyThrows(SQLException.class)
     public SQLDatabase(String url, String username, String password, List<String> includeTables,
-            List<String> ignoreTables, int sampleRowsInTableInfo) {
+            List<String> ignoreTables, int sampleRowsInTableInfo, boolean indexesInTableInfo) {
         if (CollectionUtils.isNotEmpty(includeTables) && CollectionUtils.isNotEmpty(ignoreTables)) {
             throw new IllegalArgumentException("Cannot specify both includeTables and ignoreTables");
         }
@@ -59,6 +59,11 @@ public class SQLDatabase {
         this.includeTables = includeTables;
         this.ignoreTables = ignoreTables;
         this.sampleRowsInTableInfo = sampleRowsInTableInfo;
+        this.indexesInTableInfo = indexesInTableInfo;
+    }
+
+    public static SQLDatabase fromUri(String url, String username, String password) {
+        return new SQLDatabase(url, username, password);
     }
 
     /**

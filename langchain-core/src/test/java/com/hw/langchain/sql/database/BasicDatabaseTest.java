@@ -31,7 +31,7 @@ public abstract class BasicDatabaseTest {
 
     @BeforeAll
     public static void setup() {
-        database = new SQLDatabase("jdbc:h2:mem:demo;DATABASE_TO_UPPER=false", "root", "123456");
+        database = SQLDatabase.fromUri("jdbc:h2:mem:demo;DATABASE_TO_UPPER=false", "root", "123456");
 
         database.run("RUNSCRIPT FROM '../scripts/h2/schema.sql'", false);
         database.run("RUNSCRIPT FROM '../scripts/h2/data.sql'", false);
