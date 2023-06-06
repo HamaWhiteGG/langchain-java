@@ -73,7 +73,7 @@ public class LLMChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(this.outputKey);
+        return List.of(outputKey);
     }
 
     @Override
@@ -86,8 +86,9 @@ public class LLMChain extends Chain {
      * Generate LLM result from inputs.
      */
     private LLMResult generate(List<Map<String, ?>> inputList) {
+        List<String> stop = prepStop(inputList);
         List<PromptValue> prompts = prepPrompts(inputList);
-        return this.llm.generatePrompt(prompts, null);
+        return llm.generatePrompt(prompts, stop);
     }
 
     /**
@@ -110,6 +111,13 @@ public class LLMChain extends Chain {
         return prompts;
     }
 
+    private List<String> prepStop(List<Map<String, ?>> inputList) {
+        if (inputList.get(0).containsKey("stop")) {
+            return (List<String>) inputList.get(0).get("stop");
+        }
+        return null;
+    }
+
     /**
      * Create outputs from response.
      */
@@ -117,5 +125,16 @@ public class LLMChain extends Chain {
         return response.getGenerations().stream()
                 .map(generationList -> Map.of(outputKey, generationList.get(0).getText()))
                 .toList();
+    }
+
+    /**
+     * Format prompt with kwargs and pass to LLM.
+     *
+     * @param kwargs Keys to pass to prompt template.
+     * @return Completion from LLM.
+     */
+    public String predict(Map<String, ?> kwargs) {
+        Map<String, String> resultMap = call(kwargs, false);
+        return resultMap.get(outputKey);
     }
 }

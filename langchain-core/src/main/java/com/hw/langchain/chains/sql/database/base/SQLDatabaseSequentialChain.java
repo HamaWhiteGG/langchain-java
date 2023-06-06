@@ -62,7 +62,7 @@ public class SQLDatabaseSequentialChain extends Chain {
             BasePromptTemplate queryPrompt,
             BasePromptTemplate deciderPrompt,
             Map<String, Object> kwargs) {
-        SQLDatabaseChain sqlChain = SQLDatabaseChain.fromLLM(llm, database, queryPrompt, kwargs);
+        SQLDatabaseChain sqlChain = SQLDatabaseChain.fromLLM(llm, database, queryPrompt);
         LLMChain deciderChain = new LLMChain(llm, deciderPrompt, "table_names");
 
         return null;

@@ -6,6 +6,9 @@ CREATE TABLE students
     teacher_note varchar(256)
 );
 
+COMMENT ON COLUMN students.score IS 'math score';
+COMMENT ON TABLE students IS 'student score table';
+
 CREATE TABLE parents
 (
     id            int,

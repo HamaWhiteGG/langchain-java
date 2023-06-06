@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai;
+package com.hw.langchain.sql.database;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
- * @description: OpenAIChatTest
+ * @description: BasicDatabaseTest
  * @author: HamaWhite
  */
-@Disabled("Test requires costly OpenAI calls, can be run manually.")
-class OpenAIChatTest {
+public abstract class BasicDatabaseTest {
 
-    /**
-     * Test OpenAIChat
-     */
-    @Test
-    void testOpenAIChat() {
-        OpenAIChat llm = OpenAIChat.builder()
-                .maxTokens(10)
-                .build()
-                .init();
+    protected static SQLDatabase database;
 
-        assertThat(llm.call("Say foo:")).isEqualTo("foo");
+    @BeforeAll
+    public static void setup() {
+        database = new SQLDatabase("jdbc:h2:mem:demo;DATABASE_TO_UPPER=false", "root", "123456");
+
+        database.run("RUNSCRIPT FROM '../scripts/h2/schema.sql'", false);
+        database.run("RUNSCRIPT FROM '../scripts/h2/data.sql'", false);
     }
 
+    @AfterAll
+    static void cleanup() {
+        database.close();
+    }
 }

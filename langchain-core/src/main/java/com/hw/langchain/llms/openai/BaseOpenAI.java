@@ -182,6 +182,7 @@ public class BaseOpenAI extends BaseLLM {
                 .presencePenalty(presencePenalty)
                 .n(n)
                 .logitBias(logitBias)
+                .stop(stop)
                 .build();
 
         for (var prompt : subPrompts) {

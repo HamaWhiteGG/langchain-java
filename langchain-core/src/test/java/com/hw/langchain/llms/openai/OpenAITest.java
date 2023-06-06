@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.openai;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @description: OpenAITest
  * @author: HamaWhite
  */
+@Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAITest {
 
     /**

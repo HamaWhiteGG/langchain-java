@@ -172,6 +172,7 @@ public class OpenAIChat extends BaseLLM {
                 .presencePenalty(presencePenalty)
                 .n(n)
                 .logitBias(logitBias)
+                .stop(stop)
                 .build();
 
         ChatCompletionResp response = ((OpenAiClient) client).create(chatCompletion);

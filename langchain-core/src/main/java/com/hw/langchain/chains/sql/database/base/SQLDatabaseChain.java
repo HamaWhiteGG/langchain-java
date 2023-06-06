@@ -24,14 +24,22 @@ import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.sql.database.SQLDatabase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.hw.langchain.chains.sql.database.prompt.Prompt.SQL_PROMPTS;
 
 /**
  * @description: Chain for interacting with SQL Database.
  * @author: HamaWhite
  */
 public class SQLDatabaseChain extends Chain {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SQLDatabaseChain.class);
 
     private LLMChain llmChain;
 
@@ -43,7 +51,7 @@ public class SQLDatabaseChain extends Chain {
     /**
      * Number of results to return from the query
      */
-    private int topK;
+    private int topK = 5;
 
     private String inputKey = "query";
 
@@ -52,17 +60,17 @@ public class SQLDatabaseChain extends Chain {
     /**
      * Whether or not to return the intermediate steps along with the final answer.
      */
-    private boolean returnIntermediateSteps = false;
+    private boolean returnIntermediateSteps;
 
     /**
      * Whether or not to return the result of querying the SQL table directly.
      */
-    private boolean returnDirect = false;
+    private boolean returnDirect;
 
     /**
      * Whether or not the query checker tool should be used to attempt to fix the initial SQL from the LLM.
      */
-    private boolean useQueryChecker = false;
+    private boolean useQueryChecker;
 
     /**
      * The prompt template that should be used by the query checker
@@ -74,28 +82,63 @@ public class SQLDatabaseChain extends Chain {
         this.database = database;
     }
 
-    public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database, BasePromptTemplate prompt,
-            Map<String, Object> kwargs) {
-        // if (prompt == null) {
-        // prompt = SQL_PROMPTS.getOrDefault(database.getDialect(), PROMPT);
-        // }
-        // LLMChain llmChain = new LLMChain(llm, prompt);
-        // return new SQLDatabaseChain(llmChain, database, kwargs);
-        return null;
+    public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database) {
+        BasePromptTemplate prompt = SQL_PROMPTS.get(database.getDialect());
+        return fromLLM(llm, database, prompt);
     }
 
+    public static SQLDatabaseChain fromLLM(BaseLanguageModel llm, SQLDatabase database, BasePromptTemplate prompt) {
+        LLMChain llmChain = new LLMChain(llm, prompt);
+        return new SQLDatabaseChain(llmChain, database);
+    }
+
+    /**
+     * Return the singular input key.
+     */
     @Override
     public List<String> inputKeys() {
-        return null;
+        return List.of(inputKey);
     }
 
+    /**
+     * Return the singular output key.
+     */
     @Override
     public List<String> outputKeys() {
-        return null;
+        return List.of(outputKey);
     }
 
     @Override
     public Map<String, String> _call(Map<String, ?> inputs) {
-        return null;
+        String inputText = inputs.get(this.inputKey) + "\nSQLQuery:";
+        // If not present, then defaults to null which is all tables.
+        String tableInfo = database.getTableInfo(null);
+
+        Map<String, Object> llmInputs = new HashMap<>();
+        llmInputs.put("input", inputText);
+        llmInputs.put("top_k", topK);
+        llmInputs.put("dialect", database.getDialect());
+        llmInputs.put("table_info", tableInfo);
+        llmInputs.put("stop", List.of("\nSQLResult:"));
+
+        String sqlCmd = llmChain.predict(llmInputs);
+        LOG.info("SQL command:\n {}", sqlCmd);
+
+        String result = database.run(sqlCmd, false);
+        LOG.info("SQLResult: \n{}", result);
+
+        /**
+         * If return direct, we just set the final result equal to the result of the sql query result,
+         * otherwise try to get a human readable final answer
+         */
+        String finalResult;
+        if (returnDirect) {
+            finalResult = result;
+        } else {
+            inputText += String.format("%s\nSQLResult: %s\nAnswer:", sqlCmd, result);
+            llmInputs.put("input", inputText);
+            finalResult = llmChain.predict(llmInputs).trim();
+        }
+        return Map.of(outputKey, finalResult);
     }
 }

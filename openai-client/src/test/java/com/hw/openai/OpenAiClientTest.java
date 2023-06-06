@@ -25,6 +25,7 @@ import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -38,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @description: OpenAiClientTest
  * @author: HamaWhite
  */
+@Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAiClientTest {
 
     private static OpenAiClient client;

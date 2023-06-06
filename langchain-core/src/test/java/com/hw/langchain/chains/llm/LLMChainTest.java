@@ -24,6 +24,7 @@ import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @description: LLMChainTest
  * @author: HamaWhite
  */
+@Disabled("Test requires costly OpenAI calls, can be run manually.")
 class LLMChainTest {
 
     private static BaseLanguageModel llm;

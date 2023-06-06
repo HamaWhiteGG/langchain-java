@@ -18,44 +18,94 @@
 
 package com.hw.langchain.sql.database;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @description: SQLDatabaseTest
  * @author: HamaWhite
  */
-class SQLDatabaseTest {
-
-    private static SQLDatabase database;
-
-    @BeforeAll
-    public static void setup() throws SQLException {
-        System.out.println(System.getProperty("user.dir"));
-        database = new SQLDatabase("jdbc:h2:mem:demo;DATABASE_TO_UPPER=false", "root", "123456");
-
-        database.run("RUNSCRIPT FROM '../scripts/h2/schema.sql'");
-        database.run("RUNSCRIPT FROM '../scripts/h2/data.sql'");
-    }
-
-    @AfterAll
-    static void cleanup() throws SQLException {
-        database.close();
-    }
+class SQLDatabaseTest extends BasicDatabaseTest {
 
     @Test
-    void testGetDialect() throws SQLException {
+    void testGetDialect() {
         assertThat(database.getDialect()).isEqualTo("h2");
     }
 
     @Test
-    void getUsableTableNames() throws SQLException {
-        assertThat(database.getUsableTableNames()).isEqualTo(Set.of("students", "parents"));
+    void testGetUsableTableNames() {
+        var actual = database.getUsableTableNames();
+        var expected = List.of("students", "parents");
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void testGetTableDdl() {
+        var actual = database.getTableDdl("students");
+        var expected = """
+
+                CREATE TABLE students (
+                	id INTEGER(32),
+                	name CHARACTER VARYING(64),
+                	score INTEGER(32) COMMENT 'math score',
+                	teacher_note CHARACTER VARYING(256)
+                ) COMMENT 'student score table'
+
+                """;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetSampleRows() {
+        var actual = database.getSampleRows("students");
+        var expected = """
+                3 rows from students table:
+                id	name	score	teacher_note
+                1	Alex	100	Alex did perfectly every day in the class.
+                2	Alice	70	Alice needs a lot of improvements.
+                3	Jack	75	Event it is not the best, Jack has already improved.""";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGetTableInfo() {
+        var actual = database.getTableInfo(null);
+        var expected = """
+
+                CREATE TABLE parents (
+                	id INTEGER(32),
+                	student_name CHARACTER VARYING(64),
+                	parent_name CHARACTER VARYING(64),
+                	parent_mobile CHARACTER VARYING(16)
+                )
+
+                /*
+                3 rows from parents table:
+                id	student_name	parent_name	parent_mobile
+                1	Alex	Barry	088121
+                2	Alice	Jessica	088122
+                3	Jack	Simon	088123
+                */
+
+
+                CREATE TABLE students (
+                	id INTEGER(32),
+                	name CHARACTER VARYING(64),
+                	score INTEGER(32) COMMENT 'math score',
+                	teacher_note CHARACTER VARYING(256)
+                ) COMMENT 'student score table'
+
+                /*
+                3 rows from students table:
+                id	name	score	teacher_note
+                1	Alex	100	Alex did perfectly every day in the class.
+                2	Alice	70	Alice needs a lot of improvements.
+                3	Jack	75	Event it is not the best, Jack has already improved.
+                */""";
+        assertEquals(expected, actual);
     }
 }
