@@ -17,15 +17,18 @@ This tutorial gives you a quick walkthrough about building an end-to-end languag
 
 View the [Quickstart Guide](https://python.langchain.com/en/latest/getting_started/getting_started.html#) on the LangChain official website.
 
-### 2.1 Installation 
+### 2.1 Maven Repository
 Prerequisites for building:
-* Git
 * Java 17 or later
 * Unix-like environment (we use Linux, Mac OS X)
 * Maven (we recommend version 3.8.6 and require at least 3.5.4)
 
-```
-git clone https://github.com/HamaWhiteGG/langchain-java.git
+```xml
+<dependency>
+    <groupId>io.github.hamawhitegg</groupId>
+    <artifactId>langchain-core</artifactId>
+    <version>0.1.5</version>
+</dependency>
 ```
 
 ### 2.2 Environment Setup
@@ -120,6 +123,7 @@ There are 6 students.
  
 ## 3. Run Test Cases from Source
 ```
+git clone https://github.com/HamaWhiteGG/langchain-java.git
 cd langchain-java
 
 # export JAVA_HOME=JDK17_INSTALL_HOME && mvn clean test
