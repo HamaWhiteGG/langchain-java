@@ -35,8 +35,8 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @description: Wrapper around OpenAI large language models.
- * @author: HamaWhite
+ * Wrapper around OpenAI large language models.
+ * @author HamaWhite
  */
 @SuperBuilder
 public class BaseOpenAI extends BaseLLM {

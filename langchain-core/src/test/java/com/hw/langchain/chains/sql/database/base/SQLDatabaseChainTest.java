@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <a href="https://github.com/sugarforever/LangChain-SQL-Chain/blob/main/Chat_with_SQL_Database.ipynb">LangChain-SQL-Chain</a>
  *
- * @description: SQLDatabaseChainTest
- * @author: HamaWhite
+ * SQLDatabaseChainTest
+ * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class SQLDatabaseChainTest extends BasicDatabaseTest {

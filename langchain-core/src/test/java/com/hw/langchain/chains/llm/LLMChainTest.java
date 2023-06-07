@@ -34,8 +34,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @description: LLMChainTest
- * @author: HamaWhite
+ * LLMChainTest
+ * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class LLMChainTest {

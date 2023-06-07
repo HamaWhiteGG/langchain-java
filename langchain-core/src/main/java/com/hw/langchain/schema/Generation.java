@@ -24,8 +24,8 @@ import lombok.Data;
 import java.util.Map;
 
 /**
- * @description: Output of a single generation.
- * @author: HamaWhite
+ * Output of a single generation.
+ * @author HamaWhite
  */
 @Data
 @Builder

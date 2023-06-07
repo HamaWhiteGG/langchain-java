@@ -19,8 +19,8 @@
 package com.hw.langchain.callbacks.manager;
 
 /**
- * @description: Callbacks
- * @author: HamaWhite
+ * Callbacks
+ * @author HamaWhite
  */
 public class Callbacks {
 }

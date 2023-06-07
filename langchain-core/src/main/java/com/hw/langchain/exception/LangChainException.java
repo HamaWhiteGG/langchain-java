@@ -19,8 +19,8 @@
 package com.hw.langchain.exception;
 
 /**
- * @description: LangChainException
- * @author: HamaWhite
+ * LangChainException
+ * @author HamaWhite
  */
 public class LangChainException extends RuntimeException {
 

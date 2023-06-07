@@ -25,8 +25,8 @@ import com.hw.langchain.schema.PromptValue;
 import java.util.List;
 
 /**
- * @description: StringPromptValue
- * @author: HamaWhite
+ * StringPromptValue
+ * @author HamaWhite
  */
 public class StringPromptValue implements PromptValue {
 

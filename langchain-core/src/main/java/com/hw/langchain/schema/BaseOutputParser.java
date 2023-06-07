@@ -23,7 +23,7 @@ package com.hw.langchain.schema;
  * <p>
  * Output parsers help structure language model responses.
  *
- * @author: HamaWhite
+ * @author HamaWhite
  */
 public interface BaseOutputParser {
 }

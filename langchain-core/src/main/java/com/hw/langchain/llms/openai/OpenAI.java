@@ -26,8 +26,8 @@ import lombok.experimental.SuperBuilder;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @description: OpenAI
- * @author: HamaWhite
+ * OpenAI
+ * @author HamaWhite
  */
 @SuperBuilder
 public class OpenAI extends BaseOpenAI {

@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * <a href="https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html">Prompt Templates Started </a>
  *
- * @description: PromptTemplateTest
- * @author: HamaWhite
+ * PromptTemplateTest
+ * @author HamaWhite
  */
 class PromptTemplateTest {
 

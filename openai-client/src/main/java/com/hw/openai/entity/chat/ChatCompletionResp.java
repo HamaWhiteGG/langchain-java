@@ -25,8 +25,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @description: CompletionResp
- * @author: HamaWhite
+ * CompletionResp
+ * @author HamaWhite
  */
 @Data
 public class ChatCompletionResp {

@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: ChatCompletion
- * @author: HamaWhite
+ * ChatCompletion
+ * @author HamaWhite
  */
 @Data
 @Builder

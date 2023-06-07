@@ -27,8 +27,8 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * @description: Message
- * @author: HamaWhite
+ * Message
+ * @author HamaWhite
  */
 @Data
 @Builder

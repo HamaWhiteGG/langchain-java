@@ -22,8 +22,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 /**
- * @description: BasicDatabaseTest
- * @author: HamaWhite
+ * BasicDatabaseTest
+ * @author HamaWhite
  */
 public abstract class BasicDatabaseTest {
 

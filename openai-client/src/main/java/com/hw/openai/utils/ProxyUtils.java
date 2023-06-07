@@ -25,8 +25,8 @@ import java.net.Proxy;
 import java.net.URI;
 
 /**
- * @description: A utility class for creating HTTP proxies.
- * @author: HamaWhite
+ * A utility class for creating HTTP proxies.
+ * @author HamaWhite
  */
 @UtilityClass
 public class ProxyUtils {

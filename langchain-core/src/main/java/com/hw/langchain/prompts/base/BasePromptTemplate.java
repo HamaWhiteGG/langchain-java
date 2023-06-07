@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: Base class for all prompt templates, returning a prompt.
- * @author: HamaWhite
+ * Base class for all prompt templates, returning a prompt.
+ * @author HamaWhite
  */
 @Data
 public abstract class BasePromptTemplate {

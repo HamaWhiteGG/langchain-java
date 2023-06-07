@@ -21,8 +21,8 @@ package com.hw.langchain.schema;
 import java.util.List;
 
 /**
- * @description: PromptValue
- * @author: HamaWhite
+ * PromptValue
+ * @author HamaWhite
  */
 public interface PromptValue {
 

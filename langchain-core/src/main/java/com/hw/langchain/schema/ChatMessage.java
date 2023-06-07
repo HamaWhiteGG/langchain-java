@@ -19,8 +19,8 @@
 package com.hw.langchain.schema;
 
 /**
- * @description: Type of message with arbitrary speaker.
- * @author: HamaWhite
+ * Type of message with arbitrary speaker.
+ * @author HamaWhite
  */
 public class ChatMessage extends BaseMessage {
 

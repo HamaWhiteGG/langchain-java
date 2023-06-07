@@ -32,8 +32,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * @description: Service interface for interacting with the OpenAI API.
- * @author: HamaWhite
+ * Service interface for interacting with the OpenAI API.
+ * @author HamaWhite
  */
 public interface OpenAiService {
 

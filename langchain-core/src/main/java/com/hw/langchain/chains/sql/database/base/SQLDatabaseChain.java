@@ -34,8 +34,8 @@ import java.util.Map;
 import static com.hw.langchain.chains.sql.database.prompt.Prompt.SQL_PROMPTS;
 
 /**
- * @description: Chain for interacting with SQL Database.
- * @author: HamaWhite
+ * Chain for interacting with SQL Database.
+ * @author HamaWhite
  */
 public class SQLDatabaseChain extends Chain {
 

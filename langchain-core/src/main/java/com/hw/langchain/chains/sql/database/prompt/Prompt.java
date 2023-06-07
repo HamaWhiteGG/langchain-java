@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: Prompt
- * @author: HamaWhite
+ * Prompt
+ * @author HamaWhite
  */
 public class Prompt {
 

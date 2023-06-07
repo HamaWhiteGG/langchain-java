@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: Schema to represent a prompt for an LLM.
- * @author: HamaWhite
+ * Schema to represent a prompt for an LLM.
+ * @author HamaWhite
  */
 public class PromptTemplate extends StringPromptTemplate {
 

@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: String prompt should expose the format method, returning a prompt.
- * @author: HamaWhite
+ * String prompt should expose the format method, returning a prompt.
+ * @author HamaWhite
  */
 public abstract class StringPromptTemplate extends BasePromptTemplate {
 

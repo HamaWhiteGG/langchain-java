@@ -25,8 +25,8 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @description: Base interface that all chains should implement.
- * @author: HamaWhite
+ * Base interface that all chains should implement.
+ * @author HamaWhite
  */
 public abstract class Chain {
 

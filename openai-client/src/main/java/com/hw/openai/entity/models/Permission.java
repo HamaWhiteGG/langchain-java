@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * @description: Permission
- * @author: HamaWhite
+ * Permission
+ * @author HamaWhite
  */
 @Data
 public class Permission {

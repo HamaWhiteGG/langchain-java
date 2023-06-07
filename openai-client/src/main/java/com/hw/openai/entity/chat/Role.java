@@ -22,8 +22,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * @description: Role
- * @author: HamaWhite
+ * Role
+ * @author HamaWhite
  */
 public enum Role {
 

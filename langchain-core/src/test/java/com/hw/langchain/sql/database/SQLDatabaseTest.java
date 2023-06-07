@@ -26,8 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @description: SQLDatabaseTest
- * @author: HamaWhite
+ * SQLDatabaseTest
+ * @author HamaWhite
  */
 class SQLDatabaseTest extends BasicDatabaseTest {
 

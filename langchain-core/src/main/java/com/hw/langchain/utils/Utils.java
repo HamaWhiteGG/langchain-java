@@ -23,8 +23,8 @@ import lombok.experimental.UtilityClass;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
- * @description: Utils
- * @author: HamaWhite
+ * Utils
+ * @author HamaWhite
  */
 @UtilityClass
 public class Utils {

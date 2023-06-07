@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @description: OpenAIChatTest
- * @author: HamaWhite
+ * OpenAIChatTest
+ * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAIChatTest {

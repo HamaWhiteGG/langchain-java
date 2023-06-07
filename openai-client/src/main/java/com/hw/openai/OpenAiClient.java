@@ -42,8 +42,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
- * @description: Represents a client for interacting with the OpenAI API.
- * @author: HamaWhite
+ * Represents a client for interacting with the OpenAI API.
+ * @author HamaWhite
  */
 @Data
 @Builder

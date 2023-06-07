@@ -25,8 +25,8 @@ import com.hw.langchain.schema.PromptValue;
 import java.util.List;
 
 /**
- * @description: BaseLanguageModel
- * @author: HamaWhite
+ * BaseLanguageModel
+ * @author HamaWhite
  */
 public interface BaseLanguageModel {
 

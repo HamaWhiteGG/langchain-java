@@ -36,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
  *
- * @description: OpenAiClientTest
- * @author: HamaWhite
+ * OpenAiClientTest
+ * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAiClientTest {

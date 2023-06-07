@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @description: SQLAlchemy wrapper around a database.
- * @author: HamaWhite
+ * SQLAlchemy wrapper around a database.
+ * @author HamaWhite
  */
 public class SQLDatabase {
 

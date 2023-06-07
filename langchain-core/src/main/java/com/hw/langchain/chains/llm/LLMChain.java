@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: Chain to run queries against LLMs
- * @author: HamaWhite
+ * Chain to run queries against LLMs
+ * @author HamaWhite
  */
 public class LLMChain extends Chain {
 

@@ -25,8 +25,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @description: Model
- * @author: HamaWhite
+ * Model
+ * @author HamaWhite
  */
 @Data
 public class Model {

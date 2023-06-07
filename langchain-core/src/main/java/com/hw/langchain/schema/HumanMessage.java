@@ -19,8 +19,8 @@
 package com.hw.langchain.schema;
 
 /**
- * @description: Type of message that is spoken by the human.
- * @author: HamaWhite
+ * Type of message that is spoken by the human.
+ * @author HamaWhite
  */
 public class HumanMessage extends BaseMessage {
 

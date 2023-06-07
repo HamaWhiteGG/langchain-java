@@ -40,7 +40,7 @@ import static com.hw.langchain.chains.sql.database.prompt.Prompt.PROMPT;
  * This is useful in cases where the number of tables in the database is large.
  * </pre>
  *
- * @author: HamaWhite
+ * @author HamaWhite
  */
 public class SQLDatabaseSequentialChain extends Chain {
 

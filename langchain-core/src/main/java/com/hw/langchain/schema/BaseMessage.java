@@ -21,8 +21,8 @@ package com.hw.langchain.schema;
 import java.util.Map;
 
 /**
- * @description: Message object.
- * @author: HamaWhite
+ * Message object.
+ * @author HamaWhite
  */
 public abstract class BaseMessage {
 

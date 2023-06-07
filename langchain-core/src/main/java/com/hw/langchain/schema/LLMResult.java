@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: Class that contains all relevant information for an LLM Result.
- * @author: HamaWhite
+ * Class that contains all relevant information for an LLM Result.
+ * @author HamaWhite
  */
 @Data
 @AllArgsConstructor

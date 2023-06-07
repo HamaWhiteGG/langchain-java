@@ -28,8 +28,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 /**
- * @description: LLM wrapper should take in a prompt and return a string.
- * @author: HamaWhite
+ * LLM wrapper should take in a prompt and return a string.
+ * @author HamaWhite
  */
 @SuperBuilder
 public abstract class BaseLLM implements BaseLanguageModel {
