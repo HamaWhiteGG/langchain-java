@@ -20,9 +20,12 @@ package com.hw.langchain.output.parsers.list;
 
 import com.hw.langchain.schema.BaseOutputParser;
 
+import java.util.List;
+
 /**
  * Class to parse the output of an LLM call to a list.
  * @author HamaWhite
  */
-public abstract class ListOutputParser implements BaseOutputParser {
+public abstract class ListOutputParser extends BaseOutputParser<List<String>> {
+
 }

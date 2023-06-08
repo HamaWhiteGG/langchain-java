@@ -42,7 +42,7 @@ public abstract class BasePromptTemplate {
     /**
      * How to parse the output of calling an LLM on this formatted prompt.
      */
-    protected BaseOutputParser outputParser;
+    protected BaseOutputParser<?> outputParser;
 
     private Map<String, Object> partialVariables = new HashMap<>();
 
@@ -50,7 +50,7 @@ public abstract class BasePromptTemplate {
         this.inputVariables = inputVariables;
     }
 
-    public BasePromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
+    public BasePromptTemplate(List<String> inputVariables, BaseOutputParser<?> outputParser) {
         this.inputVariables = inputVariables;
         this.outputParser = outputParser;
     }

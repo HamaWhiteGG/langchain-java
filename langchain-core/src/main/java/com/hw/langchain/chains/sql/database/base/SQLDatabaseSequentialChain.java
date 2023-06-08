@@ -24,6 +24,10 @@ import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.sql.database.SQLDatabase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +48,8 @@ import static com.hw.langchain.chains.sql.database.prompt.Prompt.PROMPT;
  */
 public class SQLDatabaseSequentialChain extends Chain {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SQLDatabaseSequentialChain.class);
+
     private SQLDatabaseChain sqlChain;
 
     private LLMChain deciderChain;
@@ -52,7 +58,10 @@ public class SQLDatabaseSequentialChain extends Chain {
 
     private String outputKey = "result";
 
-    private boolean returnIntermediateSteps = false;
+    public SQLDatabaseSequentialChain(SQLDatabaseChain sqlChain, LLMChain deciderChain) {
+        this.sqlChain = sqlChain;
+        this.deciderChain = deciderChain;
+    }
 
     /**
      * Load the necessary chains.
@@ -60,31 +69,58 @@ public class SQLDatabaseSequentialChain extends Chain {
     public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm,
             SQLDatabase database,
             BasePromptTemplate queryPrompt,
-            BasePromptTemplate deciderPrompt,
-            Map<String, Object> kwargs) {
+            BasePromptTemplate deciderPrompt) {
         SQLDatabaseChain sqlChain = SQLDatabaseChain.fromLLM(llm, database, queryPrompt);
         LLMChain deciderChain = new LLMChain(llm, deciderPrompt, "table_names");
-
-        return null;
+        return new SQLDatabaseSequentialChain(sqlChain, deciderChain);
     }
 
-    public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm, SQLDatabase database,
-            Map<String, Object> kwargs) {
-        return fromLLM(llm, database, PROMPT, DECIDER_PROMPT, kwargs);
+    public static SQLDatabaseSequentialChain fromLLM(BaseLanguageModel llm, SQLDatabase database) {
+        return fromLLM(llm, database, PROMPT, DECIDER_PROMPT);
     }
 
+    @Override
+    public String chainType() {
+        return "sql_database_sequential_chain";
+    }
+
+    /**
+     * Return the singular input key.
+     */
     @Override
     public List<String> inputKeys() {
-        return null;
+        return List.of(inputKey);
     }
 
+    /**
+     * Return the singular output key.
+     */
     @Override
     public List<String> outputKeys() {
-        return null;
+        return List.of(outputKey);
     }
 
     @Override
     public Map<String, String> _call(Map<String, ?> inputs) {
-        return null;
+        List<String> tableNameList = sqlChain.getDatabase().getUsableTableNames();
+        String tableNames = String.join(", ", tableNameList);
+        var llmInputs = Map.of("query", inputs.get(inputKey),
+                "table_names", tableNames);
+
+        List<String> lowerCasedTableNames = tableNameList.stream()
+                .map(String::toLowerCase)
+                .toList();
+
+        List<String> tableNamesFromChain = deciderChain.predictAndParse(llmInputs);
+
+        List<String> tableNamesToUse = new ArrayList<>();
+        for (String name : tableNamesFromChain) {
+            if (lowerCasedTableNames.contains(name.toLowerCase())) {
+                tableNamesToUse.add(name);
+            }
+        }
+        LOG.info("Table names to use: {}", tableNamesToUse);
+        var newInputs = Map.of(sqlChain.getInputKey(), inputs.get(inputKey), "table_names_to_use", tableNamesToUse);
+        return sqlChain.call(newInputs, true);
     }
 }

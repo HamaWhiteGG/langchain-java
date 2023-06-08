@@ -21,6 +21,8 @@ package com.hw.langchain.prompts.base;
 import com.hw.langchain.schema.BaseOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import java.util.Map;
  * String prompt should expose the format method, returning a prompt.
  * @author HamaWhite
  */
+@Data
 public abstract class StringPromptTemplate extends BasePromptTemplate {
 
     public StringPromptTemplate(List<String> inputVariables) {

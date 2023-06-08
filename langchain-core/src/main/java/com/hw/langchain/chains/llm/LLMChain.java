@@ -34,6 +34,7 @@ import java.util.Map;
 
 /**
  * Chain to run queries against LLMs
+ *
  * @author HamaWhite
  */
 public class LLMChain extends Chain {
@@ -58,6 +59,11 @@ public class LLMChain extends Chain {
         this.llm = llm;
         this.prompt = prompt;
         this.outputKey = outputKey;
+    }
+
+    @Override
+    public String chainType() {
+        return "llm_chain";
     }
 
     /**
@@ -105,7 +111,7 @@ public class LLMChain extends Chain {
             });
 
             PromptValue promptValue = this.prompt.formatPrompt(selectedInputs);
-            LOG.info("Prompt after formatting: {}", promptValue);
+            LOG.debug("Prompt after formatting: {}", promptValue);
             prompts.add(promptValue);
         }
         return prompts;
@@ -136,5 +142,16 @@ public class LLMChain extends Chain {
     public String predict(Map<String, ?> kwargs) {
         Map<String, String> resultMap = call(kwargs, false);
         return resultMap.get(outputKey);
+    }
+
+    /**
+     * Call predict and then parse the results.
+     */
+    public <T> T predictAndParse(Map<String, ?> kwargs) {
+        String result = predict(kwargs);
+        if (prompt.getOutputParser() != null) {
+            return (T) prompt.getOutputParser().parse(result);
+        }
+        return (T) result;
     }
 }

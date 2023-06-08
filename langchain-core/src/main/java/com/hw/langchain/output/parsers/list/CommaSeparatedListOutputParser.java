@@ -18,9 +18,22 @@
 
 package com.hw.langchain.output.parsers.list;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Parse out comma separated lists.
  * @author HamaWhite
  */
 public class CommaSeparatedListOutputParser extends ListOutputParser {
+
+    @Override
+    public List<String> parse(String text) {
+        return Arrays.asList(text.trim().split(", "));
+    }
+
+    @Override
+    public String getFormatInstructions() {
+        return "Your response should be a list of comma-separated values, e.g., `foo, bar, baz`";
+    }
 }

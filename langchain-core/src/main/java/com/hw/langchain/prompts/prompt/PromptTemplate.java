@@ -23,6 +23,8 @@ import com.hw.langchain.schema.BaseOutputParser;
 
 import org.apache.commons.text.StringSubstitutor;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import java.util.Map;
  * Schema to represent a prompt for an LLM.
  * @author HamaWhite
  */
+@Data
 public class PromptTemplate extends StringPromptTemplate {
 
     /**
@@ -48,7 +51,7 @@ public class PromptTemplate extends StringPromptTemplate {
         this.template = template;
     }
 
-    public PromptTemplate(List<String> inputVariables, String template, BaseOutputParser outputParser) {
+    public PromptTemplate(List<String> inputVariables, String template, BaseOutputParser<?> outputParser) {
         super(inputVariables, outputParser);
         this.template = template;
     }

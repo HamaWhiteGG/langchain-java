@@ -27,6 +27,8 @@ import com.hw.langchain.sql.database.SQLDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,10 @@ import static com.hw.langchain.chains.sql.database.prompt.Prompt.SQL_PROMPTS;
 
 /**
  * Chain for interacting with SQL Database.
+ *
  * @author HamaWhite
  */
+@Data
 public class SQLDatabaseChain extends Chain {
 
     private static final Logger LOG = LoggerFactory.getLogger(SQLDatabaseChain.class);
@@ -92,6 +96,11 @@ public class SQLDatabaseChain extends Chain {
         return new SQLDatabaseChain(llmChain, database);
     }
 
+    @Override
+    public String chainType() {
+        return "sql_database_chain";
+    }
+
     /**
      * Return the singular input key.
      */
@@ -112,7 +121,8 @@ public class SQLDatabaseChain extends Chain {
     public Map<String, String> _call(Map<String, ?> inputs) {
         String inputText = inputs.get(this.inputKey) + "\nSQLQuery:";
         // If not present, then defaults to null which is all tables.
-        String tableInfo = database.getTableInfo(null);
+        var tableNamesToUse = (List<String>) inputs.get("table_names_to_use");
+        String tableInfo = database.getTableInfo(tableNamesToUse);
 
         Map<String, Object> llmInputs = new HashMap<>();
         llmInputs.put("input", inputText);
@@ -139,6 +149,7 @@ public class SQLDatabaseChain extends Chain {
             llmInputs.put("input", inputText);
             finalResult = llmChain.predict(llmInputs).trim();
         }
+        LOG.info("Final Result: \n{}", finalResult);
         return Map.of(outputKey, finalResult);
     }
 }
