@@ -19,9 +19,7 @@
 package com.hw.langchain.agents.agent;
 
 import com.hw.langchain.agents.agent.types.AgentType;
-import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.llms.openai.OpenAI;
-import com.hw.langchain.tools.base.BaseTool;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,13 +36,13 @@ class AgentExecutorTest {
     @Test
     void testAgents() {
         // First, let's load the language model we're going to use to control the agent.
-        BaseLanguageModel llm = OpenAI.builder()
+        var llm = OpenAI.builder()
                 .temperature(0)
                 .build()
                 .init();
 
         // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-        List<BaseTool> tools = loadTools(List.of("serpapi", "llm-math"), llm, null);
+        var tools = loadTools(List.of("serpapi", "llm-math"), llm, null);
 
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
         var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION, null, null, null);
