@@ -83,7 +83,7 @@ public class LLMChain extends Chain {
     }
 
     @Override
-    public Map<String, String> _call(Map<String, Object> inputs) {
+    public Map<String, String> _call(Map<String, ?> inputs) {
         LLMResult response = generate(List.of(inputs));
         return createOutputs(response).get(0);
     }
@@ -91,7 +91,7 @@ public class LLMChain extends Chain {
     /**
      * Generate LLM result from inputs.
      */
-    private LLMResult generate(List<Map<String, Object>> inputList) {
+    private LLMResult generate(List<Map<String, ?>> inputList) {
         List<String> stop = prepStop(inputList);
         List<PromptValue> prompts = prepPrompts(inputList);
         return llm.generatePrompt(prompts, stop);
@@ -100,9 +100,9 @@ public class LLMChain extends Chain {
     /**
      * Prepare prompts from inputs.
      */
-    private List<PromptValue> prepPrompts(List<Map<String, Object>> inputList) {
+    private List<PromptValue> prepPrompts(List<Map<String, ?>> inputList) {
         List<PromptValue> prompts = new ArrayList<>();
-        for (Map<String, Object> inputs : inputList) {
+        for (Map<String, ?> inputs : inputList) {
             Map<String, Object> selectedInputs = new HashMap<>();
             prompt.getInputVariables().forEach(key -> {
                 if (inputs.containsKey(key)) {
@@ -117,7 +117,7 @@ public class LLMChain extends Chain {
         return prompts;
     }
 
-    private List<String> prepStop(List<Map<String, Object>> inputList) {
+    private List<String> prepStop(List<Map<String, ?>> inputList) {
         if (inputList.get(0).containsKey("stop")) {
             return (List<String>) inputList.get(0).get("stop");
         }
@@ -139,7 +139,7 @@ public class LLMChain extends Chain {
      * @param kwargs Keys to pass to prompt template.
      * @return Completion from LLM.
      */
-    public String predict(Map<String, Object> kwargs) {
+    public String predict(Map<String, ?> kwargs) {
         Map<String, String> resultMap = call(kwargs, false);
         return resultMap.get(outputKey);
     }
@@ -147,7 +147,7 @@ public class LLMChain extends Chain {
     /**
      * Call predict and then parse the results.
      */
-    public <T> T predictAndParse(Map<String, Object> kwargs) {
+    public <T> T predictAndParse(Map<String, ?> kwargs) {
         String result = predict(kwargs);
         if (prompt.getOutputParser() != null) {
             return (T) prompt.getOutputParser().parse(result);

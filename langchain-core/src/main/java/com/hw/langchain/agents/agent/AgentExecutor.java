@@ -59,7 +59,7 @@ public class AgentExecutor extends Chain {
     }
 
     @Override
-    public Map<String, String> _call(Map<String, Object> inputs) {
+    public Map<String, String> _call(Map<String, ?> inputs) {
         return null;
     }
 }

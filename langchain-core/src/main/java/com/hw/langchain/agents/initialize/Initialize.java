@@ -27,9 +27,9 @@ import com.hw.langchain.tools.base.BaseTool;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,12 @@ import static com.hw.langchain.agents.types.Types.AGENT_TO_CLASS;
  *
  * @author HamaWhite
  */
+@UtilityClass
 public class Initialize {
+
+    public AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
+        return initializeAgent(tools, llm, agent, null, Map.of(), Map.of());
+    }
 
     /**
      * Load an agent executor given tools and LLM.
@@ -55,7 +60,7 @@ public class Initialize {
      * @return An agent executor
      */
     @SneakyThrows({InvocationTargetException.class, NoSuchMethodException.class, IllegalAccessException.class})
-    public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent,
+    public AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent,
             String agentPath, Map<String, Object> agentKwargs, Map<String, Object> kwargs) {
         BaseSingleActionAgent agentObj;
         if (agent == null && agentPath == null) {
@@ -71,7 +76,7 @@ public class Initialize {
                         "Got unknown agent type: " + agent + ". Valid types are: " + AGENT_TO_CLASS.keySet() + ".");
             }
             Class<? extends BaseSingleActionAgent> clazz = AGENT_TO_CLASS.get(agent);
-            agentKwargs = agentKwargs != null ? agentKwargs : new HashMap<>();
+            agentKwargs = agentKwargs != null ? agentKwargs : Map.of();
             agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLLMAndTools",
                     llm, tools, agentKwargs);
         } else if (agentPath != null) {

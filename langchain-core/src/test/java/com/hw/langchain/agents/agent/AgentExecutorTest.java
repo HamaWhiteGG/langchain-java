@@ -42,10 +42,10 @@ class AgentExecutorTest {
                 .init();
 
         // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-        var tools = loadTools(List.of("serpapi", "llm-math"), llm, null);
+        var tools = loadTools(List.of("serpapi", "llm-math"), llm);
 
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
-        var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION, null, null, null);
+        var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
 
         // Now let's test it out!
         agent.run(

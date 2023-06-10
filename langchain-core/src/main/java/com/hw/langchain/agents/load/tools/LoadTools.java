@@ -59,6 +59,10 @@ public class LoadTools {
     private static Map<String, Function<BaseLanguageModel, BaseTool>> _LLM_TOOLS = Map.of(
             "llm-math", LoadTools::getLLMMath);
 
+    public static List<BaseTool> loadTools(List<String> toolNames, BaseLanguageModel llm) {
+        return loadTools(toolNames, llm, Map.of());
+    }
+
     /**
      * Load tools based on their name.
      *

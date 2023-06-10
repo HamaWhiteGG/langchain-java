@@ -18,11 +18,14 @@
 
 package com.hw.langchain.tools.base;
 
+import lombok.Data;
+
 /**
  * Interface LangChain tools must implement.
  *
  * @author HamaWhite
  */
+@Data
 public abstract class BaseTool {
 
     /**

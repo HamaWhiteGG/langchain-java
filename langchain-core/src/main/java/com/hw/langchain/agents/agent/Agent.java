@@ -18,6 +18,10 @@
 
 package com.hw.langchain.agents.agent;
 
+import com.hw.langchain.tools.base.BaseTool;
+
+import java.util.List;
+
 /**
  * Class responsible for calling the language model and deciding the action.
  * <p>
@@ -28,4 +32,11 @@ package com.hw.langchain.agents.agent;
  * @author HamaWhite
  */
 public class Agent extends BaseSingleActionAgent {
+
+    /**
+     * Validate that appropriate tools are passed in.
+     */
+    public static void validateTools(List<BaseTool> tools) {
+    }
+
 }
