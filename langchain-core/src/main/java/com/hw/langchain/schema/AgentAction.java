@@ -16,16 +16,36 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.agents.agent;
-
-import com.hw.langchain.schema.AgentResult;
-import com.hw.langchain.schema.BaseOutputParser;
+package com.hw.langchain.schema;
 
 /**
- * Parse text into agent action/finish.
+ * Agent's action to take.
  *
  * @author HamaWhite
  */
-public abstract class AgentOutputParser extends BaseOutputParser<AgentResult> {
+public class AgentAction extends AgentResult {
 
+    private final String tool;
+
+    private final Object toolInput;
+
+    private final String log;
+
+    public AgentAction(String tool, Object toolInput, String log) {
+        this.tool = tool;
+        this.toolInput = toolInput;
+        this.log = log;
+    }
+
+    public String getTool() {
+        return tool;
+    }
+
+    public Object getToolInput() {
+        return toolInput;
+    }
+
+    public String getLog() {
+        return log;
+    }
 }

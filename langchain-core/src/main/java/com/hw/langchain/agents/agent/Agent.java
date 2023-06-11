@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.agent;
 
+import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.tools.base.BaseTool;
 
 import java.util.List;
@@ -32,6 +33,18 @@ import java.util.List;
  * @author HamaWhite
  */
 public class Agent extends BaseSingleActionAgent {
+
+    private LLMChain llmChain;
+
+    private List<String> allowedTools;
+
+    private AgentOutputParser outputParser;
+
+    public Agent(LLMChain llmChain, List<String> allowedTools, AgentOutputParser outputParser) {
+        this.llmChain = llmChain;
+        this.outputParser = outputParser;
+        this.allowedTools = allowedTools;
+    }
 
     /**
      * Validate that appropriate tools are passed in.

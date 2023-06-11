@@ -21,8 +21,10 @@ package com.hw.langchain.agents.agent;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.tools.base.BaseTool;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Consists of an agent using tools.
@@ -30,6 +32,20 @@ import java.util.Map;
  * @author HamaWhite
  */
 public class AgentExecutor extends Chain {
+
+    private BaseSingleActionAgent agent;
+
+    private List<BaseTool> tools;
+
+    private boolean returnIntermediateSteps;
+
+    private Integer maxIterations = 15;
+
+    private Float maxExecutionTime;
+
+    private String earlyStoppingMethod = "force";
+
+    private Object handleParsingErrors = false;
 
     /**
      * Create from agent and tools.
@@ -40,7 +56,8 @@ public class AgentExecutor extends Chain {
     }
 
     private AgentExecutor(BaseSingleActionAgent agent, List<BaseTool> tools, Map<String, Object> kwargs) {
-        // Constructor implementation
+        this.agent = agent;
+        this.tools = tools;
     }
 
     @Override
@@ -58,8 +75,31 @@ public class AgentExecutor extends Chain {
         return null;
     }
 
+    /**
+     * Run text through and get agent response.
+     */
     @Override
     public Map<String, String> _call(Map<String, ?> inputs) {
+        // Construct a mapping of tool name to tool for easy lookup
+        Map<String, BaseTool> nameToToolMap = tools.stream().collect(Collectors.toMap(BaseTool::getName, tool -> tool));
+
+        // Let's start tracking the number of iterations and time elapsed
+        int iterations = 0;
+        double timeElapsed = 0.0;
+        Instant startTime = Instant.now();
+
+        // We now enter the agent loop (until it returns something).
         return null;
+    }
+
+    private boolean shouldContinue(int iterations, double timeElapsed) {
+        if (maxIterations != null && iterations >= maxIterations) {
+            return false;
+        }
+        if (maxExecutionTime != null && timeElapsed >= maxExecutionTime) {
+            return false;
+        }
+
+        return true;
     }
 }

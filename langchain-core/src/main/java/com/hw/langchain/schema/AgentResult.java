@@ -16,16 +16,10 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.agents.agent;
-
-import com.hw.langchain.schema.AgentResult;
-import com.hw.langchain.schema.BaseOutputParser;
+package com.hw.langchain.schema;
 
 /**
- * Parse text into agent action/finish.
- *
  * @author HamaWhite
  */
-public abstract class AgentOutputParser extends BaseOutputParser<AgentResult> {
-
+public abstract class AgentResult {
 }

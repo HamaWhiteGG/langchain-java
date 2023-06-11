@@ -20,12 +20,11 @@ package com.hw.langchain.agents.mrkl.base;
 
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
+import com.hw.langchain.agents.mrkl.output.parser.MRKLOutputParser;
 import com.hw.langchain.base.language.BaseLanguageModel;
-import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 import com.hw.langchain.tools.base.BaseTool;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,14 @@ import static com.hw.langchain.agents.mrkl.prompt.Prompt.*;
  */
 public class ZeroShotAgent extends Agent {
 
+    public ZeroShotAgent(LLMChain llmChain, List<String> allowedTools, AgentOutputParser outputParser) {
+        super(llmChain, allowedTools, outputParser);
+    }
+
+    private static AgentOutputParser getDefaultOutputParser(Map<String, Object> kwargs) {
+        return new MRKLOutputParser();
+    }
+
     /**
      * Create prompt in the style of the zero shot agent.
      *
@@ -51,7 +58,8 @@ public class ZeroShotAgent extends Agent {
      * @param inputVariables     List of input variables the final prompt will expect.
      * @return A PromptTemplate with the template assembled from the pieces here.
      */
-    public static PromptTemplate createPrompt(List<BaseTool> tools, String prefix, String suffix, String formatInstructions, List<String> inputVariables) {
+    public static PromptTemplate createPrompt(List<BaseTool> tools, String prefix, String suffix,
+            String formatInstructions, List<String> inputVariables) {
         String toolStrings = tools.stream()
                 .map(tool -> tool.getName() + ": " + tool.getDescription())
                 .collect(Collectors.joining("\n"));
@@ -74,15 +82,17 @@ public class ZeroShotAgent extends Agent {
     }
 
     public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
-                                        String prefix, String suffix, String formatInstructions, List<String> inputVariables, Map<String, Object> kwargs) {
+            String prefix, String suffix, String formatInstructions, List<String> inputVariables,
+            Map<String, Object> kwargs) {
         validateTools(tools);
         PromptTemplate prompt = createPrompt(tools, prefix, suffix, formatInstructions, inputVariables);
-        Chain llmChain = new LLMChain(llm, prompt);
+        LLMChain llmChain = new LLMChain(llm, prompt);
 
+        List<String> toolNames = tools.stream().map(BaseTool::getName).toList();
+        outputParser = (outputParser != null) ? outputParser : getDefaultOutputParser(kwargs);
 
-        return new ZeroShotAgent();
+        return new ZeroShotAgent(llmChain, toolNames, outputParser);
     }
-
 
     public static void validateTools(List<BaseTool> tools) {
         for (BaseTool tool : tools) {

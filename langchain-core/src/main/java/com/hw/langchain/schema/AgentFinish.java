@@ -16,16 +16,31 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.agents.agent;
+package com.hw.langchain.schema;
 
-import com.hw.langchain.schema.AgentResult;
-import com.hw.langchain.schema.BaseOutputParser;
+import java.util.Map;
 
 /**
- * Parse text into agent action/finish.
+ * Agent's return value.
  *
  * @author HamaWhite
  */
-public abstract class AgentOutputParser extends BaseOutputParser<AgentResult> {
+public class AgentFinish extends AgentResult {
 
+    private final Map<String, Object> returnValues;
+
+    private final String log;
+
+    public AgentFinish(Map<String, Object> returnValues, String log) {
+        this.returnValues = returnValues;
+        this.log = log;
+    }
+
+    public Map<String, Object> getReturnValues() {
+        return returnValues;
+    }
+
+    public String getLog() {
+        return log;
+    }
 }
