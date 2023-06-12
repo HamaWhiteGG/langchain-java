@@ -18,7 +18,12 @@
 
 package com.hw.langchain.tools.base;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Interface LangChain tools must implement.
@@ -31,22 +36,55 @@ public abstract class BaseTool {
     /**
      * The unique name of the tool that clearly communicates its purpose.
      */
-    protected String name;
+    public String name;
 
     /**
      * Used to tell the model how/when/why to use the tool.
      * You can provide few-shot examples as a part of the description.
      */
-    protected String description;
+    public String description;
 
     /**
      * Whether to return the tool's output directly. Setting this to true means
      * that after the tool is called, the AgentExecutor will stop looping.
      */
-    protected boolean returnDirect = false;
+    public boolean returnDirect = false;
 
     public BaseTool(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    /**
+     * Use the tool.
+     */
+    public abstract Object _run(String args, Map<String, Object> kwargs);
+
+    /**
+     * For backwards compatibility, if run_input is a string,
+     * pass as a positional argument.
+     *
+     * @param toolInput String or Map<String, Object>
+     * @return
+     */
+    public Pair<Object[], Map<String, Object>> toArgsAndKwargs(Object toolInput) {
+        if (toolInput instanceof String) {
+            return Pair.of(new Object[]{toolInput}, new HashMap<>());
+        } else {
+            return Pair.of(new Object[]{}, (Map<String, Object>) toolInput);
+        }
+    }
+
+    /**
+     * Run the tool.
+     *
+     * @param toolInput String or Map<String, Object>
+     * @param kwargs
+     * @return
+     */
+    public Object run(Object toolInput, Map<String, Object> kwargs) {
+        Pair<Object[], Map<String, Object>> pair = toArgsAndKwargs(toolInput);
+        String args = pair.getKey()[0].toString();
+        return _run(args, pair.getValue());
     }
 }

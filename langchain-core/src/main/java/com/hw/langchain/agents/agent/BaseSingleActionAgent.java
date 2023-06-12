@@ -19,8 +19,13 @@
 package com.hw.langchain.agents.agent;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.schema.AgentAction;
+import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +34,25 @@ import java.util.Map;
  *
  * @author HamaWhite
  */
-public class BaseSingleActionAgent {
+public abstract class BaseSingleActionAgent {
+
+    /**
+     * Return the input keys.
+     */
+    public abstract List<String> inputKeys();
+
+    public List<String> returnValues() {
+        return List.of("output");
+    }
+
+    /**
+     * Given input, decided what to do.
+     *
+     * @param intermediateSteps Steps the LLM has taken to date, along with observations
+     * @param kwargs            User inputs.
+     * @return Action specifying what tool to use.
+     */
+    public abstract AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs);
 
     public static BaseSingleActionAgent fromLLMAndTools(
             BaseLanguageModel llm,
@@ -38,4 +61,7 @@ public class BaseSingleActionAgent {
         throw new UnsupportedOperationException();
     }
 
+    public Map<String, Object> toolRunLoggingKwargs() {
+        return new HashMap<>();
+    }
 }

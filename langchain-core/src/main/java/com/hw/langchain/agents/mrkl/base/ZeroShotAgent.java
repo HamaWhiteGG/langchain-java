@@ -102,4 +102,14 @@ public class ZeroShotAgent extends Agent {
         }
     }
 
+    @Override
+    public String observationPrefix() {
+        return "Observation: ";
+    }
+
+    @Override
+    public String llmPrefix() {
+        return "Thought:";
+    }
+
 }

@@ -18,7 +18,9 @@
 
 package com.hw.langchain.tools.base;
 
-import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -48,4 +50,24 @@ public class Tool extends BaseTool {
         return Map.of("tool_input", Map.of("type", "string"));
     }
 
+    public Pair<Object[], Map<String, Object>> toArgsAndKwargs(Object toolInput) {
+        Pair<Object[], Map<String, Object>> pair = super.toArgsAndKwargs(toolInput);
+        Object[] args = pair.getKey();
+        Map<String, Object> kwargs = pair.getValue();
+
+        List<Object> allArgs = new ArrayList<>(Arrays.asList(args));
+        allArgs.addAll(kwargs.values());
+
+        if (allArgs.size() != 1) {
+            throw new IllegalArgumentException(
+                    "Too many arguments to single-input tool " + this.name + ". Args: " + allArgs);
+        }
+
+        return Pair.of(allArgs.toArray(), new HashMap<>());
+    }
+
+    @Override
+    public Object _run(String args, Map<String, Object> kwargs) {
+        return func.apply(args);
+    }
 }
