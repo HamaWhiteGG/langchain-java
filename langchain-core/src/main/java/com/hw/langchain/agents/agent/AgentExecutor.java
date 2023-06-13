@@ -30,8 +30,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,11 +93,19 @@ public class AgentExecutor extends Chain {
         return agent.returnValues();
     }
 
+    public Map<String, String> _return(AgentFinish output, List<Pair<AgentAction, String>> intermediateSteps) {
+        Map<String, String> finalOutput = output.getReturnValues();
+        if (returnIntermediateSteps) {
+            finalOutput.put("intermediate_steps", intermediateSteps.toString());
+        }
+        return finalOutput;
+    }
+
     /**
      * Take a single step in the thought-action-observation loop.
      * Override this to take control of how the agent makes and acts on choices.
      *
-     * @return AgentFinish or List[Pair[AgentAction, str]]
+     * @return AgentFinish or List<Pair<AgentAction, String>>
      */
     public Object takeNextStep(Map<String, BaseTool> nameToToolMap, Map<String, ?> inputs,
             List<Pair<AgentAction, String>> intermediateSteps) {
@@ -105,6 +113,7 @@ public class AgentExecutor extends Chain {
         try {
             // Call the LLM to see what to do.
             output = agent.plan(intermediateSteps, inputs);
+            LOG.info("Plan output: {}", output);
         } catch (OutputParserException e) {
             LOG.error("Error parsing output", e);
         }
@@ -129,6 +138,7 @@ public class AgentExecutor extends Chain {
                 }
                 // We then call the tool on the tool input to get an observation
                 observation = tool.run(agentAction.getToolInput(), toolRunKwargs).toString();
+                LOG.info("Observation: {}", observation);
             } else {
                 Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
                 observation = new InvalidTool().run(agentAction.getTool(), toolRunKwargs).toString();
@@ -136,19 +146,6 @@ public class AgentExecutor extends Chain {
             result.add(Pair.of(agentAction, observation));
         }
         return result;
-    }
-
-    private String runTool(AgentAction agentAction, Map<String, BaseTool> nameToToolMap) {
-        if (nameToToolMap.containsKey(agentAction.getTool())) {
-            BaseTool tool = nameToToolMap.get(agentAction.getTool());
-            Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
-            if (tool.isReturnDirect()) {
-                toolRunKwargs.put("llm_prefix", "");
-            }
-            // We then call the tool on the tool input to get an observation
-        }
-
-        return null;
     }
 
     /**
@@ -163,14 +160,34 @@ public class AgentExecutor extends Chain {
         // Let's start tracking the number of iterations and time elapsed
         int iterations = 0;
         double timeElapsed = 0.0;
-        Instant startTime = Instant.now();
+        long startTime = System.currentTimeMillis();
 
         // We now enter the agent loop (until it returns something).
         while (shouldContinue(iterations, timeElapsed)) {
             Object nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
+            LOG.info("NextStepOutput: {}", nextStepOutput);
 
+            if (nextStepOutput instanceof AgentFinish) {
+                return _return((AgentFinish) nextStepOutput, intermediateSteps);
+            }
+
+            var nextOutput = (List<Pair<AgentAction, String>>) nextStepOutput;
+            intermediateSteps.addAll(nextOutput);
+
+            if (nextOutput.size() == 1) {
+                Pair<AgentAction, String> nextStepAction = nextOutput.get(0);
+                // See if tool should return directly
+                AgentFinish toolReturn = getToolReturn(nextStepAction);
+                if (toolReturn != null) {
+                    return _return(toolReturn, intermediateSteps);
+                }
+            }
+            iterations++;
+            // Convert to seconds
+            timeElapsed = (System.currentTimeMillis() - startTime) / 1000.0;
         }
-        return null;
+        AgentFinish output = agent.returnStoppedResponse(earlyStoppingMethod, intermediateSteps, inputs);
+        return _return(output, intermediateSteps);
     }
 
     private boolean shouldContinue(int iterations, double timeElapsed) {
@@ -180,7 +197,26 @@ public class AgentExecutor extends Chain {
         if (maxExecutionTime != null && timeElapsed >= maxExecutionTime) {
             return false;
         }
-
         return true;
+    }
+
+    /**
+     * Check if the tool is a returning tool.
+     */
+    public AgentFinish getToolReturn(Pair<AgentAction, String> nextStepOutput) {
+        AgentAction agentAction = nextStepOutput.getKey();
+        String observation = nextStepOutput.getValue();
+
+        Map<String, BaseTool> nameToToolMap = tools.stream().collect(Collectors.toMap(BaseTool::getName, tool -> tool));
+        // Invalid tools won't be in the map, so we return False.
+        if (nameToToolMap.containsKey(agentAction.getTool())) {
+            BaseTool tool = nameToToolMap.get(agentAction.getTool());
+            if (tool.isReturnDirect()) {
+                Map<String, String> returnValues = new HashMap<>();
+                returnValues.put(agent.returnValues().get(0), observation);
+                return new AgentFinish(returnValues, "");
+            }
+        }
+        return null;
     }
 }

@@ -18,8 +18,7 @@
 
 package com.hw.langchain;
 
-import com.hw.langchain.base.language.BaseLanguageModel;
-import com.hw.langchain.chains.base.Chain;
+import com.hw.langchain.agents.agent.types.AgentType;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.chains.sql.database.base.SQLDatabaseChain;
 import com.hw.langchain.chains.sql.database.base.SQLDatabaseSequentialChain;
@@ -32,17 +31,21 @@ import lombok.experimental.UtilityClass;
 import java.util.List;
 import java.util.Map;
 
+import static com.hw.langchain.agents.initialize.Initialize.initializeAgent;
+import static com.hw.langchain.agents.load.tools.LoadTools.loadTools;
+
 /**
  * <a href="https://python.langchain.com/en/latest/getting_started/getting_started.html#">LangChain Quickstart Guide</a>
  * <p>
  * QuickStart
+ *
  * @author HamaWhite
  */
 @UtilityClass
 public class QuickStart {
 
     private void llm() {
-        OpenAI llm = OpenAI.builder()
+        var llm = OpenAI.builder()
                 .temperature(0.9f)
                 .build()
                 .init();
@@ -52,47 +55,65 @@ public class QuickStart {
     }
 
     private void promptTemplate() {
-        PromptTemplate prompt = new PromptTemplate(List.of("product"),
+        var prompt = new PromptTemplate(List.of("product"),
                 "What is a good name for a company that makes {product}?");
 
         System.out.println(prompt.format(Map.of("product", "colorful socks")));
     }
 
     private void llmChain() {
-        OpenAI llm = OpenAI.builder()
+        var llm = OpenAI.builder()
                 .temperature(0.9f)
                 .build()
                 .init();
 
-        PromptTemplate prompt = new PromptTemplate(List.of("product"),
+        var prompt = new PromptTemplate(List.of("product"),
                 "What is a good name for a company that makes {product}?");
 
-        Chain chain = new LLMChain(llm, prompt);
+        var chain = new LLMChain(llm, prompt);
         System.out.println(chain.run("colorful socks"));
     }
 
     private void sqlChain() {
-        SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+        var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
 
-        BaseLanguageModel llm = OpenAI.builder()
+        var llm = OpenAI.builder()
                 .temperature(0)
                 .build()
                 .init();
 
-        Chain chain = SQLDatabaseChain.fromLLM(llm, database);
+        var chain = SQLDatabaseChain.fromLLM(llm, database);
         System.out.println(chain.run("How many students are there?"));
     }
 
     private void sqlSequentialChain() {
-        SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+        var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
 
-        BaseLanguageModel llm = OpenAI.builder()
+        var llm = OpenAI.builder()
                 .temperature(0)
                 .build()
                 .init();
 
-        Chain chain = SQLDatabaseSequentialChain.fromLLM(llm, database);
+        var chain = SQLDatabaseSequentialChain.fromLLM(llm, database);
         System.out.println(chain.run("How many students are there?"));
+    }
+
+    private void agent() {
+        var llm = OpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
+
+        // load some tools to use.
+        var tools = loadTools(List.of("serpapi", "llm-math"), llm);
+
+        // initialize an agent with the tools, the language model, and the type of agent
+        var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
+
+        // let's test it out!
+        String text =
+                "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?";
+        System.out.println(agent.run(text));
     }
 
     public static void main(String[] args) {
@@ -101,5 +122,6 @@ public class QuickStart {
         llmChain();
         sqlChain();
         sqlSequentialChain();
+        agent();
     }
 }

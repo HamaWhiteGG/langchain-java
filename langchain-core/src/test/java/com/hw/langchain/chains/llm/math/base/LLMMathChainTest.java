@@ -16,39 +16,24 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.chains.llm.math.base;
 
-import lombok.ToString;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Agent's action to take.
- *
  * @author HamaWhite
  */
-@ToString
-public class AgentAction extends AgentResult {
+class LLMMathChainTest {
 
-    private final String tool;
+    @Test
+    void testEvaluateExpression() {
+        LLMMathChain chain = new LLMMathChain();
+        String expression = "\n60**.023\n";
 
-    private final Object toolInput;
-
-    private final String log;
-
-    public AgentAction(String tool, Object toolInput, String log) {
-        this.tool = tool;
-        this.toolInput = toolInput;
-        this.log = log;
+        String output = chain.evaluateExpression(expression);
+        assertEquals("1.09874643447", output);
     }
 
-    public String getTool() {
-        return tool;
-    }
-
-    public Object getToolInput() {
-        return toolInput;
-    }
-
-    public String getLog() {
-        return log;
-    }
 }

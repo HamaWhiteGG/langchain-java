@@ -20,6 +20,7 @@ package com.hw.langchain.agents.agent;
 
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.schema.AgentAction;
+import com.hw.langchain.schema.AgentFinish;
 import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
@@ -113,6 +114,51 @@ public abstract class Agent extends BaseSingleActionAgent {
         Map<String, Object> fullInputs = new HashMap<>(kwargs);
         fullInputs.putAll(newInputs);
         return fullInputs;
+    }
+
+    public AgentFinish returnStoppedResponse(String earlyStoppingMethod,
+            List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs) {
+        if (earlyStoppingMethod.equals("force")) {
+            // `force` just returns a constant string
+            Map<String, String> returnValues = new HashMap<>();
+            returnValues.put("output", "Agent stopped due to iteration limit or time limit.");
+            return new AgentFinish(returnValues, "");
+        } else if (earlyStoppingMethod.equals("generate")) {
+            // Generate does one final forward pass
+            StringBuilder thoughts = new StringBuilder();
+            for (Pair<AgentAction, String> step : intermediateSteps) {
+                thoughts.append(step.getLeft().getLog());
+                thoughts.append("\n");
+                thoughts.append(this.observationPrefix());
+                thoughts.append(step.getRight());
+                thoughts.append("\n");
+                thoughts.append(this.llmPrefix());
+            }
+
+            // Adding to the previous steps, we now tell the LLM to make a final pred
+            thoughts.append("\n\nI now need to return a final answer based on the previous steps:");
+            Map<String, Object> newInputs = new HashMap<>();
+            newInputs.put("agent_scratchpad", thoughts.toString());
+            newInputs.put("stop", this.stop());
+            Map<String, Object> fullInputs = new HashMap<>(kwargs);
+            fullInputs.putAll(newInputs);
+            String fullOutput = this.llmChain.predict(fullInputs);
+
+            // We try to extract a final answer
+            AgentResult agentResult = this.outputParser.parse(fullOutput);
+            if (agentResult instanceof AgentFinish) {
+                // If we can extract, we send the correct stuff
+                return (AgentFinish) agentResult;
+            } else {
+                // If we can extract, but the tool is not the final tool, we just return the full output
+                return new AgentFinish(Map.of("output", fullOutput), fullOutput);
+            }
+        } else {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "early_stopping_method should be one of `force` or `generate`, got %s",
+                            earlyStoppingMethod));
+        }
     }
 
     public Map<String, Object> toolRunLoggingKwargs() {

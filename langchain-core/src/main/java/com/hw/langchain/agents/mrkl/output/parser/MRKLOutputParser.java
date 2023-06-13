@@ -24,6 +24,7 @@ import com.hw.langchain.schema.AgentFinish;
 import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.schema.OutputParserException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +43,9 @@ public class MRKLOutputParser extends AgentOutputParser {
         if (text.contains(FINAL_ANSWER_ACTION)) {
             String[] splitText = text.split(FINAL_ANSWER_ACTION);
             String output = splitText[splitText.length - 1].strip();
-            return new AgentFinish(Map.of("output", output), text);
+            Map<String, String> returnValues = new HashMap<>();
+            returnValues.put("output", output);
+            return new AgentFinish(returnValues, text);
         }
 
         // \s matches against tab/newline/whitespace

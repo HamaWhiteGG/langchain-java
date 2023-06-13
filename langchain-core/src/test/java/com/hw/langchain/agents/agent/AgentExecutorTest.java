@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.hw.langchain.agents.initialize.Initialize.initializeAgent;
 import static com.hw.langchain.agents.load.tools.LoadTools.loadTools;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author HamaWhite
@@ -36,7 +37,7 @@ import static com.hw.langchain.agents.load.tools.LoadTools.loadTools;
 class AgentExecutorTest {
 
     @Test
-    void testAgents() {
+    void testAgent() {
         // First, let's load the language model we're going to use to control the agent.
         var llm = OpenAI.builder()
                 .temperature(0)
@@ -50,7 +51,9 @@ class AgentExecutorTest {
         var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
 
         // Now let's test it out!
-        agent.run(
+        String actual = agent.run(
                 "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?");
+
+        assertTrue(actual.matches("^1\\.\\d+$"));
     }
 }

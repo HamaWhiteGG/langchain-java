@@ -27,7 +27,6 @@ import com.hw.langchain.tools.base.BaseTool;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -41,10 +40,9 @@ import static com.hw.langchain.agents.types.Types.AGENT_TO_CLASS;
  *
  * @author HamaWhite
  */
-@UtilityClass
 public class Initialize {
 
-    public AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
+    public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
         return initializeAgent(tools, llm, agent, null, Map.of(), Map.of());
     }
 
@@ -60,7 +58,7 @@ public class Initialize {
      * @return An agent executor
      */
     @SneakyThrows({InvocationTargetException.class, NoSuchMethodException.class, IllegalAccessException.class})
-    public AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent,
+    public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent,
             String agentPath, Map<String, Object> agentKwargs, Map<String, Object> kwargs) {
         BaseSingleActionAgent agentObj;
         if (agent == null && agentPath == null) {

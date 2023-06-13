@@ -18,6 +18,8 @@
 
 package com.hw.langchain.schema;
 
+import lombok.ToString;
+
 import java.util.Map;
 
 /**
@@ -25,18 +27,19 @@ import java.util.Map;
  *
  * @author HamaWhite
  */
+@ToString
 public class AgentFinish extends AgentResult {
 
-    private final Map<String, Object> returnValues;
+    private final Map<String, String> returnValues;
 
     private final String log;
 
-    public AgentFinish(Map<String, Object> returnValues, String log) {
+    public AgentFinish(Map<String, String> returnValues, String log) {
         this.returnValues = returnValues;
         this.log = log;
     }
 
-    public Map<String, Object> getReturnValues() {
+    public Map<String, String> getReturnValues() {
         return returnValues;
     }
 

@@ -106,7 +106,6 @@ public class SerpApiHttpClient {
             con.setRequestProperty("Content-Type", "application/json");
         }
 
-        // TODO Enable to set different timeout
         con.setConnectTimeout(getHttpConnectionTimeout());
         con.setReadTimeout(getHttpReadTimeout());
 

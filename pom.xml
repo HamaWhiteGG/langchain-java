@@ -23,6 +23,7 @@
         <gson.version>2.10.1</gson.version>
         <junit.version>5.9.3</junit.version>
         <mysql.version>8.0.32</mysql.version>
+        <jython.version>2.7.3</jython.version>
         <lombok.version>1.18.28</lombok.version>
         <guava.version>31.0-jre</guava.version>
         <assertj.version>3.24.2</assertj.version>
@@ -116,6 +117,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${commons-collections4.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.python</groupId>
+                <artifactId>jython-standalone</artifactId>
+                <version>${jython.version}</version>
             </dependency>
 
             <dependency>
@@ -271,7 +278,7 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <additionalparam>-Xdoclint:none</additionalparam>
+                                <doclint>all,-missing</doclint>
                             </configuration>
                         </execution>
                     </executions>

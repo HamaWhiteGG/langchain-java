@@ -39,6 +39,12 @@ import java.util.Map;
  */
 public class SerpAPIWrapper {
 
+    private static final String ANSWER_BOX = "answer_box";
+    private static final String SPORTS_RESULTS = "sports_results";
+    private static final String SHOPPING_RESULTS = "shopping_results";
+    private static final String KNOWLEDGE_GRAPH = "knowledge_graph";
+    private static final String ORGANIC_RESULTS = "organic_results";
+
     private SerpApiSearch searchEngine;
 
     private Map<String, String> params;
@@ -75,33 +81,44 @@ public class SerpAPIWrapper {
         if (res.has("error")) {
             throw new IllegalArgumentException("Got error from SerpAPI: " + res.get("error").getAsString());
         }
-        if (res.has("answer_box")
-                && res.getAsJsonObject("answer_box").has("answer")) {
-            return res.getAsJsonObject("answer_box").get("answer").getAsString();
-        } else if (res.has("answer_box")
-                && res.getAsJsonObject("answer_box").has("snippet")) {
-            return res.getAsJsonObject("answer_box").get("snippet").getAsString();
-        } else if (res.has("answer_box")
-                && res.getAsJsonObject("answer_box").has("snippet_highlighted_words")) {
-            return res.getAsJsonObject("answer_box").getAsJsonArray("snippet_highlighted_words").get(0).getAsString();
-        } else if (res.has("sports_results")
-                && res.getAsJsonObject("sports_results").has("game_spotlight")) {
-            return res.getAsJsonObject("sports_results").get("game_spotlight").getAsString();
-        } else if (res.has("shopping_results")
-                && res.getAsJsonArray("shopping_results").size() > 0
-                && res.getAsJsonArray("shopping_results").get(0).getAsJsonObject().has("title")) {
-            return res.getAsJsonArray("shopping_results").asList().subList(0, 3).toString();
-        } else if (res.has("knowledge_graph")
-                && res.getAsJsonObject("knowledge_graph").has("description")) {
-            return res.getAsJsonObject("knowledge_graph").get("description").getAsString();
-        } else if (res.has("organic_results")
-                && res.getAsJsonArray("organic_results").size() > 0
-                && res.getAsJsonArray("organic_results").get(0).getAsJsonObject().has("snippet")) {
-            return res.getAsJsonArray("organic_results").get(0).getAsJsonObject().get("snippet").getAsString();
-        } else if (res.has("organic_results")
-                && res.getAsJsonArray("organic_results").size() > 0
-                && res.getAsJsonArray("organic_results").get(0).getAsJsonObject().has("link")) {
-            return res.getAsJsonArray("organic_results").get(0).getAsJsonObject().get("link").getAsString();
+        if (res.has(ANSWER_BOX)
+                && res.getAsJsonObject(ANSWER_BOX).has("answer")) {
+            return res.getAsJsonObject(ANSWER_BOX).get("answer").getAsString();
+        } else if (res.has(ANSWER_BOX)
+                && res.getAsJsonObject(ANSWER_BOX).has("snippet")) {
+            return res.getAsJsonObject(ANSWER_BOX).get("snippet").getAsString();
+        } else if (res.has(ANSWER_BOX)
+                && res.getAsJsonObject(ANSWER_BOX).has("snippet_highlighted_words")) {
+            return res.getAsJsonObject(ANSWER_BOX)
+                    .getAsJsonArray("snippet_highlighted_words")
+                    .get(0)
+                    .getAsString();
+        } else if (res.has(SPORTS_RESULTS)
+                && res.getAsJsonObject(SPORTS_RESULTS).has("game_spotlight")) {
+            return res.getAsJsonObject(SPORTS_RESULTS).get("game_spotlight").getAsString();
+        } else if (res.has(SHOPPING_RESULTS)
+                && res.getAsJsonArray(SHOPPING_RESULTS).size() > 0
+                && res.getAsJsonArray(SHOPPING_RESULTS).get(0).getAsJsonObject().has("title")) {
+            return res.getAsJsonArray(SHOPPING_RESULTS).asList().subList(0, 3).toString();
+        } else if (res.has(KNOWLEDGE_GRAPH)
+                && res.getAsJsonObject(KNOWLEDGE_GRAPH).has("description")) {
+            return res.getAsJsonObject(KNOWLEDGE_GRAPH).get("description").getAsString();
+        } else if (res.has(ORGANIC_RESULTS)
+                && res.getAsJsonArray(ORGANIC_RESULTS).size() > 0
+                && res.getAsJsonArray(ORGANIC_RESULTS).get(0).getAsJsonObject().has("snippet")) {
+            return res.getAsJsonArray(ORGANIC_RESULTS)
+                    .get(0)
+                    .getAsJsonObject()
+                    .get("snippet")
+                    .getAsString();
+        } else if (res.has(ORGANIC_RESULTS)
+                && res.getAsJsonArray(ORGANIC_RESULTS).size() > 0
+                && res.getAsJsonArray(ORGANIC_RESULTS).get(0).getAsJsonObject().has("link")) {
+            return res.getAsJsonArray(ORGANIC_RESULTS)
+                    .get(0)
+                    .getAsJsonObject()
+                    .get("link")
+                    .getAsString();
         } else {
             return "No good search result found";
         }

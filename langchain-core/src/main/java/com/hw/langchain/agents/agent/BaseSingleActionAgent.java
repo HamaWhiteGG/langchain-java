@@ -20,6 +20,7 @@ package com.hw.langchain.agents.agent;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.AgentAction;
+import com.hw.langchain.schema.AgentFinish;
 import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
@@ -59,6 +60,22 @@ public abstract class BaseSingleActionAgent {
             List<BaseTool> tools,
             Map<String, Object> kwargs) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Return response when agent has been stopped due to max iterations.
+     */
+    public AgentFinish returnStoppedResponse(String earlyStoppingMethod,
+            List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs) {
+        if (earlyStoppingMethod.equals("force")) {
+            // `force` just returns a constant string
+            Map<String, String> returnValues = new HashMap<>();
+            returnValues.put("output", "Agent stopped due to iteration limit or time limit.");
+            return new AgentFinish(returnValues, "");
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Got unsupported early_stopping_method `%s`", earlyStoppingMethod));
+        }
     }
 
     public Map<String, Object> toolRunLoggingKwargs() {
