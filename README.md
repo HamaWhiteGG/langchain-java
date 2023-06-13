@@ -45,7 +45,7 @@ export OPENAI_PROXY=http://host:port
 
 If you want to set the API key and proxy dynamically, you can use the openaiApiKey and openaiProxy parameter when initiating OpenAI class.
 ```java
-OpenAI llm = OpenAI.builder()
+var llm = OpenAI.builder()
         .openaiApiKey("xxx")
         .openaiProxy("http://host:port")
         .build()
@@ -58,7 +58,7 @@ OpenAI llm = OpenAI.builder()
 ### 2.3 LLMs: Get predictions from a language model
 The most basic building block of LangChain is calling an LLM on some input. Let’s walk through a simple example of how to do this. For this purpose, let’s pretend we are building a service that generates a company name based on what the company makes.
 ```java
-OpenAI llm = OpenAI.builder()
+var llm = OpenAI.builder()
         .temperature(0.9f)
         .build()
         .init();
@@ -73,7 +73,7 @@ Feetful of Fun
 ### 2.4 Prompt Templates: Manage prompts for LLMs
 Calling an LLM is a great first step, but it’s just the beginning. Normally when you use an LLM in an application, you are not sending user input directly to the LLM. Instead, you are probably taking user input and constructing a prompt, and then sending that to the LLM.
 ```java
-PromptTemplate prompt = new PromptTemplate(List.of("product"),
+var prompt = new PromptTemplate(List.of("product"),
         "What is a good name for a company that makes {product}?");
 
 System.out.println(prompt.format(Map.of("product", "colorful socks")));
@@ -90,15 +90,15 @@ A chain in LangChain is made up of links, which can be either primitives like LL
 #### 2.5.1 LLM Chain
 The most core type of chain is an LLMChain, which consists of a PromptTemplate and an LLM.
 ```java
-OpenAI llm = OpenAI.builder()
+var llm = OpenAI.builder()
         .temperature(0.9f)
         .build()
         .init();
 
-PromptTemplate prompt = new PromptTemplate(List.of("product"),
+var prompt = new PromptTemplate(List.of("product"),
         "What is a good name for a company that makes {product}?");
 
-Chain chain = new LLMChain(llm, prompt);
+var chain = new LLMChain(llm, prompt);
 System.out.println(chain.run("colorful socks"));
 ```
 ```shell
@@ -107,18 +107,64 @@ System.out.println(chain.run("colorful socks"));
 #### 2.5.2 SQL Chain
 This example demonstrates the use of the SQLDatabaseChain for answering questions over a database.
 ```java
-SQLDatabase database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "xxx", "xxx");
+var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "xxx", "xxx");
 
-BaseLanguageModel llm = OpenAI.builder()
+var llm = OpenAI.builder()
         .temperature(0)
         .build()
         .init();
 
-Chain chain = SQLDatabaseChain.fromLLM(llm, database);
+var chain = SQLDatabaseChain.fromLLM(llm, database);
 System.out.println(chain.run("How many students are there?"));
 ```
 ```shell
 There are 6 students.
+```
+
+### 2.6 Agents: Dynamically Call Chains Based on User Input
+Agents no longer do: they use an LLM to determine which actions to take and in what order. An action can either be using a tool and observing its output, or returning to the user.
+
+When used correctly agents can be extremely powerful. In this tutorial, we show you how to easily use agents through the simplest, highest level API.
+
+Set the appropriate environment variables.
+```shell
+export SERPAPI_API_KEY=xxx
+```
+
+Now we can get started!
+```java
+var llm = OpenAI.builder()
+        .temperature(0)
+        .build()
+        .init();
+
+// load some tools to use.
+var tools = loadTools(List.of("serpapi", "llm-math"), llm);
+
+// initialize an agent with the tools, the language model, and the type of agent
+var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
+
+// let's test it out!
+String text =
+        "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?";
+System.out.println(agent.run(text));
+```
+```shell
+I need to find the temperature first, then use the calculator to raise it to the .023 power.
+
+Action: Search
+Action Input: "High temperature in SF yesterday"
+Observation: San Francisco Weather History for the Previous 24 Hours ; 60 °F · 60 °F · 61 °F ...
+
+Thought: I now have the temperature, so I can use the calculator to raise it to the .023 power.
+Action: Calculator
+Action Input: 60^.023
+Observation: Answer: 1.09874643447
+
+Thought: I now know the final answer
+Final Answer: 1.09874643447
+
+1.09874643447
 ```
  
 ## 3. Run Test Cases from Source

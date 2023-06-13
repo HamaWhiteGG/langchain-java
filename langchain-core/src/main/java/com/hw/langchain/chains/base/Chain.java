@@ -86,7 +86,7 @@ public abstract class Chain {
     /**
      * Run the chain as multiple variables, text out.
      */
-    public String run(Map<String, ?> args) {
+    public String run(Map<String, Object> args) {
         validateOutputKeys();
         return call(args, false).get(outputKeys().get(0));
     }
