@@ -21,6 +21,7 @@ package com.hw.langchain.agents.agent;
 import com.hw.langchain.agents.agent.types.AgentType;
 import com.hw.langchain.llms.openai.OpenAI;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import static com.hw.langchain.agents.load.tools.LoadTools.loadTools;
 /**
  * @author HamaWhite
  */
+@Disabled("Test requires costly OpenAI calls, can be run manually.")
 class AgentExecutorTest {
 
     @Test

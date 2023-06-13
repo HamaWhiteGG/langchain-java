@@ -28,6 +28,8 @@ import java.util.Map;
  * To use, you should have the google-search-results python package installed,
  * and the environment variable SERPAPI_API_KEY set with your API key, or pass
  * serpapi_api_key as a named parameter to the constructor.
+ * <p>
+ * <a href="https://serpapi.com/integrations/java">SerpApi in Java </a>
  *
  * @author HamaWhite
  */
