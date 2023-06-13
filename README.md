@@ -27,7 +27,7 @@ Prerequisites for building:
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-core</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
 </dependency>
 ```
 
