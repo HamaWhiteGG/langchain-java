@@ -30,22 +30,42 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
+ * Note: set the environment variables, export SERPAPI_API_KEY=xxx
+ *
  * @author HamaWhite
  */
 @Disabled("Test requires costly SerpApi calls, can be run manually.")
 class GoogleSearchTest {
 
-    /**
-     * set the environment variables, export SERPAPI_API_KEY=xxx
-     */
     @Test
-    void testGoogleSearch() {
+    void testReturnOrganicResults() {
         Map<String, String> parameter = new HashMap<>();
         parameter.put("q", "Coffee");
-        GoogleSearch search = new GoogleSearch(parameter);
-
-        JsonObject data = search.getJson();
-        JsonArray organicResults = data.get("organic_results").getAsJsonArray();
+        SerpApiSearch search = new GoogleSearch(parameter);
+        JsonObject result = search.getJson();
+        JsonArray organicResults = result.getAsJsonArray("organic_results");
         assertNotNull(organicResults, "The organicResults should not be null");
+    }
+
+    @Test
+    void testReturnSearchResultSnippet() {
+        SerpApiSearch search = new GoogleSearch();
+
+        Map<String, String> parameter = new HashMap<>();
+        parameter.put("engine", "google");
+        parameter.put("google_domain", "google.com");
+        parameter.put("gl", "us");
+        parameter.put("hl", "en");
+        parameter.put("q", "High temperature in SF yesterday");
+
+        search.setParameter(parameter);
+
+        JsonObject result = search.getJson();
+        String searchResult = result.getAsJsonArray("organic_results")
+                .get(0)
+                .getAsJsonObject()
+                .get("snippet")
+                .getAsString();
+        assertNotNull(searchResult, "The searchResult should not be null");
     }
 }

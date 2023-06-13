@@ -240,4 +240,7 @@ public class SerpApiSearch {
         return asJson(search.getResults(query));
     }
 
+    public void setParameter(Map<String, String> parameter) {
+        this.parameter = parameter;
+    }
 }

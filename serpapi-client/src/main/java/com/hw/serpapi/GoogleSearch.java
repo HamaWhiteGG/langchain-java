@@ -29,7 +29,8 @@ public class GoogleSearch extends SerpApiSearch {
 
     /**
      * Constructor
-     * @param parameter search parameter
+     *
+     * @param parameter     search parameter
      * @param serpapiApiKey secret API key
      */
     public GoogleSearch(Map<String, String> parameter, String serpapiApiKey) {
@@ -45,6 +46,16 @@ public class GoogleSearch extends SerpApiSearch {
 
     /**
      * Constructor
+     *
+     * @param serpapiApiKey secret API key
+     */
+    public GoogleSearch(String serpapiApiKey) {
+        super(serpapiApiKey, "google");
+    }
+
+    /**
+     * Constructor
+     *
      * @param parameter search parameter
      */
     public GoogleSearch(Map<String, String> parameter) {
