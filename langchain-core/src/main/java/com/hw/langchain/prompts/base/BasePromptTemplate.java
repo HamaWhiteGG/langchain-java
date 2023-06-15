@@ -44,7 +44,7 @@ public abstract class BasePromptTemplate {
      */
     protected BaseOutputParser<?> outputParser;
 
-    private Map<String, Object> partialVariables = new HashMap<>();
+    protected Map<String, Object> partialVariables = new HashMap<>();
 
     public BasePromptTemplate(List<String> inputVariables) {
         this.inputVariables = inputVariables;

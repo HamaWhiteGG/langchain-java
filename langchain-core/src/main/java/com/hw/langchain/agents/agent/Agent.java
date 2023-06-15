@@ -99,7 +99,7 @@ public abstract class Agent extends BaseSingleActionAgent {
     public abstract String llmPrefix();
 
     @Override
-    public AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs) {
+    public AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs) {
         var fullInputs = getFullInputs(intermediateSteps, kwargs);
         String fullOutput = llmChain.predict(fullInputs);
         return outputParser.parse(fullOutput);
@@ -108,7 +108,8 @@ public abstract class Agent extends BaseSingleActionAgent {
     /**
      * Create the full inputs for the LLMChain from intermediate steps.
      */
-    public Map<String, ?> getFullInputs(List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs) {
+    public Map<String, Object> getFullInputs(List<Pair<AgentAction, String>> intermediateSteps,
+            Map<String, Object> kwargs) {
         String thoughts = constructScratchpad(intermediateSteps);
         var newInputs = Map.of("agent_scratchpad", thoughts, "stop", stop());
         Map<String, Object> fullInputs = new HashMap<>(kwargs);
@@ -146,9 +147,9 @@ public abstract class Agent extends BaseSingleActionAgent {
 
             // We try to extract a final answer
             AgentResult agentResult = this.outputParser.parse(fullOutput);
-            if (agentResult instanceof AgentFinish) {
+            if (agentResult instanceof AgentFinish agentFinish) {
                 // If we can extract, we send the correct stuff
-                return (AgentFinish) agentResult;
+                return agentFinish;
             } else {
                 // If we can extract, but the tool is not the final tool, we just return the full output
                 return new AgentFinish(Map.of("output", fullOutput), fullOutput);

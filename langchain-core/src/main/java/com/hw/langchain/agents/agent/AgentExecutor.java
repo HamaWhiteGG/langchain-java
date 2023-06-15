@@ -23,7 +23,6 @@ import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.AgentAction;
 import com.hw.langchain.schema.AgentFinish;
 import com.hw.langchain.schema.AgentResult;
-import com.hw.langchain.schema.OutputParserException;
 import com.hw.langchain.tools.base.BaseTool;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -107,32 +106,19 @@ public class AgentExecutor extends Chain {
      *
      * @return AgentFinish or List<Pair<AgentAction, String>>
      */
-    public Object takeNextStep(Map<String, BaseTool> nameToToolMap, Map<String, ?> inputs,
+    public Object takeNextStep(Map<String, BaseTool> nameToToolMap, Map<String, Object> inputs,
             List<Pair<AgentAction, String>> intermediateSteps) {
-        AgentResult output = null;
-        try {
-            // Call the LLM to see what to do.
-            output = agent.plan(intermediateSteps, inputs);
-            LOG.info("Plan output: {}", output);
-        } catch (OutputParserException e) {
-            LOG.error("Error parsing output", e);
-        }
+        // Call the LLM to see what to do.
+        AgentResult output = agent.plan(intermediateSteps, inputs);
+        LOG.info("Plan output: {}", output);
         if (output instanceof AgentFinish) {
             return output;
-        }
-        List<AgentAction> actions;
-        if (output instanceof AgentAction) {
-            actions = List.of((AgentAction) output);
-        } else {
-            actions = (List<AgentAction>) output;
-        }
-        List<Pair<AgentAction, String>> result = new ArrayList<>();
-        for (AgentAction agentAction : actions) {
+        } else if (output instanceof AgentAction agentAction) {
             String observation;
             if (nameToToolMap.containsKey(agentAction.getTool())) {
-                BaseTool tool = nameToToolMap.get(agentAction.getTool());
+                var tool = nameToToolMap.get(agentAction.getTool());
                 boolean returnDirect = tool.isReturnDirect();
-                Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
+                var toolRunKwargs = agent.toolRunLoggingKwargs();
                 if (returnDirect) {
                     toolRunKwargs.put("llm_prefix", "");
                 }
@@ -140,19 +126,19 @@ public class AgentExecutor extends Chain {
                 observation = tool.run(agentAction.getToolInput(), toolRunKwargs).toString();
                 LOG.info("Observation: {}", observation);
             } else {
-                Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
+                var toolRunKwargs = agent.toolRunLoggingKwargs();
                 observation = new InvalidTool().run(agentAction.getTool(), toolRunKwargs).toString();
             }
-            result.add(Pair.of(agentAction, observation));
+            return List.of(Pair.of(agentAction, observation));
         }
-        return result;
+        return null;
     }
 
     /**
      * Run text through and get agent response.
      */
     @Override
-    public Map<String, String> _call(Map<String, ?> inputs) {
+    public Map<String, String> _call(Map<String, Object> inputs) {
         // Construct a mapping of tool name to tool for easy lookup
         Map<String, BaseTool> nameToToolMap = tools.stream().collect(Collectors.toMap(BaseTool::getName, tool -> tool));
 
@@ -166,9 +152,8 @@ public class AgentExecutor extends Chain {
         while (shouldContinue(iterations, timeElapsed)) {
             Object nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
             LOG.info("NextStepOutput: {}", nextStepOutput);
-
-            if (nextStepOutput instanceof AgentFinish) {
-                return _return((AgentFinish) nextStepOutput, intermediateSteps);
+            if (nextStepOutput instanceof AgentFinish agentFinish) {
+                return _return(agentFinish, intermediateSteps);
             }
 
             var nextOutput = (List<Pair<AgentAction, String>>) nextStepOutput;
@@ -194,10 +179,7 @@ public class AgentExecutor extends Chain {
         if (maxIterations != null && iterations >= maxIterations) {
             return false;
         }
-        if (maxExecutionTime != null && timeElapsed >= maxExecutionTime) {
-            return false;
-        }
-        return true;
+        return maxExecutionTime == null || timeElapsed < maxExecutionTime;
     }
 
     /**

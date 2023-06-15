@@ -16,29 +16,23 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.memory.chat.message.histories.in.memory;
 
-import lombok.Data;
-
-import java.util.Map;
+import com.hw.langchain.schema.BaseChatMessageHistory;
+import com.hw.langchain.schema.BaseMessage;
 
 /**
- * Message object.
  * @author HamaWhite
  */
-@Data
-public abstract class BaseMessage {
+public class ChatMessageHistory extends BaseChatMessageHistory {
 
-    protected String content;
-
-    protected Map<String, Object> additionalKwargs;
-
-    protected BaseMessage(String content) {
-        this.content = content;
+    @Override
+    public void addMessage(BaseMessage message) {
+        messages.add(message);
     }
 
-    /**
-     * Type of the message, used for serialization.
-     */
-    public abstract String type();
+    @Override
+    public void clear() {
+        messages.clear();
+    }
 }

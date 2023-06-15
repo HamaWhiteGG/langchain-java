@@ -19,6 +19,7 @@
 package com.hw.langchain;
 
 import com.hw.langchain.agents.agent.types.AgentType;
+import com.hw.langchain.chains.conversation.base.ConversationChain;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.chains.sql.database.base.SQLDatabaseChain;
 import com.hw.langchain.chains.sql.database.base.SQLDatabaseSequentialChain;
@@ -116,6 +117,21 @@ public class QuickStart {
         System.out.println(agent.run(text));
     }
 
+    private void memory() {
+        var llm = OpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
+
+        var conversation = new ConversationChain(llm);
+
+        var output = conversation.predict(Map.of("input", "Hi there!"));
+        System.out.println("Finished chain.\n'" + output + "'");
+
+        output = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        System.out.println("Finished chain.\n'" + output + "'");
+    }
+
     public static void main(String[] args) {
         llm();
         promptTemplate();
@@ -123,5 +139,6 @@ public class QuickStart {
         sqlChain();
         sqlSequentialChain();
         agent();
+        memory();
     }
 }

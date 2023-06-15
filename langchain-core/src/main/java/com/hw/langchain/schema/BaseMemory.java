@@ -18,27 +18,34 @@
 
 package com.hw.langchain.schema;
 
-import lombok.Data;
-
+import java.util.List;
 import java.util.Map;
 
 /**
- * Message object.
+ * Base interface for memory in chains.
+ *
  * @author HamaWhite
  */
-@Data
-public abstract class BaseMessage {
-
-    protected String content;
-
-    protected Map<String, Object> additionalKwargs;
-
-    protected BaseMessage(String content) {
-        this.content = content;
-    }
+public abstract class BaseMemory {
 
     /**
-     * Type of the message, used for serialization.
+     * Input keys this memory class will load dynamically
      */
-    public abstract String type();
+    public abstract List<String> memoryVariables();
+
+    /**
+     * Return key-value pairs given the text input to the chain.
+     * If None, return all memories
+     */
+    public abstract Map<String, Object> loadMemoryVariables(Map<String, Object> inputs);
+
+    /**
+     * Save the context of this model run to memory.
+     */
+    public abstract void saveContext(Map<String, Object> inputs, Map<String, String> outputs);
+
+    /**
+     * Clear memory contents.
+     */
+    public abstract void clear();
 }

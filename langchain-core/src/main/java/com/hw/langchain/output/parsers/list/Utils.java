@@ -16,29 +16,29 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.output.parsers.list;
 
-import lombok.Data;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Message object.
  * @author HamaWhite
  */
-@Data
-public abstract class BaseMessage {
-
-    protected String content;
-
-    protected Map<String, Object> additionalKwargs;
-
-    protected BaseMessage(String content) {
-        this.content = content;
-    }
+public class Utils {
 
     /**
-     * Type of the message, used for serialization.
+     * "stop" is a special key that can be passed as input but is not used to format the prompt.
      */
-    public abstract String type();
+    public static String getPromptInputKey(Map<String, Object> inputs, List<String> memoryVariables) {
+        List<String> promptInputKeys = new ArrayList<>(inputs.keySet());
+        promptInputKeys.removeAll(memoryVariables);
+        promptInputKeys.remove("stop");
+
+        if (promptInputKeys.size() != 1) {
+            throw new IllegalArgumentException("One input key expected, got " + promptInputKeys.size());
+        }
+
+        return promptInputKeys.get(0);
+    }
 }

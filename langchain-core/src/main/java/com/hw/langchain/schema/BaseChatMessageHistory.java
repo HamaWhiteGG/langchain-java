@@ -20,25 +20,43 @@ package com.hw.langchain.schema;
 
 import lombok.Data;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Message object.
+ * Base interface for chat message history, See `ChatMessageHistory` for default implementation.
+ *
  * @author HamaWhite
  */
 @Data
-public abstract class BaseMessage {
+public abstract class BaseChatMessageHistory {
 
-    protected String content;
+    protected List<BaseMessage> messages = new ArrayList<>();
 
-    protected Map<String, Object> additionalKwargs;
-
-    protected BaseMessage(String content) {
-        this.content = content;
+    /**
+     * Add a user message to the store
+     *
+     * @param message
+     */
+    public void addUserMessage(String message) {
+        addMessage(new HumanMessage(message));
     }
 
     /**
-     * Type of the message, used for serialization.
+     * Add an AI message to the store
      */
-    public abstract String type();
+    public void addAIMessage(String message) {
+        addMessage(new AIMessage(message));
+    }
+
+    /**
+     * Add a self-created message to the store
+     */
+    public abstract void addMessage(BaseMessage message);
+
+    /**
+     * Remove all messages from the store
+     */
+    public abstract void clear();
+
 }
