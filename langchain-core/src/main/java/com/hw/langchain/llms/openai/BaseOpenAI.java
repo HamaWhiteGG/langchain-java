@@ -36,6 +36,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Wrapper around OpenAI large language models.
+ *
  * @author HamaWhite
  */
 @SuperBuilder
@@ -117,9 +118,10 @@ public class BaseOpenAI extends BaseLLM {
     protected int batchSize = 20;
 
     /**
-     * Timeout for requests to OpenAI completion API. Default is 600 seconds.
+     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
      */
-    protected float requestTimeout;
+    @Builder.Default
+    protected long requestTimeout = 10;
 
     /**
      * Adjust the probability of specific tokens being generated.
