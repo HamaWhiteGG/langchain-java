@@ -53,7 +53,7 @@ public abstract class BaseSingleActionAgent {
      * @param kwargs            User inputs.
      * @return Action specifying what tool to use.
      */
-    public abstract AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, ?> kwargs);
+    public abstract AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs);
 
     public static BaseSingleActionAgent fromLLMAndTools(
             BaseLanguageModel llm,

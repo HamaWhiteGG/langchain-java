@@ -166,6 +166,48 @@ Final Answer: 1.09874643447
 
 1.09874643447
 ```
+
+### 2.7 Memory: Add State to Chains and Agents
+So far, all the chains and agents we’ve gone through have been stateless. 
+But often, you may want a chain or agent to have some concept of "memory" so that it may remember information about 
+its previous interactions. The clearest and simple example of this is when designing a chatBot - 
+you want it to remember previous messages so it can use context from that to have a better conversation.
+
+```java
+var llm = OpenAI.builder()
+        .temperature(0)
+        .build()
+        .init();
+
+var conversation = new ConversationChain(llm);
+
+var output = conversation.predict(Map.of("input", "Hi there!"));
+System.out.println("Finished chain.\n'" + output + "'");
+
+output = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+System.out.println("Finished chain.\n'" + output + "'");
+```
+
+```shell
+The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+
+Human: Hi there!
+AI:
+Finished chain.
+' Hi there! It's nice to meet you. How can I help you today?'
+
+The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+Human: Hi there!
+AI:  Hi there! It's nice to meet you. How can I help you today?
+Human: I'm doing well! Just having a conversation with an AI.
+AI:
+Finished chain.
+' That's great! It's always nice to have a conversation with someone new. What would you like to talk about?'
+```
  
 ## 3. Run Test Cases from Source
 ```

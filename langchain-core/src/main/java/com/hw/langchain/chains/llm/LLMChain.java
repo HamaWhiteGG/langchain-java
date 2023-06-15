@@ -41,14 +41,14 @@ public class LLMChain extends Chain {
 
     private static final Logger LOG = LoggerFactory.getLogger(LLMChain.class);
 
-    private BaseLanguageModel llm;
+    protected BaseLanguageModel llm;
 
     /**
      * Prompt object to use.
      */
-    private BasePromptTemplate prompt;
+    protected BasePromptTemplate prompt;
 
-    private String outputKey = "text";
+    protected String outputKey = "text";
 
     public LLMChain(BaseLanguageModel llm, BasePromptTemplate prompt) {
         this.llm = llm;
@@ -83,7 +83,7 @@ public class LLMChain extends Chain {
     }
 
     @Override
-    public Map<String, String> _call(Map<String, ?> inputs) {
+    public Map<String, String> _call(Map<String, Object> inputs) {
         LLMResult response = generate(List.of(inputs));
         return createOutputs(response).get(0);
     }
@@ -91,7 +91,7 @@ public class LLMChain extends Chain {
     /**
      * Generate LLM result from inputs.
      */
-    private LLMResult generate(List<Map<String, ?>> inputList) {
+    private LLMResult generate(List<Map<String, Object>> inputList) {
         List<String> stop = prepStop(inputList);
         List<PromptValue> prompts = prepPrompts(inputList);
         return llm.generatePrompt(prompts, stop);
@@ -100,7 +100,7 @@ public class LLMChain extends Chain {
     /**
      * Prepare prompts from inputs.
      */
-    private List<PromptValue> prepPrompts(List<Map<String, ?>> inputList) {
+    private List<PromptValue> prepPrompts(List<Map<String, Object>> inputList) {
         List<PromptValue> prompts = new ArrayList<>();
         for (Map<String, ?> inputs : inputList) {
             Map<String, Object> selectedInputs = new HashMap<>();
@@ -111,17 +111,16 @@ public class LLMChain extends Chain {
             });
 
             PromptValue promptValue = this.prompt.formatPrompt(selectedInputs);
-            LOG.debug("Prompt after formatting: {}", promptValue);
+            LOG.info("Prompt after formatting:\n{}", promptValue);
             prompts.add(promptValue);
         }
         return prompts;
     }
 
-    private List<String> prepStop(List<Map<String, ?>> inputList) {
-        if (inputList.get(0).containsKey("stop")) {
-            return (List<String>) inputList.get(0).get("stop");
-        }
-        return null;
+    @SuppressWarnings("unchecked")
+    private List<String> prepStop(List<Map<String, Object>> inputList) {
+        Map<String, Object> firstInput = inputList.get(0);
+        return firstInput.containsKey("stop") ? (List<String>) firstInput.get("stop") : null;
     }
 
     /**
@@ -139,7 +138,7 @@ public class LLMChain extends Chain {
      * @param kwargs Keys to pass to prompt template.
      * @return Completion from LLM.
      */
-    public String predict(Map<String, ?> kwargs) {
+    public String predict(Map<String, Object> kwargs) {
         Map<String, String> resultMap = call(kwargs, false);
         return resultMap.get(outputKey);
     }
@@ -147,7 +146,7 @@ public class LLMChain extends Chain {
     /**
      * Call predict and then parse the results.
      */
-    public <T> T predictAndParse(Map<String, ?> kwargs) {
+    public <T> T predictAndParse(Map<String, Object> kwargs) {
         String result = predict(kwargs);
         if (prompt.getOutputParser() != null) {
             return (T) prompt.getOutputParser().parse(result);

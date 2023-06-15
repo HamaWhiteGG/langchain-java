@@ -118,7 +118,7 @@ public class SQLDatabaseChain extends Chain {
     }
 
     @Override
-    public Map<String, String> _call(Map<String, ?> inputs) {
+    public Map<String, String> _call(Map<String, Object> inputs) {
         String inputText = inputs.get(this.inputKey) + "\nSQLQuery:";
         // If not present, then defaults to null which is all tables.
         var tableNamesToUse = (List<String>) inputs.get("table_names_to_use");

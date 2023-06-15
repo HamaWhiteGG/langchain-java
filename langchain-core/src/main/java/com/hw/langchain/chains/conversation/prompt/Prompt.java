@@ -16,29 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.chains.conversation.prompt;
 
-import lombok.Data;
+import com.hw.langchain.prompts.prompt.PromptTemplate;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * Message object.
  * @author HamaWhite
  */
-@Data
-public abstract class BaseMessage {
+public class Prompt {
 
-    protected String content;
+    private static String DEFAULT_TEMPLATE =
+            """
+                    The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
 
-    protected Map<String, Object> additionalKwargs;
+                    Current conversation:
+                    {history}
+                    Human: {input}
+                    AI:""";
 
-    protected BaseMessage(String content) {
-        this.content = content;
-    }
-
-    /**
-     * Type of the message, used for serialization.
-     */
-    public abstract String type();
+    public static PromptTemplate PROMPT = new PromptTemplate(List.of("history", "input"), DEFAULT_TEMPLATE);
 }

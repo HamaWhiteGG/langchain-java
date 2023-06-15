@@ -18,13 +18,16 @@
 
 package com.hw.langchain.schema;
 
+import lombok.Data;
+
 /**
  * Type of message with arbitrary speaker.
  * @author HamaWhite
  */
+@Data
 public class ChatMessage extends BaseMessage {
 
-    private String str;
+    private String role;
 
     public ChatMessage(String content) {
         super(content);

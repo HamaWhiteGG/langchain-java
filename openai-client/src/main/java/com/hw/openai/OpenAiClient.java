@@ -43,6 +43,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
  * Represents a client for interacting with the OpenAI API.
+ *
  * @author HamaWhite
  */
 @Data
@@ -60,6 +61,8 @@ public class OpenAiClient {
     private String openaiProxy;
 
     private OpenAiService service;
+
+    private OkHttpClient httpClient;
 
     /**
      * Initializes the OpenAiClient instance.
@@ -93,6 +96,7 @@ public class OpenAiClient {
         if (StringUtils.isNotEmpty(openaiProxy)) {
             httpClientBuilder.proxy(ProxyUtils.http(openaiProxy));
         }
+        httpClient = httpClientBuilder.build();
 
         // Used for automatic discovery and registration of Jackson modules
         ObjectMapper objectMapper = new ObjectMapper();
@@ -102,11 +106,23 @@ public class OpenAiClient {
                 .baseUrl(openaiApiBase)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .client(httpClientBuilder.build())
+                .client(httpClient)
                 .build();
 
         this.service = retrofit.create(OpenAiService.class);
         return this;
+    }
+
+    /**
+     * Closes the HttpClient connection pool.
+     */
+    public void close() {
+        // Cancel all ongoing requests
+        httpClient.dispatcher().cancelAll();
+
+        // Shut down the connection pool (if any)
+        httpClient.connectionPool().evictAll();
+        httpClient.dispatcher().executorService().shutdown();
     }
 
     private String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {

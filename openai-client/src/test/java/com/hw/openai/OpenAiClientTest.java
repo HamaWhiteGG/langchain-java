@@ -24,6 +24,7 @@ import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
  *
- * OpenAiClientTest
  * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
@@ -49,6 +49,11 @@ class OpenAiClientTest {
         client = OpenAiClient.builder()
                 .build()
                 .init();
+    }
+
+    @AfterAll
+    static void cleanup() {
+        client.close();
     }
 
     @Test

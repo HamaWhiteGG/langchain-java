@@ -16,29 +16,31 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.openai;
 
-import lombok.Data;
+import com.hw.openai.entity.completions.Completion;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * Message object.
  * @author HamaWhite
  */
-@Data
-public abstract class BaseMessage {
+public class QuickStart {
 
-    protected String content;
+    public static void main(String[] args) {
+        OpenAiClient client = OpenAiClient.builder()
+                .build()
+                .init();
 
-    protected Map<String, Object> additionalKwargs;
+        Completion completion = Completion.builder()
+                .model("text-davinci-003")
+                .prompt(List.of("Say this is a test"))
+                .maxTokens(700)
+                .temperature(0)
+                .build();
 
-    protected BaseMessage(String content) {
-        this.content = content;
+        System.out.println(client.completion(completion));
+
+        client.close();
     }
-
-    /**
-     * Type of the message, used for serialization.
-     */
-    public abstract String type();
 }
