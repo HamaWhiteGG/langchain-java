@@ -118,6 +118,12 @@ public class OpenAIChat extends BaseLLM {
     private List<Message> prefixMessages = new ArrayList<>();
 
     /**
+     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     */
+    @Builder.Default
+    protected long requestTimeout = 10;
+
+    /**
      * Adjust the probability of specific tokens being generated.
      */
     protected Map<String, Float> logitBias;
@@ -138,6 +144,7 @@ public class OpenAIChat extends BaseLLM {
                 .openaiApiKey(openaiApiKey)
                 .openaiOrganization(openaiOrganization)
                 .openaiProxy(openaiProxy)
+                .requestTimeout(requestTimeout)
                 .build()
                 .init();
         return this;

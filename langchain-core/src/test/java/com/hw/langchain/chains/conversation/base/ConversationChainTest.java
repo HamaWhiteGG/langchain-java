@@ -20,6 +20,7 @@ package com.hw.langchain.chains.conversation.base;
 
 import com.hw.langchain.llms.openai.OpenAI;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author HamaWhite
  */
+@Disabled("Test requires costly OpenAI calls, can be run manually.")
 class ConversationChainTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConversationChainTest.class);

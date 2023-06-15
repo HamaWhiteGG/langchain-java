@@ -41,6 +41,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Represents a client for interacting with the OpenAI API.
  *
@@ -60,6 +62,12 @@ public class OpenAiClient {
 
     private String openaiProxy;
 
+    /**
+     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     */
+    @Builder.Default
+    protected long requestTimeout = 10;
+
     private OpenAiService service;
 
     private OkHttpClient httpClient;
@@ -73,7 +81,12 @@ public class OpenAiClient {
         openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
 
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(requestTimeout, TimeUnit.SECONDS)
+                .readTimeout(requestTimeout, TimeUnit.SECONDS)
+                .writeTimeout(requestTimeout, TimeUnit.SECONDS)
+                .callTimeout(requestTimeout, TimeUnit.SECONDS);
+
         httpClientBuilder.addInterceptor(chain -> {
             // If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
             openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");

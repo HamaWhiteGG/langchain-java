@@ -16,31 +16,38 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.llms.openai;
+package com.hw.openai;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hibernate.validator.internal.util.Contracts.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * OpenAITest
  * @author HamaWhite
  */
-@Disabled("Test requires costly OpenAI calls, can be run manually.")
-class OpenAITest {
+@Disabled("Test is currently disabled due to network timeout issue")
+class HttpClientTimeoutTest {
 
-    /**
-     * Test valid call to openai
-     */
     @Test
-    void testOpenAICall() {
-        OpenAI llm = OpenAI.builder()
-                .maxTokens(16)
+    void testRequestTimeout() {
+        OpenAiClient client = OpenAiClient.builder()
                 .requestTimeout(15)
                 .build()
                 .init();
 
-        assertThat(llm.call("Say foo:")).isEqualTo("\n\nFoo!");
+        long startTime = System.currentTimeMillis();
+        /*
+         * Tests the request timeout functionality. Expects a RuntimeException to be thrown, which is the expected
+         * behavior when using Retrofit for synchronous requests. The actual network exception is wrapped in a
+         * RuntimeException by Retrofit for unified exception handling.
+         */
+        assertThrows(RuntimeException.class, client::listModels);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+
+        assertTrue(executionTime >= 15_000, "Execution time should be greater than or equal to 30 seconds.");
     }
 }
