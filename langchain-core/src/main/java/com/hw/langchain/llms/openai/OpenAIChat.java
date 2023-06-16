@@ -134,10 +134,10 @@ public class OpenAIChat extends BaseLLM {
     protected boolean streaming;
 
     public OpenAIChat init() {
-        openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE");
+        openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
-        openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
+        openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
 
         this.client = OpenAiClient.builder()
                 .openaiApiBase(openaiApiBase)
