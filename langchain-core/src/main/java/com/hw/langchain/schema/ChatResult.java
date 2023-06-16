@@ -18,27 +18,23 @@
 
 package com.hw.langchain.schema;
 
-import lombok.Builder;
-import lombok.Data;
-
+import java.util.List;
 import java.util.Map;
 
 /**
- * Output of a single generation.
+ * Class that contains all relevant information for a Chat Result.
+ *
  * @author HamaWhite
  */
-@Data
-@Builder
-public class Generation {
+public class ChatResult {
 
     /**
-     * Generated text output.
+     * List of the things generated.
      */
-    protected String text;
+    private List<ChatGeneration> generations;
 
     /**
-     * Raw generation info response from the provider.
-     * May include things like reason for finishing (e.g. in OpenAI)
+     * For arbitrary LLM provider specific output.
      */
-    protected Map<String, Object> generationInfo;
+    private Map<String, Object> llmOutput;
 }

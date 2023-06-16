@@ -19,7 +19,6 @@
 package com.hw.langchain.llms.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
-import com.hw.langchain.callbacks.manager.Callbacks;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 
@@ -47,18 +46,18 @@ public abstract class BaseLLM implements BaseLanguageModel {
     /**
      * Check Cache and run the LLM on the given prompt and input.
      */
-    public String call(String prompt, List<String> stop, Callbacks callbacks) {
-        return generate(List.of(prompt), stop, callbacks).getGenerations().get(0).get(0).getText();
+    public String call(String prompt, List<String> stop) {
+        return generate(List.of(prompt), stop).getGenerations().get(0).get(0).getText();
     }
 
     public String call(String prompt) {
-        return call(prompt, null, null);
+        return call(prompt, null);
     }
 
     /**
      * Run the LLM on the given prompt and input.
      */
-    public LLMResult generate(List<String> prompts, List<String> stop, Callbacks callbacks) {
+    public LLMResult generate(List<String> prompts, List<String> stop) {
         return _generate(prompts, stop);
     }
 
@@ -67,6 +66,6 @@ public abstract class BaseLLM implements BaseLanguageModel {
         List<String> promptStrings = prompts.stream()
                 .map(PromptValue::toString)
                 .toList();
-        return generate(promptStrings, stop, null);
+        return generate(promptStrings, stop);
     }
 }

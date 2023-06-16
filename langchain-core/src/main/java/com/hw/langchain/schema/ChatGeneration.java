@@ -18,27 +18,22 @@
 
 package com.hw.langchain.schema;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Map;
 
 /**
  * Output of a single generation.
+ *
  * @author HamaWhite
  */
-@Data
-@Builder
-public class Generation {
 
-    /**
-     * Generated text output.
-     */
-    protected String text;
+@Getter
+public class ChatGeneration extends Generation {
 
-    /**
-     * Raw generation info response from the provider.
-     * May include things like reason for finishing (e.g. in OpenAI)
-     */
-    protected Map<String, Object> generationInfo;
+    protected BaseMessage message;
+
+    public ChatGeneration(String text, Map<String, Object> generationInfo) {
+        super(text, generationInfo);
+    }
 }
