@@ -20,8 +20,6 @@ package com.hw.langchain.schema;
 
 import lombok.Getter;
 
-import java.util.Map;
-
 /**
  * Output of a single generation.
  *
@@ -33,7 +31,8 @@ public class ChatGeneration extends Generation {
 
     protected BaseMessage message;
 
-    public ChatGeneration(String text, Map<String, Object> generationInfo) {
-        super(text, generationInfo);
+    public ChatGeneration(BaseMessage message) {
+        super(message.getContent());
+        this.message = message;
     }
 }

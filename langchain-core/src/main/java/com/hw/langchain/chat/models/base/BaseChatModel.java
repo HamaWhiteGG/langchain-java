@@ -36,15 +36,15 @@ public abstract class BaseChatModel implements BaseLanguageModel {
      */
     private List<String> tags;
 
-    public LLMResult generate(List<List<BaseMessage>> messages, List<String> stop) {
-        return generate(messages, stop, null);
-    }
-
     /**
      * Top Level call
      */
-    public LLMResult generate(List<List<BaseMessage>> messages, List<String> stop, List<String> tags) {
+    public LLMResult generate(List<List<BaseMessage>> messages, List<String> stop) {
+        List<ChatResult> results = messages.stream()
+                .map(message -> _generate(message, stop))
+                .toList();
 
+        // TODO
         return null;
     }
 
@@ -55,6 +55,15 @@ public abstract class BaseChatModel implements BaseLanguageModel {
                 .toList();
         return generate(promptMessages, stop);
 
+    }
+
+    /**
+     * Top Level call
+     */
+    public abstract ChatResult _generate(List<BaseMessage> messages, List<String> stop);
+
+    public BaseMessage call(List<BaseMessage> messages) {
+        return call(messages, null);
     }
 
     public BaseMessage call(List<BaseMessage> messages, List<String> stop) {
@@ -80,4 +89,9 @@ public abstract class BaseChatModel implements BaseLanguageModel {
         List<String> copyStop = stop != null ? List.copyOf(stop) : null;
         return call(messages, copyStop);
     }
+
+    /**
+     * Return type of chat model.
+     */
+    public abstract String llmType();
 }

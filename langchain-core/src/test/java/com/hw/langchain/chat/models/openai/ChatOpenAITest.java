@@ -16,31 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.chat.models.openai;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.hw.langchain.schema.HumanMessage;
 
-import java.util.List;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
- * Class that contains all relevant information for a Chat Result.
- *
  * @author HamaWhite
  */
-@Data
-@AllArgsConstructor
-public class ChatResult {
+class ChatOpenAITest {
 
-    /**
-     * List of the things generated.
-     */
-    private List<ChatGeneration> generations;
+    @Test
+    void testChatOpenAI() {
+        var chat = ChatOpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
 
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
+        var message = new HumanMessage("Translate this sentence from English to French. I love programming.");
+        // var actual = chat.call(List.of(message));
 
+        // var expected = new AIMessage("xxx");
+        // assertEquals(expected, actual);
+    }
 }

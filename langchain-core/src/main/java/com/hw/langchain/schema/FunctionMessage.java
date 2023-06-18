@@ -18,29 +18,22 @@
 
 package com.hw.langchain.schema;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * Class that contains all relevant information for a Chat Result.
- *
  * @author HamaWhite
  */
 @Data
-@AllArgsConstructor
-public class ChatResult {
+public class FunctionMessage extends BaseMessage {
 
-    /**
-     * List of the things generated.
-     */
-    private List<ChatGeneration> generations;
+    private String name;
 
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
+    protected FunctionMessage(String content) {
+        super(content);
+    }
 
+    @Override
+    public String type() {
+        return "function";
+    }
 }

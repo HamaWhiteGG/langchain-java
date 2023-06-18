@@ -19,12 +19,23 @@
 package com.hw.langchain.chat.models.openai;
 
 import com.hw.langchain.chat.models.base.BaseChatModel;
+import com.hw.langchain.schema.BaseMessage;
+import com.hw.langchain.schema.ChatGeneration;
+import com.hw.langchain.schema.ChatResult;
+import com.hw.openai.OpenAiClient;
+import com.hw.openai.entity.chat.ChatCompletion;
+import com.hw.openai.entity.chat.ChatCompletionResp;
+import com.hw.openai.entity.chat.Message;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
+import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
 
 /**
  * Wrapper around OpenAI Chat large language models.
@@ -34,13 +45,13 @@ import java.util.Map;
 @SuperBuilder
 public class ChatOpenAI extends BaseChatModel {
 
-    protected Object client;
+    protected OpenAiClient client;
 
     /**
      * Model name to use.
      */
     @Builder.Default
-    protected String modelName = "gpt-3.5-turbo";
+    protected String model = "gpt-3.5-turbo";
 
     /**
      * What sampling temperature to use.
@@ -83,7 +94,7 @@ public class ChatOpenAI extends BaseChatModel {
     /**
      * Whether to stream the results or not.
      */
-    protected boolean streaming;
+    protected boolean stream;
 
     /**
      * Number of chat completions to generate for each prompt.
@@ -96,4 +107,72 @@ public class ChatOpenAI extends BaseChatModel {
      */
     protected Integer maxTokens;
 
+    /**
+     * Validate that api key exists in environment.
+     */
+    public ChatOpenAI init() {
+        openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
+        openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
+        openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
+        openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
+
+        this.client = OpenAiClient.builder()
+                .openaiApiBase(openaiApiBase)
+                .openaiApiKey(openaiApiKey)
+                .openaiOrganization(openaiOrganization)
+                .openaiProxy(openaiProxy)
+                .requestTimeout(requestTimeout)
+                .build()
+                .init();
+
+        if (n < 1) {
+            throw new IllegalArgumentException("n must be at least 1.");
+        }
+        if (n > 1 && stream) {
+            throw new IllegalArgumentException("n must be 1 when streaming.");
+        }
+        return this;
+    }
+
+    @Override
+    public ChatResult _generate(List<BaseMessage> messages, List<String> stop) {
+        var chatMessages = convertMessages(messages);
+
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model(model)
+                .temperature(temperature)
+                .messages(chatMessages)
+                .maxTokens(maxTokens)
+                .stream(stream)
+                .n(n)
+                .stop(stop)
+                .build();
+
+        var response = client.create(chatCompletion);
+        return createChatResult(response);
+    }
+
+    public List<Message> convertMessages(List<BaseMessage> messages) {
+        return messages.stream()
+                .map(OpenAI::convertLangChainToOpenAI)
+                .toList();
+    }
+
+    public ChatResult createChatResult(ChatCompletionResp response) {
+        List<ChatGeneration> generations = response.getChoices()
+                .stream()
+                .map(choice -> convertOpenAiToLangChain(choice.getMessage()))
+                .map(ChatGeneration::new)
+                .toList();
+
+        Map<String, Object> llmOutput = Map.of(
+                "token_usage", response.getUsage(),
+                "model_name", response.getModel());
+        return new ChatResult(generations, llmOutput);
+    }
+
+    @Override
+    public String llmType() {
+        return "openai-chat";
+    }
 }

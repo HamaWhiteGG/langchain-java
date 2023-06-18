@@ -42,13 +42,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 @SuperBuilder
 public class BaseOpenAI extends BaseLLM {
 
-    protected Object client;
+    protected OpenAiClient client;
 
     /**
      * Model name to use.
      */
     @Builder.Default
-    protected String modelName = "text-davinci-003";
+    protected String model = "text-davinci-003";
 
     /**
      * What sampling temperature to use.
@@ -137,7 +137,7 @@ public class BaseOpenAI extends BaseLLM {
     /**
      * Whether to stream the results or not.
      */
-    protected boolean streaming;
+    protected boolean stream;
 
     /**
      * Set of special tokens that are allowed.
@@ -176,7 +176,7 @@ public class BaseOpenAI extends BaseLLM {
         List<Choice> choices = new ArrayList<>();
         List<List<String>> subPrompts = getSubPrompts(prompts);
         Completion completion = Completion.builder()
-                .model(modelName)
+                .model(model)
                 .temperature(temperature)
                 .maxTokens(maxTokens)
                 .topP(topP)
@@ -189,7 +189,7 @@ public class BaseOpenAI extends BaseLLM {
 
         for (var prompt : subPrompts) {
             completion.setPrompt(prompt);
-            CompletionResp response = ((OpenAiClient) client).create(completion);
+            CompletionResp response = client.create(completion);
             choices.addAll(response.getChoices());
         }
 
@@ -219,8 +219,8 @@ public class BaseOpenAI extends BaseLLM {
         }
 
         Map<String, Object> llmOutput = new HashMap<>(2);
-        llmOutput.put("tokenUsage", tokenUsage);
-        llmOutput.put("modelName", modelName);
+        llmOutput.put("token_usage", tokenUsage);
+        llmOutput.put("model_name", model);
 
         return new LLMResult(generations, llmOutput);
     }

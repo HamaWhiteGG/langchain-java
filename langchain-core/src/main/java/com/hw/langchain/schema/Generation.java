@@ -18,6 +18,7 @@
 
 package com.hw.langchain.schema;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,10 +26,12 @@ import java.util.Map;
 
 /**
  * Output of a single generation.
+ *
  * @author HamaWhite
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class Generation {
 
     /**
@@ -41,4 +44,8 @@ public class Generation {
      * May include things like reason for finishing (e.g. in OpenAI)
      */
     protected Map<String, Object> generationInfo;
+
+    public Generation(String text) {
+        this.text = text;
+    }
 }
