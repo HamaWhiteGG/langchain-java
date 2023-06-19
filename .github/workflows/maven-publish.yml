@@ -24,9 +24,9 @@ jobs:
         distribution: 'temurin'
         
     - name: Update version
-      run: mvn versions:set -DnewVersion=${{ env.VERSION }}
-      env:
-        VERSION: ${{ github.ref.replace('refs/tags/v', '') }}
+      run: |
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's/refs\/tags\/v//')
+        mvn versions:set -DnewVersion="${VERSION}"
         
     - name: Publish to Sonatype
       uses: samuelmeuli/action-maven-publish@v1
