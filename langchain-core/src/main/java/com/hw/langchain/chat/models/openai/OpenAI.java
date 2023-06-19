@@ -27,6 +27,9 @@ import com.hw.openai.entity.chat.Role;
  */
 public class OpenAI {
 
+    private OpenAI() {
+    }
+
     public static Message convertLangChainToOpenAI(BaseMessage message) {
         if (message instanceof ChatMessage chatMessage) {
             return Message.of(chatMessage.getRole(), message.getContent());
@@ -47,15 +50,19 @@ public class OpenAI {
         Role role = message.getRole();
         String content = message.getContent();
         switch (role) {
-            case USER:
+            case USER -> {
                 return new HumanMessage(content);
-            case ASSISTANT:
+            }
+            case ASSISTANT -> {
                 content = content != null ? content : "";
                 return new AIMessage(content);
-            case SYSTEM:
+            }
+            case SYSTEM -> {
                 return new SystemMessage(content);
-            default:
+            }
+            default -> {
                 return new ChatMessage(role.getValue(), content);
+            }
         }
     }
 }

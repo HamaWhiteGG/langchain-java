@@ -24,6 +24,7 @@ import com.hw.langchain.schema.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author HamaWhite
@@ -36,6 +37,14 @@ public abstract class BaseChatModel implements BaseLanguageModel {
      */
     private List<String> tags;
 
+    public Map<String, Object> combineLlmOutputs(List<Map<String, Object>> llmOutputs) {
+        return Map.of();
+    }
+
+    public LLMResult generate(List<List<BaseMessage>> messages) {
+        return generate(messages, null);
+    }
+
     /**
      * Top Level call
      */
@@ -44,8 +53,15 @@ public abstract class BaseChatModel implements BaseLanguageModel {
                 .map(message -> _generate(message, stop))
                 .toList();
 
-        // TODO
-        return null;
+        List<Map<String, Object>> llmOutputs = results.stream()
+                .map(ChatResult::getLlmOutput)
+                .toList();
+        Map<String, Object> llmOutput = combineLlmOutputs(llmOutputs);
+
+        List<List<ChatGeneration>> generations = results.stream()
+                .map(ChatResult::getGenerations)
+                .toList();
+        return new LLMResult(generations, llmOutput);
     }
 
     @Override
@@ -54,7 +70,6 @@ public abstract class BaseChatModel implements BaseLanguageModel {
                 .map(PromptValue::toMessages)
                 .toList();
         return generate(promptMessages, stop);
-
     }
 
     /**

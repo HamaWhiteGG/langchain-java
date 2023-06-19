@@ -26,6 +26,7 @@ import com.hw.openai.OpenAiClient;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.completions.Usage;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
@@ -33,6 +34,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
@@ -132,6 +134,20 @@ public class ChatOpenAI extends BaseChatModel {
             throw new IllegalArgumentException("n must be 1 when streaming.");
         }
         return this;
+    }
+
+    @Override
+    public Map<String, Object> combineLlmOutputs(List<Map<String, Object>> llmOutputs) {
+        Usage usage = llmOutputs.stream()
+                .filter(Objects::nonNull)
+                .map(e -> (Usage) e.get("token_usage"))
+                .reduce((a1, a2) -> new Usage(
+                        a1.getPromptTokens() + a2.getPromptTokens(),
+                        a1.getCompletionTokens() + a2.getCompletionTokens(),
+                        a1.getTotalTokens() + a2.getTotalTokens()))
+                .orElse(new Usage());
+
+        return Map.of("token_usage", usage, "model_name", this.model);
     }
 
     @Override
