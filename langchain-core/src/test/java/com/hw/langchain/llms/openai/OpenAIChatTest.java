@@ -30,9 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAIChatTest {
 
-    /**
-     * Test OpenAIChat
-     */
     @Test
     void testOpenAIChat() {
         OpenAIChat llm = OpenAIChat.builder()
