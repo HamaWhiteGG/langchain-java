@@ -40,7 +40,12 @@ public enum Role {
     /**
      * Assistant role.
      */
-    ASSISTANT("assistant");
+    ASSISTANT("assistant"),
+
+    /**
+     * Function role.
+     */
+    FUNCTION("function");
 
     private final String value;
 

@@ -42,13 +42,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 @SuperBuilder
 public class OpenAIChat extends BaseLLM {
 
-    protected Object client;
+    protected OpenAiClient client;
 
     /**
      * Model name to use.
      */
     @Builder.Default
-    protected String modelName = "gpt-3.5-turbo";
+    protected String model = "gpt-3.5-turbo";
 
     /**
      * What sampling temperature to use.
@@ -131,7 +131,7 @@ public class OpenAIChat extends BaseLLM {
     /**
      * Whether to stream the results or not.
      */
-    protected boolean streaming;
+    protected boolean stream;
 
     public OpenAIChat init() {
         openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
@@ -170,7 +170,7 @@ public class OpenAIChat extends BaseLLM {
         List<Message> messages = getChatMessages(prompts);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
-                .model(modelName)
+                .model(model)
                 .temperature(temperature)
                 .messages(messages)
                 .maxTokens(maxTokens)
@@ -182,7 +182,7 @@ public class OpenAIChat extends BaseLLM {
                 .stop(stop)
                 .build();
 
-        ChatCompletionResp response = ((OpenAiClient) client).create(chatCompletion);
+        ChatCompletionResp response = client.create(chatCompletion);
 
         List<List<Generation>> generations = new ArrayList<>();
         Generation generation = Generation.builder()
@@ -192,8 +192,8 @@ public class OpenAIChat extends BaseLLM {
         generations.add(List.of(generation));
 
         Map<String, Object> llmOutput = new HashMap<>(2);
-        llmOutput.put("tokenUsage", response.getUsage());
-        llmOutput.put("modelName", modelName);
+        llmOutput.put("token_usage", response.getUsage());
+        llmOutput.put("model_name", response.getModel());
 
         return new LLMResult(generations, llmOutput);
     }

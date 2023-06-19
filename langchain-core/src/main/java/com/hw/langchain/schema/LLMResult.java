@@ -18,7 +18,6 @@
 
 package com.hw.langchain.schema;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -29,16 +28,20 @@ import java.util.Map;
  * @author HamaWhite
  */
 @Data
-@AllArgsConstructor
 public class LLMResult {
 
     /**
      * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
      */
-    private List<List<Generation>> generations;
+    private List<? extends List<? extends Generation>> generations;
 
     /**
      * For arbitrary LLM provider specific output.
      */
     private Map<String, Object> llmOutput;
+
+    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
+        this.generations = generations;
+        this.llmOutput = llmOutput;
+    }
 }

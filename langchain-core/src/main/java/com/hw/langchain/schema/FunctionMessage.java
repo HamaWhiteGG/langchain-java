@@ -16,29 +16,24 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.completions;
+package com.hw.langchain.schema;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * Usage
  * @author HamaWhite
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Usage {
+public class FunctionMessage extends BaseMessage {
 
-    @JsonProperty("prompt_tokens")
-    private Long promptTokens;
+    private String name;
 
-    @JsonProperty("completion_tokens")
-    private Long completionTokens;
+    protected FunctionMessage(String content) {
+        super(content);
+    }
 
-    @JsonProperty("total_tokens")
-    private Long totalTokens;
+    @Override
+    public String type() {
+        return "function";
+    }
 }

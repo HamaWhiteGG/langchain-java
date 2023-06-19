@@ -16,29 +16,23 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.completions;
+package com.hw.langchain.schema;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
- * Usage
+ * Output of a single generation.
+ *
  * @author HamaWhite
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Usage {
 
-    @JsonProperty("prompt_tokens")
-    private Long promptTokens;
+@Getter
+public class ChatGeneration extends Generation {
 
-    @JsonProperty("completion_tokens")
-    private Long completionTokens;
+    protected BaseMessage message;
 
-    @JsonProperty("total_tokens")
-    private Long totalTokens;
+    public ChatGeneration(BaseMessage message) {
+        super(message.getContent());
+        this.message = message;
+    }
 }

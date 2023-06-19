@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 /**
  * Message
+ *
  * @author HamaWhite
  */
 @Data
@@ -60,6 +61,10 @@ public class Message implements Serializable {
         this.content = content;
     }
 
+    public static Message of(String role, String content) {
+        return new Message(Role.fromValue(role), content);
+    }
+
     public static Message of(String content) {
         return new Message(Role.USER, content);
     }
@@ -70,5 +75,9 @@ public class Message implements Serializable {
 
     public static Message ofAssistant(String content) {
         return new Message(Role.ASSISTANT, content);
+    }
+
+    public static Message ofFunction(String content, String name) {
+        return new Message(Role.FUNCTION, content, name);
     }
 }

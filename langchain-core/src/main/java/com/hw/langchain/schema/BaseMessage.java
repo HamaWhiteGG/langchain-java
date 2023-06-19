@@ -19,14 +19,18 @@
 package com.hw.langchain.schema;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Message object.
+ *
  * @author HamaWhite
  */
 @Data
+@NoArgsConstructor
 public abstract class BaseMessage {
 
     protected String content;
@@ -35,6 +39,7 @@ public abstract class BaseMessage {
 
     protected BaseMessage(String content) {
         this.content = content;
+        this.additionalKwargs = new HashMap<>();
     }
 
     /**

@@ -16,29 +16,31 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.completions;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.hw.langchain.schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Usage
+ * Class that contains all relevant information for a Chat Result.
+ *
  * @author HamaWhite
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Usage {
+public class ChatResult {
 
-    @JsonProperty("prompt_tokens")
-    private Long promptTokens;
+    /**
+     * List of the things generated.
+     */
+    private List<ChatGeneration> generations;
 
-    @JsonProperty("completion_tokens")
-    private Long completionTokens;
+    /**
+     * For arbitrary LLM provider specific output.
+     */
+    private Map<String, Object> llmOutput;
 
-    @JsonProperty("total_tokens")
-    private Long totalTokens;
 }

@@ -36,8 +36,8 @@ public class OpenAI extends BaseOpenAI {
      * Validate that api key exists in environment.
      */
     public OpenAI init() {
-        checkArgument(!(streaming && n > 1), "Cannot stream results when n > 1.");
-        checkArgument(!(streaming && bestOf > 1), "Cannot stream results when bestOf > 1.");
+        checkArgument(!(stream && n > 1), "Cannot stream results when n > 1.");
+        checkArgument(!(stream && bestOf > 1), "Cannot stream results when bestOf > 1.");
 
         openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");

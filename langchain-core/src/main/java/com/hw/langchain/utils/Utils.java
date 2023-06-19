@@ -20,14 +20,11 @@ package com.hw.langchain.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.experimental.UtilityClass;
-
 import java.util.Map;
 
 /**
  * @author HamaWhite
  */
-@UtilityClass
 public class Utils {
 
     /**
@@ -42,7 +39,7 @@ public class Utils {
      * If the default value(s) are provided, the first default value is returned.
      * If none of the above conditions are met, null is returned.
      */
-    public String getFromDictOrEnv(Map<String, Object> data, String key, String envKey, String... defaultValue) {
+    public static String getFromDictOrEnv(Map<String, Object> data, String key, String envKey, String... defaultValue) {
         if (data.containsKey(key) && data.get(key) != null) {
             return data.get(key).toString();
         } else {
@@ -61,7 +58,7 @@ public class Utils {
      * If none of the above conditions are met, an {@code IllegalArgumentException} is thrown.
      * @throws IllegalArgumentException if the environment variable is not found and no default value is provided.
      */
-    public String getFromEnv(String key, String envKey, String... defaultValue) {
+    public static String getFromEnv(String key, String envKey, String... defaultValue) {
         String envValue = System.getenv(envKey);
         if (StringUtils.isNotEmpty(envValue)) {
             return envValue;
@@ -86,7 +83,7 @@ public class Utils {
      * If the default value(s) are provided, the first default value is returned.
      * If none of the above conditions are met, null is returned.
      */
-    public String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
+    public static String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
         if (StringUtils.isNotEmpty(originalValue)) {
             return originalValue;
         }

@@ -22,6 +22,7 @@ import lombok.Data;
 
 /**
  * Type of message with arbitrary speaker.
+ *
  * @author HamaWhite
  */
 @Data
@@ -31,6 +32,11 @@ public class ChatMessage extends BaseMessage {
 
     public ChatMessage(String content) {
         super(content);
+    }
+
+    public ChatMessage(String role, String content) {
+        super(content);
+        this.role = role;
     }
 
     @Override
