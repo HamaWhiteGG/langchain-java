@@ -90,9 +90,7 @@ class ChatOpenAITest {
                         new HumanMessage("I love programming.")),
                 List.of(
                         new SystemMessage("You are a helpful assistant that translates English to French."),
-                        new HumanMessage("I love artificial intelligence."))
-
-        );
+                        new HumanMessage("I love artificial intelligence.")));
         var result = chat.generate(batchMessages);
         assertNotNull(result, "result should not be null");
 
