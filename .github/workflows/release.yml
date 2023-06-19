@@ -1,0 +1,38 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Publish to Sonatype
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+  
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Update version
+      run: mvn versions:set -DnewVersion=${{ env.VERSION }}
+      env:
+        VERSION: ${{ github.ref.replace('refs/tags/v', '') }}
+        
+    - name: Publish to Sonatype
+      uses: samuelmeuli/action-maven-publish@v1
+      with:
+        gpg_private_key: ${{ secrets.GPG_SECRET }}
+        gpg_passphrase: ${{ secrets.GPG_PASSWORD }}
+        nexus_username: ${{ secrets.OSSRH_USERNAME }}
+        nexus_password: ${{ secrets.OSSRH_PASSWORD }}
+        server_id: ossrh
