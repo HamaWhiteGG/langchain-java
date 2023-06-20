@@ -16,43 +16,27 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.base.language;
+package com.hw.langchain.prompts.chat;
 
 import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.PromptValue;
+import com.hw.langchain.schema.ChatMessage;
 
-import java.util.List;
+import java.util.Map;
 
 /**
- * BaseLanguageModel is an interface for interacting with a language model.
- *
  * @author HamaWhite
  */
-public interface BaseLanguageModel {
+public class ChatMessagePromptTemplate extends BaseStringMessagePromptTemplate {
 
-    /**
-     * Take in a list of prompt values and return an LLMResult.
-     */
-    LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop);
+    private String role;
 
-    /**
-     * Predict text from text.
-     */
-    String predict(String text);
+    public static ChatMessagePromptTemplate fromTemplate(String template) {
+        return BaseStringMessagePromptTemplate.fromTemplate(ChatMessagePromptTemplate.class, template);
+    }
 
-    /**
-     * Predict text from text.
-     */
-    String predict(String text, List<String> stop);
-
-    /**
-     * Predict message from messages.
-     */
-    BaseMessage predictMessages(List<BaseMessage> messages);
-
-    /**
-     * Predict message from messages.
-     */
-    BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+    @Override
+    public BaseMessage format(Map<String, Object> kwargs) {
+        String text = prompt.format(kwargs);
+        return new ChatMessage(text, role);
+    }
 }

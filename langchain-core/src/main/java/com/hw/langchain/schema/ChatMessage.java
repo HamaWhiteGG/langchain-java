@@ -30,11 +30,7 @@ public class ChatMessage extends BaseMessage {
 
     private String role;
 
-    public ChatMessage(String content) {
-        super(content);
-    }
-
-    public ChatMessage(String role, String content) {
+    public ChatMessage(String content, String role) {
         super(content);
         this.role = role;
     }

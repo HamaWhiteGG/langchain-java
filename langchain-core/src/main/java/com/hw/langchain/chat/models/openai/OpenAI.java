@@ -61,7 +61,7 @@ public class OpenAI {
                 return new SystemMessage(content);
             }
             default -> {
-                return new ChatMessage(role.getValue(), content);
+                return new ChatMessage(content, role.getValue());
             }
         }
     }

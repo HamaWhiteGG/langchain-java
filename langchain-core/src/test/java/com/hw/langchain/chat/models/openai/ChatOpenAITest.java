@@ -98,4 +98,21 @@ class ChatOpenAITest {
         LOG.info("token_usage: {}", result.getLlmOutput().get("token_usage"));
         assertThat(result.getGenerations()).isNotNull().hasSize(2);
     }
+
+    @Test
+    void testPredictMessages() {
+        var message = new HumanMessage("Translate this sentence from English to French. I love programming.");
+        var actual = chat.predictMessages(List.of(message));
+
+        var expected = new AIMessage("J'aime programmer.");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testPredict() {
+        var text = "Translate this sentence from English to French. I love programming.";
+        var actual = chat.predict(text);
+        var expected = "J'aime programmer.";
+        assertEquals(expected, actual);
+    }
 }

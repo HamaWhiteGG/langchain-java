@@ -22,6 +22,7 @@ import com.hw.langchain.schema.BaseOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Map;
  * @author HamaWhite
  */
 @Data
+@NoArgsConstructor
 public abstract class BasePromptTemplate {
 
     /**

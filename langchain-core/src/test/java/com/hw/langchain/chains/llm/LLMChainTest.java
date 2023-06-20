@@ -20,7 +20,11 @@ package com.hw.langchain.chains.llm;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
+import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.langchain.prompts.chat.ChatPromptTemplate;
+import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
+import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -35,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * LLMChainTest
+ *
  * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
@@ -42,9 +47,16 @@ class LLMChainTest {
 
     private static BaseLanguageModel llm;
 
+    private static BaseLanguageModel chat;
+
     @BeforeAll
     public static void setup() throws SQLException {
         llm = OpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
+
+        chat = ChatOpenAI.builder()
                 .temperature(0)
                 .build()
                 .init();
@@ -132,6 +144,25 @@ class LLMChainTest {
         String actual = chain.run(Map.of("stop", List.of("\nSQLResult:")));
         String expected =
                 " SELECT `parent_name`, `parent_mobile` FROM `parents` WHERE `student_name` IN (SELECT `name` FROM `students` WHERE `score` = 0) LIMIT 5;";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testLLMChainWithChatModels() {
+        var template = "You are a helpful assistant that translates {input_language} to {output_language}.";
+        var systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
+
+        var humanTemplate = "{text}";
+        var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
+
+        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
+
+        var chain = new LLMChain(chat, chatPrompt);
+        String actual = chain.run(Map.of("input_language", "English",
+                "output_language", "French",
+                "text", "I love programming."));
+
+        String expected = "J'adore la programmation.";
         assertEquals(expected, actual);
     }
 }
