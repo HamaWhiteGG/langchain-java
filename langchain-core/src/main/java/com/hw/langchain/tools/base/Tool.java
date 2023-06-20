@@ -43,8 +43,7 @@ public class Tool extends BaseTool {
     /**
      * The tool's input arguments.
      */
-    public Map<String, Object> getArgs() {
-
+    public Map<String, Object> args() {
         // For backwards compatibility, if the function signature is ambiguous,
         // assume it takes a single string input.
         return Map.of("tool_input", Map.of("type", "string"));

@@ -19,6 +19,7 @@
 package com.hw.langchain.agents.agent;
 
 import com.hw.langchain.agents.agent.types.AgentType;
+import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
 
 import org.junit.jupiter.api.Disabled;
@@ -37,12 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AgentExecutorTest {
 
     @Test
-    void testAgent() {
+    void testAgentWithLLM() {
         // First, let's load the language model we're going to use to control the agent.
-        var llm = OpenAI.builder()
-                .temperature(0)
-                .build()
-                .init();
+        var llm = OpenAI.builder().temperature(0).build().init();
 
         // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
         var tools = loadTools(List.of("serpapi", "llm-math"), llm);
@@ -54,6 +52,23 @@ class AgentExecutorTest {
         String actual = agent.run(
                 "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?");
 
+        assertTrue(actual.matches("^1\\.\\d+$"));
+    }
+
+    @Test
+    void testAgentWithChatModels() {
+        // First, let's load the language model we're going to use to control the agent.
+        var chat = ChatOpenAI.builder().temperature(0).build().init();
+
+        // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
+        var llm = OpenAI.builder().temperature(0).build().init();
+        var tools = loadTools(List.of("serpapi", "llm-math"), llm);
+
+        // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
+        var agent = initializeAgent(tools, chat, AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION);
+
+        // Now let's test it out!
+        String actual = agent.run("Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?");
         assertTrue(actual.matches("^1\\.\\d+$"));
     }
 }

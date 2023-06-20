@@ -23,7 +23,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Interface LangChain tools must implement.
@@ -53,6 +56,21 @@ public abstract class BaseTool {
     public BaseTool(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    /**
+     * Whether the tool only accepts a single input.
+     */
+    public boolean isSingleInput() {
+        var keys = args().keySet()
+                .stream()
+                .filter(k -> !k.equals("kwargs"))
+                .collect(Collectors.toSet());
+        return keys.size() == 1;
+    }
+
+    public Map<String, Object> args() {
+        return null;
     }
 
     /**
