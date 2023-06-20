@@ -28,7 +28,6 @@ import com.hw.langchain.tools.base.BaseTool;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.hw.langchain.agents.mrkl.prompt.Prompt.*;
@@ -60,7 +59,8 @@ public class ZeroShotAgent extends Agent {
      */
     public static PromptTemplate createPrompt(List<BaseTool> tools, String prefix, String suffix,
             String formatInstructions, List<String> inputVariables) {
-        String toolStrings = String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
+        String toolStrings =
+                String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
         String formattedInstructions = formatInstructions.replace("{tool_names}", toolNames);
         String template = String.join("\n\n", prefix, toolStrings, formattedInstructions, suffix);

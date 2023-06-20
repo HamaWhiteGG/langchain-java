@@ -21,8 +21,6 @@ package com.hw.langchain.agents.chat.base;
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
 import com.hw.langchain.agents.chat.output.parser.ChatOutputParser;
-import com.hw.langchain.agents.mrkl.base.ZeroShotAgent;
-import com.hw.langchain.agents.mrkl.output.parser.MRKLOutputParser;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
@@ -30,14 +28,13 @@ import com.hw.langchain.prompts.chat.BaseMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.ChatPromptTemplate;
 import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
-import com.hw.langchain.prompts.prompt.PromptTemplate;
 import com.hw.langchain.schema.AgentAction;
 import com.hw.langchain.tools.base.BaseTool;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.hw.langchain.agents.chat.prompt.Prompt.*;
 import static com.hw.langchain.agents.utils.Utils.validateToolsSingleInput;
@@ -76,11 +73,9 @@ public class ChatAgent extends Agent {
         }
     }
 
-
     private static AgentOutputParser getDefaultOutputParser(Map<String, Object> kwargs) {
         return new ChatOutputParser();
     }
-
 
     public static void validateTools(List<BaseTool> tools) {
         validateToolsSingleInput(ChatAgent.class.getSimpleName(), tools);
@@ -91,16 +86,18 @@ public class ChatAgent extends Agent {
         return List.of("Observation:");
     }
 
-    public static BasePromptTemplate createPrompt(List<BaseTool> tools, String systemMessagePrefix, String systemMessageSuffix, String humanMessage, String formatInstructions, List<String> inputVariables) {
+    public static BasePromptTemplate createPrompt(List<BaseTool> tools, String systemMessagePrefix,
+            String systemMessageSuffix, String humanMessage, String formatInstructions, List<String> inputVariables) {
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
-        String toolStrings = String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
+        String toolStrings =
+                String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
         String formattedInstructions = formatInstructions.replace("{tool_names}", toolNames);
-        String template = String.join("\n\n", systemMessagePrefix, toolStrings, formattedInstructions, systemMessageSuffix);
+        String template =
+                String.join("\n\n", systemMessagePrefix, toolStrings, formattedInstructions, systemMessageSuffix);
 
         List<BaseMessagePromptTemplate> messages = List.of(
                 SystemMessagePromptTemplate.fromTemplate(template),
-                HumanMessagePromptTemplate.fromTemplate(humanMessage)
-        );
+                HumanMessagePromptTemplate.fromTemplate(humanMessage));
         if (inputVariables == null) {
             inputVariables = List.of("input", "agent_scratchpad");
         }
@@ -119,11 +116,12 @@ public class ChatAgent extends Agent {
      * Construct an agent from an LLM and tools.
      */
     public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
-                                        String systemMessagePrefix, String systemMessageSuffix, String humanMessage, String formatInstructions,
-                                        List<String> inputVariables, Map<String, Object> kwargs) {
+            String systemMessagePrefix, String systemMessageSuffix, String humanMessage, String formatInstructions,
+            List<String> inputVariables, Map<String, Object> kwargs) {
         validateTools(tools);
 
-        var prompt = createPrompt(tools, systemMessagePrefix, systemMessageSuffix, humanMessage, formatInstructions, inputVariables);
+        var prompt = createPrompt(tools, systemMessagePrefix, systemMessageSuffix, humanMessage, formatInstructions,
+                inputVariables);
         var llmChain = new LLMChain(llm, prompt);
 
         var toolNames = tools.stream().map(BaseTool::getName).toList();
