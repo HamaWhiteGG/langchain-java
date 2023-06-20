@@ -19,6 +19,7 @@
 package com.hw.langchain.llms.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 
@@ -67,5 +68,25 @@ public abstract class BaseLLM implements BaseLanguageModel {
                 .map(PromptValue::toString)
                 .toList();
         return generate(promptStrings, stop);
+    }
+
+    @Override
+    public String predict(String text) {
+        return predict(text, null);
+    }
+
+    @Override
+    public String predict(String text, List<String> stop) {
+        return null;
+    }
+
+    @Override
+    public BaseMessage predictMessages(List<BaseMessage> messages) {
+        return predictMessages(messages, null);
+    }
+
+    @Override
+    public BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop) {
+        return null;
     }
 }

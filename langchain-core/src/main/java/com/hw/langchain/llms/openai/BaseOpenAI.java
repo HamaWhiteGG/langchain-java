@@ -19,7 +19,6 @@
 package com.hw.langchain.llms.openai;
 
 import com.hw.langchain.llms.base.BaseLLM;
-import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.openai.OpenAiClient;
@@ -148,16 +147,6 @@ public class BaseOpenAI extends BaseLLM {
      * Set of special tokens that are not allowed.
      */
     protected Set<String> disallowedSpecial;
-
-    @Override
-    public String predict(String text, List<String> stop) {
-        return null;
-    }
-
-    @Override
-    public BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop) {
-        return null;
-    }
 
     @Override
     public String llmType() {
