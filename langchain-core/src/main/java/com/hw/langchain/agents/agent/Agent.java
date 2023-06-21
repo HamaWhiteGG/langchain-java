@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.agent;
 
+import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.schema.AgentAction;
 import com.hw.langchain.schema.AgentFinish;
@@ -25,6 +26,8 @@ import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +43,8 @@ import java.util.Map;
  * @author HamaWhite
  */
 public abstract class Agent extends BaseSingleActionAgent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Agent.class);
 
     private LLMChain llmChain;
 
@@ -63,9 +68,9 @@ public abstract class Agent extends BaseSingleActionAgent {
      * Construct the scratchpad that lets the agent continue its thought process.
      *
      * @param intermediateSteps Steps the LLM has taken to date, along with observations
-     * @return str or List[BaseMessage]
+     * @return String or List[BaseMessage]
      */
-    public String constructScratchpad(List<Pair<AgentAction, String>> intermediateSteps) {
+    public Object constructScratchpad(List<Pair<AgentAction, String>> intermediateSteps) {
         StringBuilder thoughts = new StringBuilder();
         for (Pair<AgentAction, String> step : intermediateSteps) {
             thoughts.append(step.getKey().getLog());
@@ -102,6 +107,7 @@ public abstract class Agent extends BaseSingleActionAgent {
     public AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs) {
         var fullInputs = getFullInputs(intermediateSteps, kwargs);
         String fullOutput = llmChain.predict(fullInputs);
+        LOG.info("fullOutput: \n{}", fullOutput);
         return outputParser.parse(fullOutput);
     }
 
@@ -110,11 +116,18 @@ public abstract class Agent extends BaseSingleActionAgent {
      */
     public Map<String, Object> getFullInputs(List<Pair<AgentAction, String>> intermediateSteps,
             Map<String, Object> kwargs) {
-        String thoughts = constructScratchpad(intermediateSteps);
+        Object thoughts = constructScratchpad(intermediateSteps);
         var newInputs = Map.of("agent_scratchpad", thoughts, "stop", stop());
         Map<String, Object> fullInputs = new HashMap<>(kwargs);
         fullInputs.putAll(newInputs);
         return fullInputs;
+    }
+
+    public static BaseSingleActionAgent fromLLMAndTools(
+            BaseLanguageModel llm,
+            List<BaseTool> tools,
+            Map<String, Object> kwargs) {
+        throw new UnsupportedOperationException();
     }
 
     public AgentFinish returnStoppedResponse(String earlyStoppingMethod,

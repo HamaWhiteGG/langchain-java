@@ -16,21 +16,23 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.agents.types;
+package com.hw.langchain.agents.utils;
 
-import com.hw.langchain.agents.agent.BaseSingleActionAgent;
-import com.hw.langchain.agents.agent.types.AgentType;
-import com.hw.langchain.agents.chat.base.ChatAgent;
-import com.hw.langchain.agents.mrkl.base.ZeroShotAgent;
+import com.hw.langchain.tools.base.BaseTool;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class Types {
+public class Utils {
 
-    public static final Map<AgentType, Class<? extends BaseSingleActionAgent>> AGENT_TO_CLASS = Map.of(
-            AgentType.ZERO_SHOT_REACT_DESCRIPTION, ZeroShotAgent.class,
-            AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, ChatAgent.class);
+    public static void validateToolsSingleInput(String className, List<BaseTool> tools) {
+        for (BaseTool tool : tools) {
+            if (!tool.isSingleInput()) {
+                throw new IllegalArgumentException(
+                        className + " does not support multi-input tool " + tool.getName() + ".");
+            }
+        }
+    }
 }

@@ -58,13 +58,17 @@ public class PromptTemplate extends StringPromptTemplate {
 
     @Override
     public String format(Map<String, Object> kwargs) {
-        return StringSubstitutor.replace(template, kwargs, "{", "}");
+        String text = StringSubstitutor.replace(template, kwargs, "{", "}");
+        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
+        return text.replace("{{", "{").replace("}}", "}");
     }
 
     public static PromptTemplate fromTemplate(String template) {
         List<String> variableNames = new ArrayList<>();
         StringSubstitutor substitutor = new StringSubstitutor(variable -> {
-            variableNames.add(variable);
+            if (!variable.startsWith("{") && !variable.endsWith("}")) {
+                variableNames.add(variable);
+            }
             return null;
         });
         substitutor.setVariablePrefix("{");

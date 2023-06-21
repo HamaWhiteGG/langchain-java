@@ -28,7 +28,6 @@ import com.hw.langchain.tools.base.BaseTool;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.hw.langchain.agents.mrkl.prompt.Prompt.*;
@@ -60,13 +59,15 @@ public class ZeroShotAgent extends Agent {
      */
     public static PromptTemplate createPrompt(List<BaseTool> tools, String prefix, String suffix,
             String formatInstructions, List<String> inputVariables) {
-        String toolStrings = tools.stream()
-                .map(tool -> tool.getName() + ": " + tool.getDescription())
-                .collect(Collectors.joining("\n"));
-
+        String toolStrings =
+                String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
-        String formattedInstructions = formatInstructions.replace("{tool_names}", toolNames);
-        String template = String.join("\n\n", prefix, toolStrings, formattedInstructions, suffix);
+
+        formatInstructions = formatInstructions.replace("{tool_names}", toolNames);
+        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
+        formatInstructions = formatInstructions.replace("{{{{", "{{").replace("}}}}", "}}");
+
+        String template = String.join("\n\n", prefix, toolStrings, formatInstructions, suffix);
 
         if (inputVariables == null) {
             inputVariables = List.of("input", "agent_scratchpad");
@@ -81,6 +82,9 @@ public class ZeroShotAgent extends Agent {
         return fromLLMAndTools(llm, tools, null, PREFIX, SUFFIX, FORMAT_INSTRUCTIONS, null, kwargs);
     }
 
+    /**
+     * Construct an agent from an LLM and tools.
+     */
     public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
             String prefix, String suffix, String formatInstructions, List<String> inputVariables,
             Map<String, Object> kwargs) {
