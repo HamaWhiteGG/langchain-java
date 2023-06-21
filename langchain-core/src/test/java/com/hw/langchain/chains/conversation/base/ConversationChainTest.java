@@ -18,13 +18,20 @@
 
 package com.hw.langchain.chains.conversation.base;
 
+import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.langchain.memory.buffer.ConversationBufferMemory;
+import com.hw.langchain.prompts.chat.ChatPromptTemplate;
+import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
+import com.hw.langchain.prompts.chat.MessagesPlaceholder;
+import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,7 +45,7 @@ class ConversationChainTest {
     private static final Logger LOG = LoggerFactory.getLogger(ConversationChainTest.class);
 
     @Test
-    void testConversationChain() {
+    void testConversationChainWithLLM() {
         var llm = OpenAI.builder()
                 .temperature(0)
                 .build()
@@ -53,5 +60,25 @@ class ConversationChainTest {
         output = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
         LOG.info("Finished chain.\n{}", output);
         assertNotNull(output, "Output should not be null");
+    }
+
+    @Test
+    void testConversationChainWithChatModel() {
+        var prompt = ChatPromptTemplate.fromMessages(List.of(
+                SystemMessagePromptTemplate.fromTemplate(
+                        "The following is a friendly conversation between a human and an AI. The AI is talkative and " +
+                                "provides lots of specific details from its context. If the AI does not know the answer to a "
+                                +
+                                "question, it truthfully says it does not know."),
+                new MessagesPlaceholder("history"),
+                HumanMessagePromptTemplate.fromTemplate("{input}")));
+
+        var chat = ChatOpenAI.builder().temperature(0).build().init();
+        var memory = new ConversationBufferMemory(true);
+        var conversation = new ConversationChain(chat, prompt, memory);
+
+        conversation.predict(Map.of("input", "Hi there!"));
+        conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        conversation.predict(Map.of("input", "Tell me about yourself."));
     }
 }

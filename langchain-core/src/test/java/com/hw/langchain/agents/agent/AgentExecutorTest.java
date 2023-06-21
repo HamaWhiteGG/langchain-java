@@ -61,7 +61,7 @@ class AgentExecutorTest {
     }
 
     @Test
-    void testAgentWithChatModels() {
+    void testAgentWithChatModel() {
         // First, let's load the language model we're going to use to control the agent.
         var chat = ChatOpenAI.builder().temperature(0).build().init();
 

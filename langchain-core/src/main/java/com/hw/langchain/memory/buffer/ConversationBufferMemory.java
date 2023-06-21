@@ -38,6 +38,13 @@ public class ConversationBufferMemory extends BaseChatMemory {
 
     private String memoryKey = "history";
 
+    public ConversationBufferMemory() {
+    }
+
+    public ConversationBufferMemory(boolean returnMessages) {
+        this.returnMessages = returnMessages;
+    }
+
     /**
      * String buffer of memory.
      */
