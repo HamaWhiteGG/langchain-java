@@ -60,7 +60,7 @@ public class ChatAgent extends Agent {
 
     @Override
     public String constructScratchpad(List<Pair<AgentAction, String>> intermediateSteps) {
-        Object agentScratchpad = super.constructScratchpad(intermediateSteps);
+        var agentScratchpad = super.constructScratchpad(intermediateSteps);
         if (!(agentScratchpad instanceof String)) {
             throw new IllegalArgumentException("agent_scratchpad should be of type String.");
         }
@@ -91,9 +91,13 @@ public class ChatAgent extends Agent {
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
         String toolStrings =
                 String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
-        String formattedInstructions = formatInstructions.replace("{tool_names}", toolNames);
+
+        formatInstructions = formatInstructions.replace("{tool_names}", toolNames);
+        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
+        formatInstructions = formatInstructions.replace("{{{{", "{{").replace("}}}}", "}}");
+
         String template =
-                String.join("\n\n", systemMessagePrefix, toolStrings, formattedInstructions, systemMessageSuffix);
+                String.join("\n\n", systemMessagePrefix, toolStrings, formatInstructions, systemMessageSuffix);
 
         List<BaseMessagePromptTemplate> messages = List.of(
                 SystemMessagePromptTemplate.fromTemplate(template),

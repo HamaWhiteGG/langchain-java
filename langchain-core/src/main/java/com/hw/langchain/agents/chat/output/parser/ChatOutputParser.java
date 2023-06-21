@@ -53,7 +53,6 @@ public class ChatOutputParser extends AgentOutputParser {
                         "Parsing LLM output produced a final answer and a parse-able action: " + text);
             }
             return new AgentAction(response.get("action").toString(), response.get("action_input"), text);
-
         } catch (Exception e) {
             if (!includesAnswer) {
                 throw new OutputParserException("Could not parse LLM output: " + text);

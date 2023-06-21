@@ -150,7 +150,7 @@ public class AgentExecutor extends Chain {
 
         // We now enter the agent loop (until it returns something).
         while (shouldContinue(iterations, timeElapsed)) {
-            Object nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
+            var nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
             LOG.info("NextStepOutput: {}", nextStepOutput);
             if (nextStepOutput instanceof AgentFinish agentFinish) {
                 return _return(agentFinish, intermediateSteps);

@@ -62,8 +62,12 @@ public class ZeroShotAgent extends Agent {
         String toolStrings =
                 String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
-        String formattedInstructions = formatInstructions.replace("{tool_names}", toolNames);
-        String template = String.join("\n\n", prefix, toolStrings, formattedInstructions, suffix);
+
+        formatInstructions = formatInstructions.replace("{tool_names}", toolNames);
+        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
+        formatInstructions = formatInstructions.replace("{{{{", "{{").replace("}}}}", "}}");
+
+        String template = String.join("\n\n", prefix, toolStrings, formatInstructions, suffix);
 
         if (inputVariables == null) {
             inputVariables = List.of("input", "agent_scratchpad");

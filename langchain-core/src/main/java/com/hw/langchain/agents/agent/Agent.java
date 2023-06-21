@@ -26,6 +26,8 @@ import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,8 @@ import java.util.Map;
  * @author HamaWhite
  */
 public abstract class Agent extends BaseSingleActionAgent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Agent.class);
 
     private LLMChain llmChain;
 
@@ -103,6 +107,7 @@ public abstract class Agent extends BaseSingleActionAgent {
     public AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs) {
         var fullInputs = getFullInputs(intermediateSteps, kwargs);
         String fullOutput = llmChain.predict(fullInputs);
+        LOG.info("fullOutput: \n{}", fullOutput);
         return outputParser.parse(fullOutput);
     }
 
