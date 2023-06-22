@@ -22,6 +22,8 @@ import com.google.common.collect.Sets;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.memory.buffer.ConversationBufferMemory;
+import com.hw.langchain.prompts.base.BasePromptTemplate;
+import com.hw.langchain.schema.BaseMemory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,6 +46,11 @@ public class ConversationChain extends LLMChain {
         this.memory = new ConversationBufferMemory();
 
         validatePromptInputVariables();
+    }
+
+    public ConversationChain(BaseLanguageModel llm, BasePromptTemplate prompt, BaseMemory memory) {
+        super(llm, prompt);
+        this.memory = memory;
     }
 
     /**
