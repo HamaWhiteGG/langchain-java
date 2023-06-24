@@ -67,9 +67,8 @@ class ConversationChainTest {
         var prompt = ChatPromptTemplate.fromMessages(List.of(
                 SystemMessagePromptTemplate.fromTemplate(
                         "The following is a friendly conversation between a human and an AI. The AI is talkative and " +
-                                "provides lots of specific details from its context. If the AI does not know the answer to a "
-                                +
-                                "question, it truthfully says it does not know."),
+                                "provides lots of specific details from its context. If the AI does not know the " +
+                                "answer to a question, it truthfully says it does not know."),
                 new MessagesPlaceholder("history"),
                 HumanMessagePromptTemplate.fromTemplate("{input}")));
 
@@ -77,8 +76,19 @@ class ConversationChainTest {
         var memory = new ConversationBufferMemory(true);
         var conversation = new ConversationChain(chat, prompt, memory);
 
-        conversation.predict(Map.of("input", "Hi there!"));
-        conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
-        conversation.predict(Map.of("input", "Tell me about yourself."));
+        var output1 = conversation.predict(Map.of("input", "Hi there!"));
+        // Hello! How can I assist you today?
+        LOG.info("output1: \n{}", output1);
+        assertNotNull(output1, "output1 should not be null");
+
+        var output2 = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        // That sounds like fun! I'm happy to chat with you. What would you like to talk about?
+        LOG.info("output2: \n{}", output2);
+        assertNotNull(output2, "output2 should not be null");
+
+        var output3 = conversation.predict(Map.of("input", "Tell me about yourself."));
+        // Sure! I am an AI language model created by OpenAI. I was trained on a large dataset ...
+        LOG.info("output3: \n{}", output3);
+        assertNotNull(output3, "output3 should not be null");
     }
 }
