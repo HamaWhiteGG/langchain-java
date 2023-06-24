@@ -41,16 +41,14 @@ public class ConversationChain extends LLMChain {
     protected String inputKey = "input";
 
     public ConversationChain(BaseLanguageModel llm) {
-        super(llm, PROMPT, "response");
-        // Default memory store.
-        this.memory = new ConversationBufferMemory();
-
-        validatePromptInputVariables();
+        this(llm, PROMPT, new ConversationBufferMemory());
     }
 
     public ConversationChain(BaseLanguageModel llm, BasePromptTemplate prompt, BaseMemory memory) {
-        super(llm, prompt);
+        super(llm, prompt, "response");
         this.memory = memory;
+
+        validatePromptInputVariables();
     }
 
     /**

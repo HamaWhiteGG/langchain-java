@@ -21,7 +21,9 @@ package com.hw.langchain.chains.llm;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
+import com.hw.langchain.schema.BaseLLMOutputParser;
 import com.hw.langchain.schema.LLMResult;
+import com.hw.langchain.schema.NoOpOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
 import org.slf4j.Logger;
@@ -49,6 +51,18 @@ public class LLMChain extends Chain {
     protected BasePromptTemplate prompt;
 
     protected String outputKey = "text";
+
+    /**
+     * Output parser to use.
+     * Defaults to one that takes the most likely string but does not change it.
+     */
+    protected BaseLLMOutputParser<String> outputParser = new NoOpOutputParser();
+
+    /**
+     * Whether to return only the final parsed result. Defaults to true.
+     * If false, will return a bunch of extra information about the generation.
+     */
+    protected boolean returnFinalOnly = true;
 
     public LLMChain(BaseLanguageModel llm, BasePromptTemplate prompt) {
         this.llm = llm;
@@ -126,10 +140,18 @@ public class LLMChain extends Chain {
     /**
      * Create outputs from response.
      */
-    private List<Map<String, String>> createOutputs(LLMResult response) {
-        return response.getGenerations().stream()
-                .map(generationList -> Map.of(outputKey, generationList.get(0).getText()))
+    private List<Map<String, String>> createOutputs(LLMResult llmResult) {
+        var result = llmResult.getGenerations().stream()
+                .map(generation -> Map.of(outputKey, outputParser.parseResult(generation),
+                        "full_generation", generation.toString()))
                 .toList();
+
+        if (returnFinalOnly) {
+            result = result.stream()
+                    .map(r -> Map.of(outputKey, r.get(outputKey)))
+                    .toList();
+        }
+        return result;
     }
 
     /**

@@ -18,14 +18,20 @@
 
 package com.hw.langchain.schema;
 
+import java.util.List;
+
 /**
  * Class to parse the output of an LLM call.
- * <p>
  * Output parsers help structure language model responses.
  *
  * @author HamaWhite
  */
-public abstract class BaseOutputParser<T> {
+public abstract class BaseOutputParser<T> extends BaseLLMOutputParser<T> {
+
+    @Override
+    public T parseResult(List<? extends Generation> result) {
+        return parse(result.get(0).getText());
+    }
 
     /**
      * Parse the output of an LLM call.
@@ -55,5 +61,7 @@ public abstract class BaseOutputParser<T> {
      *
      * @return format instructions
      */
-    public abstract String getFormatInstructions();
+    public String getFormatInstructions() {
+        throw new UnsupportedOperationException("Method getFormatInstructions() is not implemented.");
+    }
 }
