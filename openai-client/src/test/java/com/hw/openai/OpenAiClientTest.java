@@ -21,6 +21,7 @@ package com.hw.openai;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
+import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
@@ -102,5 +103,19 @@ class OpenAiClientTest {
                 .build();
 
         assertThat(client.chatCompletion(chatCompletion)).isEqualTo("Hello there! How can I assist you today?");
+    }
+
+    @Test
+    void testEmbeddings() {
+        var embedding = Embedding.builder()
+                .model("text-embedding-ada-002")
+                .input(List.of("The food was delicious and the waiter..."))
+                .build();
+
+        var response = client.embedding(embedding);
+
+        assertThat(response).as("Response should not be null").isNotNull();
+        assertThat(response.getData()).as("Data list should have size 1").hasSize(1);
+        assertThat(response.getData().get(0).getEmbedding()).as("Embedding should have size 1536").hasSize(1536);
     }
 }

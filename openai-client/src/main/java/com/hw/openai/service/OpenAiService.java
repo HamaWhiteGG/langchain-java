@@ -22,6 +22,8 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
+import com.hw.openai.entity.embeddings.Embedding;
+import com.hw.openai.entity.embeddings.EmbeddingResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
@@ -73,4 +75,14 @@ public interface OpenAiService {
      */
     @POST("chat/completions")
     Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);
+
+    /**
+     * Creates an embedding vector representing the input text.
+     *
+     * @param embedding The Embedding object containing the input text.
+     * @return A Single object that emits an EmbeddingResp, representing the response containing the embedding vector.
+     */
+    @POST("embeddings")
+    Single<EmbeddingResp> embedding(@Body Embedding embedding);
+
 }
