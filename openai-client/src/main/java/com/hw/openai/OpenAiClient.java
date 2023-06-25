@@ -23,6 +23,8 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
+import com.hw.openai.entity.embeddings.Embedding;
+import com.hw.openai.entity.embeddings.EmbeddingResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.service.OpenAiService;
@@ -216,5 +218,15 @@ public class OpenAiClient {
      */
     public ChatCompletionResp create(ChatCompletion chatCompletion) {
         return service.chatCompletion(chatCompletion).blockingGet();
+    }
+
+    /**
+     * Creates an embedding vector representing the input text.
+     *
+     * @param embedding The Embedding object containing the input text.
+     * @return The embedding vector response.
+     */
+    public EmbeddingResp embedding(Embedding embedding) {
+        return service.embedding(embedding).blockingGet();
     }
 }
