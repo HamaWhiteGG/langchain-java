@@ -15,7 +15,7 @@ Looking for the Python version? Check out [LangChain](https://github.com/hwchase
 ## 2. Quickstart Guide
 This tutorial gives you a quick walkthrough about building an end-to-end language model application with LangChain.
 
-View the [Quickstart Guide](https://python.langchain.com/en/latest/getting_started/getting_started.html#) on the LangChain official website.
+View the [Quickstart Guide](https://python.langchain.com/docs/get_started) on the LangChain official website.
 
 ### 2.1 Maven Repository
 Prerequisites for building:
