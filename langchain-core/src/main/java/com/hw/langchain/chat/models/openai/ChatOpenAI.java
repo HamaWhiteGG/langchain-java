@@ -110,7 +110,7 @@ public class ChatOpenAI extends BaseChatModel {
     protected Integer maxTokens;
 
     /**
-     * Validate that api key exists in environment.
+     * Validate parameters and init client
      */
     public ChatOpenAI init() {
         openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
