@@ -16,49 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.vectorstores.pinecone;
-
-import com.hw.langchain.document.loaders.text.TextLoader;
-import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
-import com.hw.langchain.text.splitter.CharacterTextSplitter;
+package io.pinecone;
 
 import org.junit.jupiter.api.Test;
 
-import io.pinecone.PineconeClient;
-import io.pinecone.PineconeClientConfig;
-
 /**
- * <a href="https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/pinecone">pinecone</a>
- *
  * @author HamaWhite
  */
-class PineconeTest {
+class PineconeClientTest {
 
     @Test
-    void testPinecone() {
-        String filePath = "../docs/extras/modules/state_of_the_union.txt";
-        var loader = new TextLoader(filePath);
-        var documents = loader.load();
-
-        var textSplitter = CharacterTextSplitter.builder()
-                .chunkSize(1000)
-                .chunkOverlap(0)
-                .build();
-        var docs = textSplitter.splitDocuments(documents);
-
-        var embeddings = new OpenAIEmbeddings();
-
+    void testPineconeClient() {
         PineconeClientConfig configuration = new PineconeClientConfig()
                 .withApiKey(System.getenv("PINECONE_API_KEY"))
                 .withEnvironment("northamerica-northeast1-gcp")
-                .withProjectName("")
+                .withProjectName("demo")
                 .withServerSideTimeoutSec(10);
 
-        var pineconeClient = new PineconeClient(configuration);
+        PineconeClient pineconeClient = new PineconeClient(configuration);
 
-        var indexName = "langchain-demo";
+        String indexName = "langchain-demo";
+        PineconeConnection conn = pineconeClient.connect(indexName);
 
-        System.out.println("end");
+        var blockingStub = conn.getBlockingStub();
     }
-
 }

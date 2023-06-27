@@ -18,8 +18,57 @@
 
 package com.hw.langchain.vectorstores.pinecone;
 
+import com.hw.langchain.schema.Document;
+import com.hw.langchain.vectorstores.base.VectorStore;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 /**
  * @author HamaWhite
  */
-public class Pinecone {
+public class Pinecone extends VectorStore {
+
+    private Object index;
+
+    private Function<String, float[]> embeddingFunction;
+
+    private String textKey;
+
+    private String namespace;
+
+    @Override
+    public List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas, Map<String, Object> kwargs) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(List<String> ids) {
+        return false;
+    }
+
+    @Override
+    public List<Document> similaritySearch(String query, int k, Map<String, Object> kwargs) {
+        return null;
+    }
+
+    @Override
+    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k,
+            Map<String, Object> kwargs) {
+        return null;
+    }
+
+    @Override
+    public List<Document> similarSearchByVector(List<Float> embedding, int k, Map<String, Object> kwargs) {
+        return null;
+    }
+
+    @Override
+    public List<Document> maxMarginalRelevanceSearch(String query, int k, int fetchK, float lambdaMult,
+            Map<String, Object> kwargs) {
+        return null;
+    }
 }

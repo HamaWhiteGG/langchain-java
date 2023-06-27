@@ -16,6 +16,7 @@
         <module>langchain-server</module>
         <module>langchain-web</module>
         <module>serpapi-client</module>
+        <module>pinecone-client</module>
     </modules>
 
     <properties>

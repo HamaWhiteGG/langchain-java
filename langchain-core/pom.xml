@@ -43,6 +43,21 @@
             <artifactId>commons-collections4</artifactId>
         </dependency>
 
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.nd4j/nd4j-native &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.nd4j</groupId>-->
+        <!--            <artifactId>nd4j-native</artifactId>-->
+        <!--            <version>1.0.0-M2.1</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.nd4j/nd4j-native-platform -->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython-standalone</artifactId>

@@ -137,9 +137,9 @@ public class SQLDatabaseChain extends Chain {
         String result = database.run(sqlCmd, false);
         LOG.info("SQLResult: \n{}", result);
 
-        /**
-         * If return direct, we just set the final result equal to the result of the sql query result,
-         * otherwise try to get a human readable final answer
+        /*
+         * If return direct, we just set the final result equal to the result of the sql query result, otherwise try to
+         * get a human readable final answer
          */
         String finalResult;
         if (returnDirect) {

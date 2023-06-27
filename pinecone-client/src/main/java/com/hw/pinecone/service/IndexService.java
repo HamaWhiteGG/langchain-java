@@ -16,36 +16,37 @@
  * limitations under the License.
  */
 
-package com.knuddels.jtokkit.api;
+package com.hw.pinecone.service;
 
-import com.hw.langchain.exception.LangChainException;
-import com.knuddels.jtokkit.Encodings;
+import com.hw.pinecone.entity.index.CreateIndexCmd;
 
-import org.junit.jupiter.api.Test;
+import io.reactivex.Single;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
- * <a href="https://github.com/knuddelsgmbh/jtokkit">jtokkit</a>
+ * Index Operations
  *
  * @author HamaWhite
  */
-class EncodingTest {
+public interface IndexService {
 
-    @Test
-    void testEncoding() {
-        EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
-        Encoding enc = registry.getEncodingForModel("text-embedding-ada-002")
-                .orElseThrow(() -> new LangChainException("Encoding not found."));
+    /**
+     * This operation returns a list of your Pinecone indexes.
+     *
+     * @return A Single that emits a list of strings representing the Pinecone indexes.
+     */
+    @GET("databases")
+    Single<List<String>> listIndexes();
 
-        String text = "This is a sample sentence.";
-
-        List<Integer> encoded = enc.encode(text);
-        assertEquals(List.of(2028, 374, 264, 6205, 11914, 13), encoded);
-
-        String decoded = enc.decode(encoded);
-        assertEquals(text, decoded);
-    }
+    /**
+     * This operation creates a Pinecone index.
+     *
+     * @param command create index command
+     */
+    @POST("databases")
+    Single<Void> createIndex(@Body CreateIndexCmd command);
 }

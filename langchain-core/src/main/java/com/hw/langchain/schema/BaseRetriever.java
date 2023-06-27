@@ -16,36 +16,22 @@
  * limitations under the License.
  */
 
-package com.knuddels.jtokkit.api;
-
-import com.hw.langchain.exception.LangChainException;
-import com.knuddels.jtokkit.Encodings;
-
-import org.junit.jupiter.api.Test;
+package com.hw.langchain.schema;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
- * <a href="https://github.com/knuddelsgmbh/jtokkit">jtokkit</a>
+ * Base interface for retrievers.
  *
  * @author HamaWhite
  */
-class EncodingTest {
+public interface BaseRetriever {
 
-    @Test
-    void testEncoding() {
-        EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
-        Encoding enc = registry.getEncodingForModel("text-embedding-ada-002")
-                .orElseThrow(() -> new LangChainException("Encoding not found."));
-
-        String text = "This is a sample sentence.";
-
-        List<Integer> encoded = enc.encode(text);
-        assertEquals(List.of(2028, 374, 264, 6205, 11914, 13), encoded);
-
-        String decoded = enc.decode(encoded);
-        assertEquals(text, decoded);
-    }
+    /**
+     * Get documents relevant for a query.
+     *
+     * @param query string to find relevant documents for
+     * @return List of relevant documents
+     */
+    List<Document> getRelevantDocuments(String query);
 }

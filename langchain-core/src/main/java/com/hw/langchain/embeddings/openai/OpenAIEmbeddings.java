@@ -18,17 +18,26 @@
 
 package com.hw.langchain.embeddings.openai;
 
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Floats;
 import com.hw.langchain.embeddings.base.Embeddings;
+import com.hw.langchain.exception.LangChainException;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.entity.embeddings.Embedding;
+import com.hw.openai.entity.embeddings.EmbeddingResp;
+import com.knuddels.jtokkit.Encodings;
+import com.knuddels.jtokkit.api.Encoding;
+
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
+import static java.util.Collections.nCopies;
 
 /**
  * Wrapper around OpenAI embedding models.
@@ -60,12 +69,6 @@ public class OpenAIEmbeddings implements Embeddings {
     private String openaiApiKey;
 
     protected String openaiOrganization;
-
-    @Builder.Default
-    private Set<String> allowedSpecial = new HashSet<>();
-
-    @Builder.Default
-    private Set<String> disallowedSpecial = Set.of("all");
 
     /**
      * Maximum number of texts to embed in each batch
@@ -112,13 +115,108 @@ public class OpenAIEmbeddings implements Embeddings {
         init();
     }
 
-    @Override
-    public List<List<Float>> embedDocuments(List<String> texts) {
-        return null;
+    /**
+     * please refer to https://github.com/openai/openai-cookbook/blob/main/examples/Embedding_long_inputs.ipynb
+     */
+    private List<List<Float>> getLenSafeEmbeddings(List<String> texts) {
+        List<List<Float>> embeddings = new ArrayList<>(texts.size());
+
+        List<List<Integer>> tokens = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        Encoding encoding = Encodings.newDefaultEncodingRegistry()
+                .getEncodingForModel(model)
+                .orElseThrow(() -> new LangChainException("Encoding not found."));
+
+        for (int i = 0; i < texts.size(); i++) {
+            String text = texts.get(i);
+            if (model.endsWith("001")) {
+                // See https://github.com/openai/openai-python/issues/418#issuecomment-1525939500
+                // replace newlines, which can negatively affect performance.
+                text = text.replace("\n", " ");
+            }
+            List<Integer> token = encoding.encode(text);
+            for (int j = 0; j < token.size(); j += embeddingCtxLength) {
+                tokens.add(token.subList(j, Math.min(j + embeddingCtxLength, token.size())));
+                indices.add(i);
+            }
+        }
+
+        List<List<Float>> batchedEmbeddings = new ArrayList<>();
+        for (int i = 0; i < tokens.size(); i += chunkSize) {
+            List<String> input = tokens.subList(i, Math.min(i + chunkSize, tokens.size()))
+                    .stream()
+                    .map(Object::toString)
+                    .toList();
+            var response = embedWithRetry(input);
+            response.getData().forEach(result -> batchedEmbeddings.add(result.getEmbedding()));
+        }
+
+        List<List<List<Float>>> results = new ArrayList<>(nCopies(texts.size(), new ArrayList<>()));
+        List<List<Integer>> numTokensInBatch = new ArrayList<>(nCopies(texts.size(), new ArrayList<>()));
+        for (int i = 0; i < indices.size(); i++) {
+            int index = indices.get(i);
+            results.get(index).add(batchedEmbeddings.get(i));
+            numTokensInBatch.get(index).add(tokens.get(i).size());
+        }
+
+        for (int i = 0; i < texts.size(); i++) {
+            INDArray average;
+            try (INDArray resultArray =
+                    Nd4j.create(results.get(i).stream().map(Floats::toArray).toArray(float[][]::new))) {
+                INDArray weightsArray = Nd4j.create(Doubles.toArray(numTokensInBatch.get(i)));
+                average = resultArray.mean(0).mulColumnVector(weightsArray).sum(0);
+            }
+            INDArray normalizedAverage = average.div(average.norm2Number());
+            embeddings.add(Floats.asList(normalizedAverage.toFloatVector()));
+        }
+        return embeddings;
     }
 
+    /**
+     * Call out to OpenAI's embedding endpoint.
+     */
+    public List<Float> embeddingFunc(String text) {
+        if (text.length() > embeddingCtxLength) {
+            return getLenSafeEmbeddings(List.of(text)).get(0);
+        } else {
+            if (model.endsWith("001")) {
+                // See: https://github.com/openai/openai-python/issues/418#issuecomment-1525939500
+                // replace newlines, which can negatively affect performance.
+                text = text.replace("\n", " ");
+            }
+            return embedWithRetry(List.of(text)).getData().get(0).getEmbedding();
+        }
+    }
+
+    /**
+     * Call out to OpenAI's embedding endpoint for embedding search docs.
+     *
+     * @param texts The list of texts to embed.
+     * @return List of embeddings, one for each text.
+     */
+    @Override
+    public List<List<Float>> embedDocuments(List<String> texts) {
+        // NOTE: to keep things simple, we assume the list may contain texts longer
+        // than the maximum context and use length-safe embedding function.
+        return this.getLenSafeEmbeddings(texts);
+    }
+
+    /**
+     * Call out to OpenAI's embedding endpoint for embedding query text.
+     *
+     * @param text The text to embed.
+     * @return Embedding for the text.
+     */
     @Override
     public List<Float> embedQuery(String text) {
-        return null;
+        return embeddingFunc(text);
+    }
+
+    public EmbeddingResp embedWithRetry(List<String> input) {
+        var embedding = Embedding.builder()
+                .model(model)
+                .input(input)
+                .build();
+        return client.embedding(embedding);
     }
 }
