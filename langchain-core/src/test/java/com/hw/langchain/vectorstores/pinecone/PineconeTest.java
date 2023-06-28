@@ -22,6 +22,7 @@ import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author HamaWhite
  */
+@Disabled("Test requires costly OpenAI and Pinecone calls, can be run manually.")
 class PineconeTest {
 
     @Test
@@ -42,12 +44,9 @@ class PineconeTest {
                 .chunkOverlap(0)
                 .build();
         var docs = textSplitter.splitDocuments(documents);
-
         var embeddings = new OpenAIEmbeddings();
 
         var indexName = "langchain-demo";
-
         System.out.println("end");
     }
-
 }
