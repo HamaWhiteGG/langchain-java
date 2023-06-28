@@ -24,6 +24,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.github.hamawhitegg</groupId>
+            <artifactId>pinecone-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

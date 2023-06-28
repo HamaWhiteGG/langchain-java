@@ -21,9 +21,12 @@ package com.hw.langchain.vectorstores.pinecone;
 import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
+import com.hw.pinecone.PineconeClient;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 /**
  * <a href="https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/pinecone">pinecone</a>
@@ -46,7 +49,17 @@ class PineconeTest {
         var docs = textSplitter.splitDocuments(documents);
         var embeddings = new OpenAIEmbeddings();
 
+        var client = PineconeClient.builder()
+                .apiKey(System.getenv("PINECONE_API_KEY"))
+                .environment(System.getenv("PINECONE_ENV"))
+                .build()
+                .init();
+
         var indexName = "langchain-demo";
-        System.out.println("end");
+
+        var docSearch = Pinecone.fromDocuments(docs, embeddings, Map.of("indexName", indexName));
+
+        var query = "What did the president say about Ketanji Brown Jackson";
+        docs = docSearch.similaritySearch(query, null);
     }
 }

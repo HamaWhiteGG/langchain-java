@@ -46,13 +46,11 @@ class PineconeClientTest {
 
     private static final String indexName = "index-temp";
 
-    private static final String environment = "northamerica-northeast1-gcp";
-
     @BeforeAll
     static void setup() {
         client = PineconeClient.builder()
                 .apiKey(System.getenv("PINECONE_API_KEY"))
-                .environment(environment)
+                .environment(System.getenv("PINECONE_ENV"))
                 .build()
                 .init();
 
@@ -124,7 +122,8 @@ class PineconeClientTest {
                 () -> assertTrue(status.getWaiting().isEmpty()),
                 () -> assertTrue(status.getCrashed().isEmpty()),
                 () -> {
-                    String host = String.format("%s-%s.svc.%s.pinecone.io", indexName, "b43e233", environment);
+                    String host = String.format("%s-%s.svc.%s.pinecone.io", indexName, "b43e233",
+                            System.getenv("PINECONE_ENV"));
                     assertEquals(host, status.getHost());
                 },
                 () -> assertEquals(433, status.getPort()),
