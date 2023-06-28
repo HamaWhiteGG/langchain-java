@@ -26,7 +26,7 @@ import com.hw.pinecone.service.VectorService;
  */
 public class IndexClient {
 
-    private VectorService vectorService;
+    private final VectorService vectorService;
 
     public IndexClient(VectorService vectorService) {
         this.vectorService = vectorService;

@@ -42,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Because the <a href="https://github.com/pinecone-io/pinecone-java-client">pinecone-java-client</a> does not support managing Pinecone services,
  * only reading and writing from existing indices. Therefore, this needs to be rewritten.
+ * <p>
+ * <a href="https://docs.pinecone.io/reference">pinecone-api-doc</a>
  *
  * @author HamaWhite
  */
