@@ -20,6 +20,7 @@ package com.hw.pinecone;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.pinecone.entity.index.CreateIndexCmd;
+import com.hw.pinecone.entity.index.IndexDescription;
 import com.hw.pinecone.service.IndexService;
 import com.hw.pinecone.service.VectorService;
 
@@ -142,6 +143,25 @@ public class PineconeClient {
      * @param command create index command
      */
     public void createIndex(CreateIndexCmd command) {
-        indexService.createIndex(command).subscribe();
+        indexService.createIndex(command).blockingGet();
+    }
+
+    /**
+     * Get a description of an index.
+     *
+     * @param name the name of the index
+     * @return a description of the index
+     */
+    public IndexDescription describeIndex(String name) {
+        return indexService.describeIndex(name).blockingGet();
+    }
+
+    /**
+     * This operation deletes an existing index.
+     *
+     * @param name the name of the index
+     */
+    public void deleteIndex(String name) {
+        indexService.deleteIndex(name).blockingGet();
     }
 }

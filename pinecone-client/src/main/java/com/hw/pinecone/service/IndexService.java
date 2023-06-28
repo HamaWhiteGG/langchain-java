@@ -19,11 +19,11 @@
 package com.hw.pinecone.service;
 
 import com.hw.pinecone.entity.index.CreateIndexCmd;
+import com.hw.pinecone.entity.index.IndexDescription;
 
 import io.reactivex.Single;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
+import okhttp3.ResponseBody;
+import retrofit2.http.*;
 
 import java.util.List;
 
@@ -46,7 +46,27 @@ public interface IndexService {
      * This operation creates a Pinecone index.
      *
      * @param command create index command
+     * @return  a Single wrapping the response body
      */
     @POST("databases")
-    Single<Void> createIndex(@Body CreateIndexCmd command);
+    Single<ResponseBody> createIndex(@Body CreateIndexCmd command);
+
+    /**
+     * Get a description of an index.
+     *
+     * @param name the name of the index
+     * @return A Single that emits a description of the index
+     */
+    @GET("databases/{indexName}")
+    Single<IndexDescription> describeIndex(@Path("indexName") String name);
+
+    /**
+     * This operation deletes an existing index.
+     *
+     * @param name the name of the index
+     * @return a Single wrapping the response body
+     */
+    @DELETE("databases/{indexName}")
+    Single<ResponseBody> deleteIndex(@Path("indexName") String name);
+
 }
