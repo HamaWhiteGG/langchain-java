@@ -16,37 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.helpers;
+package com.hw.pinecone.entity.vector;
 
-import org.python.icu.text.CharsetDetector;
-import org.python.icu.text.CharsetMatch;
+import lombok.Data;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class Helpers {
-
-    private Helpers() {
-    }
+@Data
+public class SingleQueryResults {
 
     /**
-     * Try to detect the file encoding.
+     * The matches for the vectors.
      */
-    public static FileEncoding detectFileEncodings(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] data = Files.readAllBytes(path);
+    private List<ScoredVector> matches;
 
-        CharsetDetector detector = new CharsetDetector();
-        detector.setText(data);
-        CharsetMatch match = detector.detect();
-
-        Charset charset = Charset.forName(match.getName());
-        return new FileEncoding(charset, match.getConfidence(), match.getLanguage());
-    }
+    /**
+     * The namespace for the vectors.
+     */
+    private String namespace;
 }

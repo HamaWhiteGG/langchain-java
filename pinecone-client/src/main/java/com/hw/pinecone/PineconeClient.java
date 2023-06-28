@@ -19,7 +19,7 @@
 package com.hw.pinecone;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hw.pinecone.entity.index.CreateIndexCmd;
+import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.IndexDescription;
 import com.hw.pinecone.service.IndexService;
 import com.hw.pinecone.service.VectorService;
@@ -54,7 +54,7 @@ public class PineconeClient {
     private String apiKey;
 
     @Builder.Default
-    private String host = "https://controller.%s.pinecone.io/";
+    private String host = "https://controller.%s.pinecone.io";
 
     private String environment;
 
@@ -66,11 +66,9 @@ public class PineconeClient {
     @Builder.Default
     protected long requestTimeout = 10;
 
-    private IndexService indexService;
-
-    private VectorService vectorService;
-
     private OkHttpClient httpClient;
+
+    private IndexService indexService;
 
     /**
      * Initializes the PineconeClient instance.
@@ -78,6 +76,23 @@ public class PineconeClient {
      * @return the initialized PineconeClient instance
      */
     public PineconeClient init() {
+        Retrofit retrofit = createRetrofit(String.format(host, environment));
+        this.indexService = retrofit.create(IndexService.class);
+        return this;
+    }
+
+    public IndexClient indexClient(String name) {
+        String baseUrl = "https://" + describeIndex(name).getStatus().getHost();
+        Retrofit retrofit = createRetrofit(baseUrl);
+        return new IndexClient(retrofit.create(VectorService.class));
+    }
+
+    /**
+     * Initializes the PineconeClient instance.
+     *
+     * @return the initialized PineconeClient instance
+     */
+    public Retrofit createRetrofit(String baseUrl) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(requestTimeout, TimeUnit.SECONDS)
                 .readTimeout(requestTimeout, TimeUnit.SECONDS)
@@ -104,16 +119,12 @@ public class PineconeClient {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(String.format(host, environment))
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(httpClient)
                 .build();
-
-        this.indexService = retrofit.create(IndexService.class);
-        this.vectorService = retrofit.create(VectorService.class);
-        return this;
     }
 
     /**
@@ -140,10 +151,10 @@ public class PineconeClient {
     /**
      * This operation creates a Pinecone index.
      *
-     * @param command create index command
+     * @param request create index request
      */
-    public void createIndex(CreateIndexCmd command) {
-        indexService.createIndex(command).blockingGet();
+    public void createIndex(CreateIndexRequest request) {
+        indexService.createIndex(request).blockingGet();
     }
 
     /**

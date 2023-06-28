@@ -69,16 +69,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.googlecode.juniversalchardet</groupId>
-            <artifactId>juniversalchardet</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.pinecone</groupId>
-            <artifactId>pinecone-client</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

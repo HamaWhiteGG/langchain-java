@@ -16,37 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.helpers;
+package com.hw.pinecone.entity.vector;
 
-import org.python.icu.text.CharsetDetector;
-import org.python.icu.text.CharsetMatch;
+import com.hw.pinecone.IndexClient;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class Helpers {
-
-    private Helpers() {
-    }
+@Data
+public class SparseValues {
 
     /**
-     * Try to detect the file encoding.
+     * The indices of the sparse data.
      */
-    public static FileEncoding detectFileEncodings(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] data = Files.readAllBytes(path);
+    private List<IndexClient> indices;
 
-        CharsetDetector detector = new CharsetDetector();
-        detector.setText(data);
-        CharsetMatch match = detector.detect();
+    /**
+     * The corresponding values of the sparse data, which must be with the same length as the indices.
+     */
+    private List<Float> values;
 
-        Charset charset = Charset.forName(match.getName());
-        return new FileEncoding(charset, match.getConfidence(), match.getLanguage());
-    }
 }

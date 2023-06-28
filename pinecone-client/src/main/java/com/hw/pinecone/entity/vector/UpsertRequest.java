@@ -16,37 +16,40 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.helpers;
+package com.hw.pinecone.entity.vector;
 
-import org.python.icu.text.CharsetDetector;
-import org.python.icu.text.CharsetMatch;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class Helpers {
-
-    private Helpers() {
-    }
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UpsertRequest implements Serializable {
 
     /**
-     * Try to detect the file encoding.
+     * An array containing the vectors to upsert. Recommended batch limit is 100 vectors.
      */
-    public static FileEncoding detectFileEncodings(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] data = Files.readAllBytes(path);
+    @NotEmpty
+    private List<Vector> vectors;
 
-        CharsetDetector detector = new CharsetDetector();
-        detector.setText(data);
-        CharsetMatch match = detector.detect();
+    /**
+     * This is the namespace name where you upsert vectors.
+     */
+    private String namespace;
 
-        Charset charset = Charset.forName(match.getName());
-        return new FileEncoding(charset, match.getConfidence(), match.getLanguage());
+    public UpsertRequest(List<Vector> vectors) {
+        this.vectors = vectors;
+    }
+
+    public UpsertRequest(List<Vector> vectors, String namespace) {
+        this.vectors = vectors;
+        this.namespace = namespace;
     }
 }

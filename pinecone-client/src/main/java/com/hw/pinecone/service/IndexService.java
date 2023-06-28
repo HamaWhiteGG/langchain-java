@@ -18,7 +18,7 @@
 
 package com.hw.pinecone.service;
 
-import com.hw.pinecone.entity.index.CreateIndexCmd;
+import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.IndexDescription;
 
 import io.reactivex.Single;
@@ -39,17 +39,17 @@ public interface IndexService {
      *
      * @return A Single that emits a list of strings representing the Pinecone indexes.
      */
-    @GET("databases")
+    @GET("/databases")
     Single<List<String>> listIndexes();
 
     /**
      * This operation creates a Pinecone index.
      *
-     * @param command create index command
+     * @param request create index request
      * @return  a Single wrapping the response body
      */
-    @POST("databases")
-    Single<ResponseBody> createIndex(@Body CreateIndexCmd command);
+    @POST("/databases")
+    Single<ResponseBody> createIndex(@Body CreateIndexRequest request);
 
     /**
      * Get a description of an index.
@@ -57,7 +57,7 @@ public interface IndexService {
      * @param name the name of the index
      * @return A Single that emits a description of the index
      */
-    @GET("databases/{indexName}")
+    @GET("/databases/{indexName}")
     Single<IndexDescription> describeIndex(@Path("indexName") String name);
 
     /**
@@ -66,7 +66,7 @@ public interface IndexService {
      * @param name the name of the index
      * @return a Single wrapping the response body
      */
-    @DELETE("databases/{indexName}")
+    @DELETE("/databases/{indexName}")
     Single<ResponseBody> deleteIndex(@Path("indexName") String name);
 
 }

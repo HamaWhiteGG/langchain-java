@@ -16,28 +16,30 @@
  * limitations under the License.
  */
 
-package io.pinecone;
+package com.hw.pinecone.entity.vector;
 
-import org.junit.jupiter.api.Test;
+import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-class PineconeClientTest {
+@Data
+public class QueryResponse {
 
-    @Test
-    void testPineconeClient() {
-        PineconeClientConfig configuration = new PineconeClientConfig()
-                .withApiKey(System.getenv("PINECONE_API_KEY"))
-                .withEnvironment("northamerica-northeast1-gcp")
-                .withProjectName("demo")
-                .withServerSideTimeoutSec(10);
+    /**
+     * The results of each query. The order is the same as `QueryRequest.queries`.
+     */
+    private List<SingleQueryResults> results;
 
-        PineconeClient pineconeClient = new PineconeClient(configuration);
+    /**
+     * The matches for the vectors.
+     */
+    private List<ScoredVector> matches;
 
-        String indexName = "langchain-demo";
-        PineconeConnection conn = pineconeClient.connect(indexName);
-
-        var blockingStub = conn.getBlockingStub();
-    }
+    /**
+     * The namespace for the vectors.
+     */
+    private String namespace;
 }

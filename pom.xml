@@ -27,16 +27,15 @@
         <jython.version>2.7.3</jython.version>
         <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
-        <pinecone.version>0.2.3</pinecone.version>
         <guava.version>32.0.1-jre</guava.version>
         <assertj.version>3.24.2</assertj.version>
         <okhttp3.version>3.14.9</okhttp3.version>
         <retrofit.version>2.9.0</retrofit.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
+        <awaitility.version>4.2.0</awaitility.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
         <commons-text.version>1.10.0</commons-text.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <juniversalchardet.version>1.0.3</juniversalchardet.version>
         <jackson-annotation.version>2.15.1</jackson-annotation.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
@@ -137,18 +136,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.googlecode.juniversalchardet</groupId>
-                <artifactId>juniversalchardet</artifactId>
-                <version>${juniversalchardet.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.pinecone</groupId>
-                <artifactId>pinecone-client</artifactId>
-                <version>${pinecone.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
@@ -200,6 +187,14 @@
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

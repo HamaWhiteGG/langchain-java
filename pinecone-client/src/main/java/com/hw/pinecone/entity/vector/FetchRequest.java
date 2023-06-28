@@ -16,37 +16,35 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.helpers;
+package com.hw.pinecone.entity.vector;
 
-import org.python.icu.text.CharsetDetector;
-import org.python.icu.text.CharsetMatch;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
+ * The request for the `Fetch` operation.
+ *
  * @author HamaWhite
  */
-public class Helpers {
-
-    private Helpers() {
-    }
+@Data
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FetchRequest implements Serializable {
 
     /**
-     * Try to detect the file encoding.
+     * The vector ids to fetch.
      */
-    public static FileEncoding detectFileEncodings(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] data = Files.readAllBytes(path);
+    @NotNull
+    private List<String> ids;
 
-        CharsetDetector detector = new CharsetDetector();
-        detector.setText(data);
-        CharsetMatch match = detector.detect();
-
-        Charset charset = Charset.forName(match.getName());
-        return new FileEncoding(charset, match.getConfidence(), match.getLanguage());
-    }
+    /**
+     * The namespace for the vectors.
+     */
+    private String namespace;
 }

@@ -16,37 +16,40 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.helpers;
+package com.hw.pinecone.entity.vector;
 
-import org.python.icu.text.CharsetDetector;
-import org.python.icu.text.CharsetMatch;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class Helpers {
-
-    private Helpers() {
-    }
+@Data
+public class ScoredVector {
 
     /**
-     * Try to detect the file encoding.
+     * This is the vector's unique id.
      */
-    public static FileEncoding detectFileEncodings(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] data = Files.readAllBytes(path);
+    private String id;
 
-        CharsetDetector detector = new CharsetDetector();
-        detector.setText(data);
-        CharsetMatch match = detector.detect();
+    /**
+     * This is a measure of similarity between this vector and the query vector.
+     * The higher the score, the more they are similar.
+     */
+    private float score;
 
-        Charset charset = Charset.forName(match.getName());
-        return new FileEncoding(charset, match.getConfidence(), match.getLanguage());
-    }
+    /**
+     * This is the vector data, if it is requested.
+     */
+    private List<Float> values;
+
+    /**
+     * This is the sparse data, if it is requested.
+     */
+    @JsonProperty("sparse_values")
+    private SparseValues sparseValues;
+
 }

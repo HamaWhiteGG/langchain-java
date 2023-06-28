@@ -18,11 +18,13 @@
 
 package com.hw.pinecone;
 
-import com.hw.pinecone.entity.index.CreateIndexCmd;
+import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.Database;
 import com.hw.pinecone.entity.index.IndexDescription;
 import com.hw.pinecone.entity.index.Status;
+import com.hw.pinecone.entity.vector.*;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 
 import java.time.Duration;
@@ -38,14 +40,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @Disabled("Test requires costly Pinecone calls, can be run manually.")
 class PineconeClientTest {
 
-    private PineconeClient client;
+    private static PineconeClient client;
 
-    private final String indexName = "index-temp";
+    private static IndexClient index;
 
-    private final String environment = "northamerica-northeast1-gcp";
+    private static final String indexName = "index-temp";
 
-    @BeforeEach
-    void setup() {
+    private static final String environment = "northamerica-northeast1-gcp";
+
+    @BeforeAll
+    static void setup() {
         client = PineconeClient.builder()
                 .apiKey(System.getenv("PINECONE_API_KEY"))
                 .environment(environment)
@@ -54,18 +58,36 @@ class PineconeClientTest {
 
         // Create temporary index
         createTemporaryIndex();
+
+        index = client.indexClient(indexName);
     }
 
-    private void createTemporaryIndex() {
-        var command = CreateIndexCmd.builder()
+    private static void createTemporaryIndex() {
+        List<String> indexes = client.listIndexes();
+        if (indexes.contains(indexName)) {
+            return;
+        }
+        var request = CreateIndexRequest.builder()
                 .name(indexName)
-                .dimension(5)
+                .dimension(3)
                 .build();
-        client.createIndex(command);
+        client.createIndex(request);
+
+        awaitIndexReady();
     }
 
-    @AfterEach
-    void cleanup() {
+    private static void awaitIndexReady() {
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(120))
+                .pollInterval(Duration.ofSeconds(5))
+                .until(() -> {
+                    IndexDescription indexDescription = client.describeIndex(indexName);
+                    return indexDescription != null && indexDescription.getStatus().isReady();
+                });
+    }
+
+    @AfterAll
+    static void cleanup() {
         // Delete temporary index
         client.deleteIndex(indexName);
         client.close();
@@ -79,42 +101,58 @@ class PineconeClientTest {
 
     @Test
     void testDescribeIndex() {
-        assertTimeoutPreemptively(Duration.ofSeconds(120), () -> {
-            IndexDescription indexDescription = null;
-            while (indexDescription == null || !indexDescription.getStatus().isReady()) {
-                Thread.sleep(3000);
-                indexDescription = client.describeIndex(indexName);
-            }
+        IndexDescription indexDescription = client.describeIndex(indexName);
+        assertNotNull(indexDescription);
+        assertNotNull(indexDescription.getDatabase());
+        assertNotNull(indexDescription.getStatus());
 
+        // Assert database information
+        Database database = indexDescription.getDatabase();
+        assertAll(
+                () -> assertEquals(indexName, database.getName()),
+                () -> assertEquals(COSINE, database.getMetric()),
+                () -> assertEquals(3, database.getDimension()),
+                () -> assertEquals(1, database.getReplicas()),
+                () -> assertEquals(1, database.getShards()),
+                () -> assertEquals(1, database.getPods()),
+                () -> assertEquals("p1.x1", database.getPodType()));
 
-            assertNotNull(indexDescription);
-            assertNotNull(indexDescription.getDatabase());
-            assertNotNull(indexDescription.getStatus());
+        // Assert status information
+        Status status = indexDescription.getStatus();
+        assertAll(
+                () -> assertNotNull(status),
+                () -> assertTrue(status.getWaiting().isEmpty()),
+                () -> assertTrue(status.getCrashed().isEmpty()),
+                () -> {
+                    String host = String.format("%s-%s.svc.%s.pinecone.io", indexName, "b43e233", environment);
+                    assertEquals(host, status.getHost());
+                },
+                () -> assertEquals(433, status.getPort()),
+                () -> assertEquals("Ready", status.getState()),
+                () -> assertTrue(status.isReady()));
+    }
 
-            // Assert database information
-            Database database = indexDescription.getDatabase();
-            assertAll(
-                    () -> assertEquals(indexName, database.getName()),
-                    () -> assertEquals(COSINE, database.getMetric()),
-                    () -> assertEquals(5, database.getDimension()),
-                    () -> assertEquals(1, database.getReplicas()),
-                    () -> assertEquals(1, database.getShards()),
-                    () -> assertEquals(1, database.getPods()),
-                    () -> assertEquals("p1.x1", database.getPodType()));
+    @Test
+    void testVectors() {
+        Vector v1 = new Vector("v1", List.of(1F, 3F, 5F));
+        Vector v2 = new Vector("v2", List.of(5F, 3F, 1F));
+        UpsertRequest upsertRequest = new UpsertRequest(List.of(v1, v2));
 
-            // Assert status information
-            Status status = indexDescription.getStatus();
-            assertAll(
-                    () -> assertNotNull(status),
-                    () -> assertTrue(status.getWaiting().isEmpty()),
-                    () -> assertTrue(status.getCrashed().isEmpty()),
-                    () -> {
-                        String host = String.format("%s-%s.svc.%s.pinecone.io", indexName, "b43e233", environment);
-                        assertEquals(host, status.getHost());
-                    },
-                    () -> assertEquals(433, status.getPort()),
-                    () -> assertEquals("Ready", status.getState()),
-                    () -> assertTrue(status.isReady()));
-        });
+        UpsertResponse upsertResponse = index.upsert(upsertRequest);
+        assertNotNull(upsertResponse, "upsertResponse should not be null");
+
+        QueryRequest queryRequest = QueryRequest.builder()
+                .vector(List.of(1F, 2F, 2F))
+                .topK(1)
+                .build();
+
+        QueryResponse queryResponse = index.query(queryRequest);
+        assertNotNull(queryResponse, "queryResponse should not be null");
+
+        FetchRequest fetchRequest = FetchRequest.builder()
+                .ids(List.of("v1", "v2"))
+                .build();
+        FetchResponse fetchResponse = index.fetch(fetchRequest);
+        assertNotNull(fetchResponse, "fetchResponse should not be null");
     }
 }

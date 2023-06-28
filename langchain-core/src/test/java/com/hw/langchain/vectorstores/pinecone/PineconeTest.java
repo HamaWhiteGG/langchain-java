@@ -24,9 +24,6 @@ import com.hw.langchain.text.splitter.CharacterTextSplitter;
 
 import org.junit.jupiter.api.Test;
 
-import io.pinecone.PineconeClient;
-import io.pinecone.PineconeClientConfig;
-
 /**
  * <a href="https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/pinecone">pinecone</a>
  *
@@ -47,14 +44,6 @@ class PineconeTest {
         var docs = textSplitter.splitDocuments(documents);
 
         var embeddings = new OpenAIEmbeddings();
-
-        PineconeClientConfig configuration = new PineconeClientConfig()
-                .withApiKey(System.getenv("PINECONE_API_KEY"))
-                .withEnvironment("northamerica-northeast1-gcp")
-                .withProjectName("")
-                .withServerSideTimeoutSec(10);
-
-        var pineconeClient = new PineconeClient(configuration);
 
         var indexName = "langchain-demo";
 

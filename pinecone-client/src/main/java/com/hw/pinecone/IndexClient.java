@@ -16,50 +16,52 @@
  * limitations under the License.
  */
 
-package com.hw.pinecone.service;
+package com.hw.pinecone;
 
 import com.hw.pinecone.entity.vector.*;
-
-import io.reactivex.Single;
-import retrofit2.http.*;
-
-import java.util.List;
+import com.hw.pinecone.service.VectorService;
 
 /**
- * Vector Operations
- *
  * @author HamaWhite
  */
-public interface VectorService {
+public class IndexClient {
+
+    private VectorService vectorService;
+
+    public IndexClient(VectorService vectorService) {
+        this.vectorService = vectorService;
+    }
 
     /**
      * The Query operation searches a namespace, using a query vector.
      * It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
      *
      * @param request the QueryRequest containing the query vector and other parameters
-     * @return a Single emitting a QueryResponse with the results of the query operation
+     * @return a QueryResponse with the results of the query operation
      */
-    @POST("/query")
-    Single<QueryResponse> query(@Body QueryRequest request);
+    public QueryResponse query(QueryRequest request) {
+        return vectorService.query(request).blockingGet();
+    }
 
     /**
      * The Fetch operation looks up and returns vectors, by ID, from a single namespace.
      * The returned vectors include the vector data and/or metadata.
      *
-     * @param ids the vector ids to fetch.
-     * @param namespace the namespace for the vectors.
-     * @return a Single emitting the FetchResponse containing the fetched vectors
+     * @param request the FetchRequest object containing the parameters for the fetch operation
+     * @return a FetchResponse containing the fetched vectors
      */
-    @GET("/vectors/fetch")
-    Single<FetchResponse> fetch(@Query("ids") List<String> ids, @Query("namespace") String namespace);
+    public FetchResponse fetch(FetchRequest request) {
+        return vectorService.fetch(request.getIds(), request.getNamespace()).blockingGet();
+    }
 
     /**
      * The Upsert operation writes vectors into a namespace.
      * If a new value is upserted for an existing vector id, it will overwrite the previous value.
      *
      * @param request the UpsertRequest containing the vectors to be upserted
-     * @return a Single emitting an UpsertResponse indicating the result of the upsert operation
+     * @return  an UpsertResponse indicating the result of the upsert operation
      */
-    @POST("/vectors/upsert")
-    Single<UpsertResponse> upsert(@Body UpsertRequest request);
+    public UpsertResponse upsert(UpsertRequest request) {
+        return vectorService.upsert(request).blockingGet();
+    }
 }

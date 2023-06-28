@@ -38,7 +38,7 @@ import static com.hw.pinecone.entity.index.Metric.COSINE;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateIndexCmd implements Serializable {
+public class CreateIndexRequest implements Serializable {
 
     /**
      * The name of the index to be created.
