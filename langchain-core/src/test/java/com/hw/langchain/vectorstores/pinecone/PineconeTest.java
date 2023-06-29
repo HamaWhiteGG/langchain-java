@@ -22,11 +22,18 @@ import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
 import com.hw.pinecone.PineconeClient;
+import com.hw.pinecone.entity.index.CreateIndexRequest;
+import com.hw.pinecone.entity.index.IndexDescription;
 
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.time.Duration;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <a href="https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/pinecone">pinecone</a>
@@ -36,30 +43,106 @@ import java.util.Map;
 @Disabled("Test requires costly OpenAI and Pinecone calls, can be run manually.")
 class PineconeTest {
 
-    @Test
-    void testPinecone() {
-        String filePath = "../docs/extras/modules/state_of_the_union.txt";
-        var loader = new TextLoader(filePath);
-        var documents = loader.load();
+    private final String indexName = "langchain-demo";
 
-        var textSplitter = CharacterTextSplitter.builder()
-                .chunkSize(1000)
-                .chunkOverlap(0)
-                .build();
-        var docs = textSplitter.splitDocuments(documents);
-        var embeddings = new OpenAIEmbeddings();
+    private OpenAIEmbeddings embeddings;
 
-        var client = PineconeClient.builder()
-                .apiKey(System.getenv("PINECONE_API_KEY"))
-                .environment(System.getenv("PINECONE_ENV"))
+    private PineconeClient client;
+
+    @BeforeEach
+    void setup() {
+        client = PineconeClient.builder()
+                .requestTimeout(30)
                 .build()
                 .init();
 
-        var indexName = "langchain-demo";
+        embeddings = OpenAIEmbeddings.builder()
+                .model("text-embedding-ada-002")
+                .requestTimeout(60)
+                .build()
+                .init();
+    }
 
-        var docSearch = Pinecone.fromDocuments(docs, embeddings, Map.of("indexName", indexName));
+    private Pinecone createPinecone() {
+        return Pinecone.builder()
+                .client(client)
+                .indexName(indexName)
+                .embeddingFunction(embeddings::embedQuery)
+                .build()
+                .init();
+    }
+
+    /**
+     * Ensures index is created.
+     * If the index does not exist, it creates a new index with the specified name and dimension.
+     * It also waits until the index is ready before returning.
+     */
+    private void ensureIndexCreated() {
+        if (!client.listIndexes().contains(indexName)) {
+            var request = CreateIndexRequest.builder()
+                    .name(indexName)
+                    .dimension(1536)
+                    .build();
+            client.createIndex(request);
+
+            awaitIndexReady();
+        }
+    }
+
+    private void awaitIndexReady() {
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(120))
+                .pollInterval(Duration.ofSeconds(5))
+                .until(() -> {
+                    IndexDescription indexDescription = client.describeIndex(indexName);
+                    return indexDescription != null && indexDescription.getStatus().isReady();
+                });
+    }
+
+    @Test
+    void testFromDocuments() {
+        String filePath = "../docs/extras/modules/state_of_the_union.txt";
+        var loader = new TextLoader(filePath);
+        var documents = loader.load();
+        var textSplitter = CharacterTextSplitter.builder().chunkSize(1000).chunkOverlap(0).build();
+        var docs = textSplitter.splitDocuments(documents);
+
+        // ensures index is created.
+        ensureIndexCreated();
+
+        var pinecone = createPinecone();
+        int total = pinecone.fromDocuments(docs, embeddings);
+        assertEquals(docs.size(), total);
+    }
+
+    @Test
+    void testSimilaritySearch() {
+        var pinecone = createPinecone();
 
         var query = "What did the president say about Ketanji Brown Jackson";
-        docs = docSearch.similaritySearch(query, null);
+        var docs = pinecone.similaritySearch(query);
+
+        String expected =
+                """
+                        Tonight. I call on the Senate to: Pass the Freedom to Vote Act. Pass the John Lewis Voting Rights Act. And while you’re at it, pass the Disclose Act so Americans can know who is funding our elections.\s
+
+                        Tonight, I’d like to honor someone who has dedicated his life to serve this country: Justice Stephen Breyer—an Army veteran, Constitutional scholar, and retiring Justice of the United States Supreme Court. Justice Breyer, thank you for your service.\s
+
+                        One of the most serious constitutional responsibilities a President has is nominating someone to serve on the United States Supreme Court.\s
+
+                        And I did that 4 days ago, when I nominated Circuit Court of Appeals Judge Ketanji Brown Jackson. One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence.""";
+
+        assertThat(docs).isNotNull().hasSize(4);
+        assertThat(docs.get(0).getPageContent()).isEqualTo(expected);
+    }
+
+    @Test
+    void testGetRelevantDocuments() {
+        var pinecone = createPinecone();
+        var query = "What did the president say about Ketanji Brown Jackson";
+
+        // TODO
+        var retriever = pinecone.asRetriever(null);
+        retriever.getRelevantDocuments(query);
     }
 }

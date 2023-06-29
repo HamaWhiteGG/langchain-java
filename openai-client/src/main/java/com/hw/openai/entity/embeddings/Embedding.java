@@ -48,7 +48,7 @@ public class Embedding implements Serializable {
      * model (8191 tokens for text-embedding-ada-002).
      */
     @NotEmpty
-    private List<String> input;
+    private List<?> input;
 
     /**
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.

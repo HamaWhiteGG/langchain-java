@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author HamaWhite
@@ -52,4 +53,8 @@ public class ScoredVector {
     @JsonProperty("sparse_values")
     private SparseValues sparseValues;
 
+    /**
+     * This is the metadata, if it is requested.
+     */
+    public Map<String, Object> metadata;
 }

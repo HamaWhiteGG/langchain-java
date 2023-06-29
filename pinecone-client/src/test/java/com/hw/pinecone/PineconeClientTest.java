@@ -49,29 +49,31 @@ class PineconeClientTest {
     @BeforeAll
     static void setup() {
         client = PineconeClient.builder()
-                .apiKey(System.getenv("PINECONE_API_KEY"))
-                .environment(System.getenv("PINECONE_ENV"))
+                .requestTimeout(10)
                 .build()
                 .init();
 
-        // Create temporary index
-        createTemporaryIndex();
+        // Ensures that a temporary index is created.
+        ensureTemporaryIndexCreated();
 
         index = client.indexClient(indexName);
     }
 
-    private static void createTemporaryIndex() {
-        List<String> indexes = client.listIndexes();
-        if (indexes.contains(indexName)) {
-            return;
-        }
-        var request = CreateIndexRequest.builder()
-                .name(indexName)
-                .dimension(3)
-                .build();
-        client.createIndex(request);
+    /**
+     * Ensures that a temporary index is created.
+     * If the index does not exist, it creates a new index with the specified name and dimension.
+     * It also waits until the index is ready before returning.
+     */
+    private static void ensureTemporaryIndexCreated() {
+        if (!client.listIndexes().contains(indexName)) {
+            var request = CreateIndexRequest.builder()
+                    .name(indexName)
+                    .dimension(3)
+                    .build();
+            client.createIndex(request);
 
-        awaitIndexReady();
+            awaitIndexReady();
+        }
     }
 
     private static void awaitIndexReady() {

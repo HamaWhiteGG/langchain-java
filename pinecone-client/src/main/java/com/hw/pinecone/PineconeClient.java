@@ -24,6 +24,7 @@ import com.hw.pinecone.entity.index.IndexDescription;
 import com.hw.pinecone.service.IndexService;
 import com.hw.pinecone.service.VectorService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +54,12 @@ public class PineconeClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PineconeClient.class);
 
-    private String apiKey;
+    private String pineconeApiKey;
 
     @Builder.Default
     private String host = "https://controller.%s.pinecone.io";
 
-    private String environment;
+    private String pineconeEnv;
 
     private String projectName;
 
@@ -78,7 +79,10 @@ public class PineconeClient {
      * @return the initialized PineconeClient instance
      */
     public PineconeClient init() {
-        Retrofit retrofit = createRetrofit(String.format(host, environment));
+        // If pineconeEnv is not set, read the value of PINECONE_ENV from the environment.
+        pineconeEnv = getOrFromEnv(pineconeEnv, "PINECONE_ENV");
+
+        Retrofit retrofit = createRetrofit(String.format(host, pineconeEnv));
         this.indexService = retrofit.create(IndexService.class);
         return this;
     }
@@ -102,9 +106,12 @@ public class PineconeClient {
                 .callTimeout(requestTimeout, TimeUnit.SECONDS);
 
         httpClientBuilder.addInterceptor(chain -> {
+            // If pineconeApiKey is not set, read the value of PINECONE_API_KEY from the environment.
+            pineconeApiKey = getOrFromEnv(pineconeApiKey, "PINECONE_API_KEY");
+
             Request request = chain.request().newBuilder()
                     .header("Content-Type", "application/json")
-                    .header("Api-Key", apiKey)
+                    .header("Api-Key", pineconeApiKey)
                     .build();
 
             return chain.proceed(request);
@@ -139,6 +146,13 @@ public class PineconeClient {
         // Shut down the connection pool (if any)
         httpClient.connectionPool().evictAll();
         httpClient.dispatcher().executorService().shutdown();
+    }
+
+    private String getOrFromEnv(String originalValue, String envKey) {
+        if (StringUtils.isNotEmpty(originalValue)) {
+            return originalValue;
+        }
+        return System.getenv(envKey);
     }
 
     /**

@@ -70,7 +70,7 @@ public abstract class VectorStore {
 
     public List<Document> search(String query, String searchType, Map<String, Object> kwargs) {
         return switch (searchType) {
-            case "similarity" -> similaritySearch(query, kwargs);
+            case "similarity" -> similaritySearch(query);
             case "mmr" -> maxMarginalRelevanceSearch(query, kwargs);
             default -> throw new IllegalArgumentException(
                     "searchType of " + searchType + " not allowed. Expected searchType to be 'similarity' or 'mmr'.");
@@ -80,14 +80,14 @@ public abstract class VectorStore {
     /**
      * Return docs most similar to query.
      */
-    public List<Document> similaritySearch(String query, Map<String, Object> kwargs) {
-        return similaritySearch(query, 4, kwargs);
+    public List<Document> similaritySearch(String query) {
+        return similaritySearch(query, 4);
     }
 
     /**
      * Return docs most similar to query.
      */
-    public abstract List<Document> similaritySearch(String query, int k, Map<String, Object> kwargs);
+    public abstract List<Document> similaritySearch(String query, int k);
 
     /**
      * Return docs and relevance scores in the range [0, 1]. 0 is dissimilar, 1 is most similar.
@@ -163,20 +163,16 @@ public abstract class VectorStore {
     /**
      * Return VectorStore initialized from documents and embeddings.
      */
-    public static <VST extends VectorStore> VST fromDocuments(List<Document> documents, Embeddings embedding,
-            Map<String, Object> kwargs) {
+    public int fromDocuments(List<Document> documents, Embeddings embedding) {
         List<String> texts = documents.stream().map(Document::getPageContent).toList();
         List<Map<String, Object>> metadatas = documents.stream().map(Document::getMetadata).toList();
-        return fromTexts(texts, embedding, metadatas, kwargs);
+        return fromTexts(texts, embedding, metadatas);
     }
 
     /**
      * Return VectorStore initialized from texts and embeddings.
      */
-    public static <VST extends VectorStore> VST fromTexts(List<String> texts, Embeddings embedding,
-            List<Map<String, Object>> metadatas, Map<String, Object> kwargs) {
-        throw new UnsupportedOperationException("Method not implemented.");
-    }
+    public abstract int fromTexts(List<String> texts, Embeddings embedding, List<Map<String, Object>> metadatas);
 
     public VectorStoreRetriever asRetriever(Map<String, Object> kwargs) {
         return new VectorStoreRetriever(this, kwargs);

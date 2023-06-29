@@ -35,9 +35,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
-import static java.util.Collections.nCopies;
 
 /**
  * Wrapper around OpenAI embedding models.
@@ -109,13 +109,6 @@ public class OpenAIEmbeddings implements Embeddings {
     }
 
     /**
-     * Quick construction method, can also use the Builder pattern.
-     */
-    public OpenAIEmbeddings() {
-        init();
-    }
-
-    /**
      * please refer to https://github.com/openai/openai-cookbook/blob/main/examples/Embedding_long_inputs.ipynb
      */
     private List<List<Float>> getLenSafeEmbeddings(List<String> texts) {
@@ -143,16 +136,17 @@ public class OpenAIEmbeddings implements Embeddings {
 
         List<List<Float>> batchedEmbeddings = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i += chunkSize) {
-            List<String> input = tokens.subList(i, Math.min(i + chunkSize, tokens.size()))
-                    .stream()
-                    .map(Object::toString)
-                    .toList();
+            List<?> input = tokens.subList(i, Math.min(i + chunkSize, tokens.size()));
             var response = embedWithRetry(input);
             response.getData().forEach(result -> batchedEmbeddings.add(result.getEmbedding()));
         }
 
-        List<List<List<Float>>> results = new ArrayList<>(nCopies(texts.size(), new ArrayList<>()));
-        List<List<Integer>> numTokensInBatch = new ArrayList<>(nCopies(texts.size(), new ArrayList<>()));
+        List<? extends List<List<Float>>> results = IntStream.range(0, texts.size())
+                .mapToObj(i -> new ArrayList<List<Float>>())
+                .toList();
+        List<? extends List<Integer>> numTokensInBatch = IntStream.range(0, texts.size())
+                .mapToObj(i -> new ArrayList<Integer>())
+                .toList();
         for (int i = 0; i < indices.size(); i++) {
             int index = indices.get(i);
             results.get(index).add(batchedEmbeddings.get(i));
@@ -164,7 +158,7 @@ public class OpenAIEmbeddings implements Embeddings {
             try (INDArray resultArray =
                     Nd4j.create(results.get(i).stream().map(Floats::toArray).toArray(float[][]::new))) {
                 INDArray weightsArray = Nd4j.create(Doubles.toArray(numTokensInBatch.get(i)));
-                average = resultArray.mean(0).mulColumnVector(weightsArray).sum(0);
+                average = resultArray.mulRowVector(weightsArray).sum(0).div(weightsArray.sum(0));
             }
             INDArray normalizedAverage = average.div(average.norm2Number());
             embeddings.add(Floats.asList(normalizedAverage.toFloatVector()));
@@ -212,7 +206,7 @@ public class OpenAIEmbeddings implements Embeddings {
         return embeddingFunc(text);
     }
 
-    public EmbeddingResp embedWithRetry(List<String> input) {
+    public EmbeddingResp embedWithRetry(List<?> input) {
         var embedding = Embedding.builder()
                 .model(model)
                 .input(input)

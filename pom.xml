@@ -25,8 +25,10 @@
         <junit.version>5.9.3</junit.version>
         <mysql.version>8.0.32</mysql.version>
         <jython.version>2.7.3</jython.version>
+        <nd4j.version>1.0.0-M2.1</nd4j.version>
         <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
+        <nd4j.version>1.0.0-M2.1</nd4j.version>
         <guava.version>32.0.1-jre</guava.version>
         <assertj.version>3.24.2</assertj.version>
         <okhttp3.version>3.14.9</okhttp3.version>
@@ -133,6 +135,12 @@
                 <groupId>com.knuddels</groupId>
                 <artifactId>jtokkit</artifactId>
                 <version>${jtokkit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.nd4j</groupId>
+                <artifactId>nd4j-native-platform</artifactId>
+                <version>${nd4j.version}</version>
             </dependency>
 
             <dependency>
