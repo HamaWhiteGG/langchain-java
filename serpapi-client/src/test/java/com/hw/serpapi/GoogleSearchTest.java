@@ -30,7 +30,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Note: set the environment variables, export SERPAPI_API_KEY=xxx
+ * Please set the environment variables, export SERPAPI_API_KEY=xxx.
+ * <p>
+ * Due to <a href="https://github.com/serpapi/google-search-results-java/issues/22">Cant get this artifact from jitpack</a>, therefore copy its code to this project.
  *
  * @author HamaWhite
  */

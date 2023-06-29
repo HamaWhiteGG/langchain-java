@@ -16,42 +16,45 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author HamaWhite
  */
 @Data
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class ScoredVector {
 
     /**
-     * ID of the model to use.
+     * This is the vector's unique id.
      */
-    @NotBlank
-    private String model;
+    private String id;
 
     /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * This is a measure of similarity between this vector and the query vector.
+     * The higher the score, the more they are similar.
      */
-    @NotEmpty
-    private List<?> input;
+    private float score;
 
     /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+     * This is the vector data, if it is requested.
      */
-    private String user;
+    private List<Float> values;
+
+    /**
+     * This is the sparse data, if it is requested.
+     */
+    @JsonProperty("sparse_values")
+    private SparseValues sparseValues;
+
+    /**
+     * This is the metadata, if it is requested.
+     */
+    public Map<String, Object> metadata;
 }

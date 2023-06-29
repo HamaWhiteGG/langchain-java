@@ -16,42 +16,56 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author HamaWhite
  */
 @Data
-@Builder
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class Vector implements Serializable {
 
     /**
-     * ID of the model to use.
+     * This is the vector's unique id.
      */
-    @NotBlank
-    private String model;
+    private String id;
 
     /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * This is the vector data included in the request.
      */
-    @NotEmpty
-    private List<?> input;
+    private List<Float> values;
 
     /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+     * Vector sparse data. Represented as a list of indices and a list of corresponded values,
+     * which must be the same length.
      */
-    private String user;
+    @JsonProperty("sparse_values")
+    private SparseValues sparseValues;
+
+    /**
+     * This is the metadata included in the request.
+     */
+    public Map<String, Object> metadata;
+
+    public Vector(String id, List<Float> values) {
+        this.id = id;
+        this.values = values;
+    }
+
+    public Vector(String id, List<Float> values, Map<String, Object> metadata) {
+        this.id = id;
+        this.values = values;
+        this.metadata = metadata;
+    }
 }

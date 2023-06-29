@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -34,24 +33,39 @@ import java.util.List;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class QueryRequest implements Serializable {
 
     /**
-     * ID of the model to use.
+     * The query vector. This should be the same length as the dimension of the index being queried.
+     * Each query() request can contain only one of the parameters id or vector.
      */
-    @NotBlank
-    private String model;
+    private List<Float> vector;
 
     /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * The unique ID of the vector to be used as a query vector.
+     * Each query() request can contain only one of the parameters queries, vector, or id.
      */
-    @NotEmpty
-    private List<?> input;
+    private String id;
 
     /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+     * The number of results to return for each query.
      */
-    private String user;
+    @NotNull
+    @Builder.Default
+    private Integer topK = 10;
+
+    /**
+     * The namespace to query.
+     */
+    private String namespace;
+
+    /**
+     * Indicates whether vector values are included in the response.
+     */
+    private boolean includeValues;
+
+    /**
+     * Indicates whether metadata is included in the response as well as the ids.
+     */
+    private boolean includeMetadata;
 }

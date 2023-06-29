@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -32,26 +30,26 @@ import java.util.List;
  * @author HamaWhite
  */
 @Data
-@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class UpsertRequest implements Serializable {
 
     /**
-     * ID of the model to use.
-     */
-    @NotBlank
-    private String model;
-
-    /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * An array containing the vectors to upsert. Recommended batch limit is 100 vectors.
      */
     @NotEmpty
-    private List<?> input;
+    private List<Vector> vectors;
 
     /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+     * This is the namespace name where you upsert vectors.
      */
-    private String user;
+    private String namespace;
+
+    public UpsertRequest(List<Vector> vectors) {
+        this.vectors = vectors;
+    }
+
+    public UpsertRequest(List<Vector> vectors, String namespace) {
+        this.vectors = vectors;
+        this.namespace = namespace;
+    }
 }

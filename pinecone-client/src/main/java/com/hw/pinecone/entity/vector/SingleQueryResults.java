@@ -16,42 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author HamaWhite
  */
 @Data
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class SingleQueryResults {
 
     /**
-     * ID of the model to use.
+     * The matches for the vectors.
      */
-    @NotBlank
-    private String model;
+    private List<ScoredVector> matches;
 
     /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * The namespace for the vectors.
      */
-    @NotEmpty
-    private List<?> input;
-
-    /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
-     */
-    private String user;
+    private String namespace;
 }

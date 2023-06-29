@@ -16,42 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.embeddings;
+package com.hw.pinecone.entity.vector;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hw.pinecone.IndexClient;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author HamaWhite
  */
 @Data
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Embedding implements Serializable {
+public class SparseValues {
 
     /**
-     * ID of the model to use.
+     * The indices of the sparse data.
      */
-    @NotBlank
-    private String model;
+    private List<IndexClient> indices;
 
     /**
-     * Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
-     * pass an array of strings or array of token arrays. Each input must not exceed the max input tokens for the
-     * model (8191 tokens for text-embedding-ada-002).
+     * The corresponding values of the sparse data, which must be with the same length as the indices.
      */
-    @NotEmpty
-    private List<?> input;
+    private List<Float> values;
 
-    /**
-     * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
-     */
-    private String user;
 }
