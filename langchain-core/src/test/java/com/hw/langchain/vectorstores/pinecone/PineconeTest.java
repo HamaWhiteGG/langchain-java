@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
+import static com.hw.langchain.vectorstores.base.SearchType.MMR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -141,8 +142,9 @@ class PineconeTest {
         var pinecone = createPinecone();
         var query = "What did the president say about Ketanji Brown Jackson";
 
-        // TODO
-        var retriever = pinecone.asRetriever(null);
-        retriever.getRelevantDocuments(query);
+        var retriever = pinecone.asRetriever(MMR);
+        var docs = retriever.getRelevantDocuments(query);
+
+        assertThat(docs).isNotNull();
     }
 }
