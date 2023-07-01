@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * @author HamaWhite
@@ -68,10 +67,10 @@ public abstract class VectorStore {
         return addTexts(texts, metadatas, kwargs);
     }
 
-    public List<Document> search(String query, String searchType, Map<String, Object> kwargs) {
+    public List<Document> search(String query, SearchType searchType) {
         return switch (searchType) {
-            case "similarity" -> similaritySearch(query);
-            case "mmr" -> maxMarginalRelevanceSearch(query, kwargs);
+            case SIMILARITY -> similaritySearch(query);
+            case MMR -> maxMarginalRelevanceSearch(query);
             default -> throw new IllegalArgumentException(
                     "searchType of " + searchType + " not allowed. Expected searchType to be 'similarity' or 'mmr'.");
         };
@@ -92,35 +91,23 @@ public abstract class VectorStore {
     /**
      * Return docs and relevance scores in the range [0, 1]. 0 is dissimilar, 1 is most similar.
      */
-    public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query, Map<String, Object> kwargs) {
-        return similaritySearchWithRelevanceScores(query, 4, kwargs);
+    public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query) {
+        return similaritySearchWithRelevanceScores(query, 4);
     }
 
     /**
      * Return docs and relevance scores in the range [0, 1]. 0 is dissimilar, 1 is most similar.
      *
-     * @param query  input text
-     * @param k      Number of Documents to return.
-     * @param kwargs kwargs to be passed to similarity search. Should include: score_threshold: Optional, a floating point value between 0 to 1 to filter the resulting set of retrieved docs
+     * @param query input text
+     * @param k     Number of Documents to return.
      * @return List of Tuples of (doc, similarity_score)
      */
-    public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query, int k,
-            Map<String, Object> kwargs) {
-        List<Pair<Document, Float>> docsAndSimilarities = _similaritySearchWithRelevanceScores(query, k, kwargs);
+    public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query, int k) {
+        List<Pair<Document, Float>> docsAndSimilarities = _similaritySearchWithRelevanceScores(query, k);
 
         // Check relevance scores and filter by threshold
         if (docsAndSimilarities.stream().anyMatch(pair -> pair.getRight() < 0.0f || pair.getRight() > 1.0f)) {
             LOG.warn("Relevance scores must be between 0 and 1, got {} ", docsAndSimilarities);
-        }
-
-        if (kwargs.containsKey("score_threshold")) {
-            float scoreThreshold = (float) kwargs.get("score_threshold");
-            Predicate<Pair<Document, Float>> thresholdFilter = pair -> pair.getRight() >= scoreThreshold;
-            docsAndSimilarities = docsAndSimilarities.stream().filter(thresholdFilter).toList();
-
-            if (docsAndSimilarities.isEmpty()) {
-                LOG.warn("No relevant docs were retrieved using the relevance score threshold {}", scoreThreshold);
-            }
         }
         return docsAndSimilarities;
     }
@@ -128,8 +115,7 @@ public abstract class VectorStore {
     /**
      * Return docs and relevance scores, normalized on a scale from 0 to 1. 0 is dissimilar, 1 is most similar.
      */
-    protected abstract List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k,
-            Map<String, Object> kwargs);
+    protected abstract List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k);
 
     /**
      * Return docs most similar to embedding vector.
@@ -141,8 +127,8 @@ public abstract class VectorStore {
      */
     public abstract List<Document> similarSearchByVector(List<Float> embedding, int k, Map<String, Object> kwargs);
 
-    public List<Document> maxMarginalRelevanceSearch(String query, Map<String, Object> kwargs) {
-        return maxMarginalRelevanceSearch(query, 4, 20, 0.5f, kwargs);
+    public List<Document> maxMarginalRelevanceSearch(String query) {
+        return maxMarginalRelevanceSearch(query, 4, 20, 0.5f);
     }
 
     /**
@@ -154,11 +140,27 @@ public abstract class VectorStore {
      * @param fetchK     Number of Documents to fetch to pass to MMR algorithm.
      * @param lambdaMult Number between 0 and 1 that determines the degree of diversity among the results with 0
      *                   corresponding to maximum diversity and 1 to minimum diversity.
-     * @param kwargs     kwargs
      * @return List of Documents selected by maximal marginal relevance.
      */
-    public abstract List<Document> maxMarginalRelevanceSearch(String query, int k, int fetchK, float lambdaMult,
-            Map<String, Object> kwargs);
+    public abstract List<Document> maxMarginalRelevanceSearch(String query, int k, int fetchK, float lambdaMult);
+
+    public List<Document> maxMarginalRelevanceSearchByVector(List<Float> embedding) {
+        return maxMarginalRelevanceSearchByVector(embedding, 4, 20, 0.5f);
+    }
+
+    /**
+     * Return docs selected using the maximal marginal relevance.
+     * Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.
+     *
+     * @param embedding  Embedding to look up documents similar to.
+     * @param k          Number of Documents to return.
+     * @param fetchK     Number of Documents to fetch to pass to MMR algorithm.
+     * @param lambdaMult Number between 0 and 1 that determines the degree of diversity among the results with 0 corresponding
+     *                   to maximum diversity and 1 to minimum diversity.
+     * @return List of Documents selected by maximal marginal relevance.
+     */
+    public abstract List<Document> maxMarginalRelevanceSearchByVector(List<Float> embedding, int k, int fetchK,
+            float lambdaMult);
 
     /**
      * Return VectorStore initialized from documents and embeddings.
@@ -174,7 +176,7 @@ public abstract class VectorStore {
      */
     public abstract int fromTexts(List<String> texts, Embeddings embedding, List<Map<String, Object>> metadatas);
 
-    public VectorStoreRetriever asRetriever(Map<String, Object> kwargs) {
-        return new VectorStoreRetriever(this, kwargs);
+    public VectorStoreRetriever asRetriever(SearchType searchType) {
+        return new VectorStoreRetriever(this, searchType);
     }
 }

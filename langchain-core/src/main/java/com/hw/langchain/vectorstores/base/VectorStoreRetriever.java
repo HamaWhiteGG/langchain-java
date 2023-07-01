@@ -26,35 +26,33 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.Map;
 
+import static com.hw.langchain.vectorstores.base.SearchType.SIMILARITY_SCORE_THRESHOLD;
+
 /**
  * @author HamaWhite
  */
 public class VectorStoreRetriever implements BaseRetriever {
 
-    private static final List<String> ALLOWED_SEARCH_TYPES = List.of(
-            "similarity",
-            "similarity_score_threshold",
-            "mmr");
+    private final VectorStore vectorstore;
 
-    private VectorStore vectorstore;
+    private final SearchType searchType;
 
-    private String searchType = "similarity";
+    private final Map<String, Object> searchKwargs;
 
-    private Map<String, Object> searchKwargs;
+    public VectorStoreRetriever(VectorStore vectorstore, SearchType searchType) {
+        this(vectorstore, searchType, null);
+    }
 
-    public VectorStoreRetriever(VectorStore vectorstore, Map<String, Object> searchKwargs) {
+    public VectorStoreRetriever(VectorStore vectorstore, SearchType searchType, Map<String, Object> searchKwargs) {
         this.vectorstore = vectorstore;
+        this.searchType = searchType;
         this.searchKwargs = searchKwargs;
 
         validateSearchType();
     }
 
     private void validateSearchType() {
-        if (!ALLOWED_SEARCH_TYPES.contains(searchType)) {
-            throw new IllegalArgumentException(
-                    "searchType of " + searchType + " not allowed. Valid values are: " + ALLOWED_SEARCH_TYPES);
-        }
-        if ("similarity_score_threshold".equals(searchType)) {
+        if (SIMILARITY_SCORE_THRESHOLD.equals(searchType)) {
             Object scoreThreshold = searchKwargs.get("score_threshold");
             if (!(scoreThreshold instanceof Float)) {
                 throw new IllegalArgumentException(
@@ -66,13 +64,12 @@ public class VectorStoreRetriever implements BaseRetriever {
     @Override
     public List<Document> getRelevantDocuments(String query) {
         return switch (searchType) {
-            case "similarity" -> vectorstore.similaritySearch(query);
-            case "similarity_score_threshold" -> vectorstore.similaritySearchWithRelevanceScores(query, searchKwargs)
+            case SIMILARITY -> vectorstore.similaritySearch(query);
+            case SIMILARITY_SCORE_THRESHOLD -> vectorstore.similaritySearchWithRelevanceScores(query)
                     .stream()
                     .map(Pair::getLeft)
                     .toList();
-            case "mmr" -> vectorstore.maxMarginalRelevanceSearch(query, searchKwargs);
-            default -> throw new IllegalArgumentException("searchType of " + searchType + " not allowed.");
+            case MMR -> vectorstore.maxMarginalRelevanceSearch(query);
         };
     }
 

@@ -37,6 +37,10 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.hw.langchain.vectorstores.utils.Nd4jUtils.createFromList;
+import static com.hw.langchain.vectorstores.utils.Utils.maximalMarginalRelevance;
+
 /**
  * @author HamaWhite
  */
@@ -137,8 +141,7 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k,
-            Map<String, Object> kwargs) {
+    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k) {
         return null;
     }
 
@@ -148,9 +151,37 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    public List<Document> maxMarginalRelevanceSearch(String query, int k, int fetchK, float lambdaMult,
-            Map<String, Object> kwargs) {
-        return null;
+    public List<Document> maxMarginalRelevanceSearch(String query, int k, int fetchK, float lambdaMult) {
+        List<Float> embedding = embeddingFunction.apply(query);
+        return maxMarginalRelevanceSearchByVector(embedding, k, fetchK, lambdaMult);
+    }
+
+    @Override
+    public List<Document> maxMarginalRelevanceSearchByVector(List<Float> embedding, int k, int fetchK,
+            float lambdaMult) {
+        QueryRequest queryRequest = QueryRequest.builder()
+                .vector(embedding)
+                .topK(fetchK)
+                .namespace(namespace)
+                .includeValues(true)
+                .includeMetadata(true)
+                .build();
+        QueryResponse results = index.query(queryRequest);
+
+        List<Integer> mmrSelected = maximalMarginalRelevance(
+                createFromList(embedding),
+                results.getMatches().stream().map(ScoredVector::getValues).toList(),
+                k,
+                lambdaMult);
+
+        checkNotNull(mmrSelected, "mmrSelected must not be null");
+        List<Map<String, Object>> selected = mmrSelected.stream()
+                .map(i -> results.getMatches().get(i).getMetadata())
+                .toList();
+
+        return selected.stream()
+                .map(metadata -> new Document(metadata.remove(textKey).toString(), metadata))
+                .toList();
     }
 
     @Override

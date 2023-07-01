@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
+import static com.hw.langchain.vectorstores.base.SearchType.MMR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,6 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PineconeTest {
 
     private final String indexName = "langchain-demo";
+
+    private final String query = "What did the president say about Ketanji Brown Jackson";
 
     private OpenAIEmbeddings embeddings;
 
@@ -118,8 +121,6 @@ class PineconeTest {
     @Test
     void testSimilaritySearch() {
         var pinecone = createPinecone();
-
-        var query = "What did the president say about Ketanji Brown Jackson";
         var docs = pinecone.similaritySearch(query);
 
         String expected =
@@ -139,10 +140,16 @@ class PineconeTest {
     @Test
     void testGetRelevantDocuments() {
         var pinecone = createPinecone();
-        var query = "What did the president say about Ketanji Brown Jackson";
+        var retriever = pinecone.asRetriever(MMR);
 
-        // TODO
-        var retriever = pinecone.asRetriever(null);
-        retriever.getRelevantDocuments(query);
+        var matchedDocs = retriever.getRelevantDocuments(query);
+        assertThat(matchedDocs).isNotNull().hasSize(4);
+    }
+
+    @Test
+    void testMaxMarginalRelevanceSearch() {
+        var pinecone = createPinecone();
+        var foundDocs = pinecone.maxMarginalRelevanceSearch(query, 2, 10, 0.5f);
+        assertThat(foundDocs).isNotNull().hasSize(2);
     }
 }
