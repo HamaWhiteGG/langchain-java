@@ -35,17 +35,29 @@ import static org.nd4j.linalg.ops.transforms.Transforms.allCosineSimilarities;
 public class MathUtils {
 
     private MathUtils() {
+    }
 
+    /**
+     * Row-wise cosine similarity between two equal-width matrices.
+     */
+    public static INDArray cosineSimilarity(List<List<Float>> X, INDArray yArray) {
+        return cosineSimilarity(Nd4j.createFromArray(listToArray(X)), yArray);
     }
 
     /**
      * Row-wise cosine similarity between two equal-width matrices.
      */
     public static INDArray cosineSimilarity(INDArray xArray, List<List<Float>> Y) {
-        if (xArray.isEmpty() || Y.isEmpty()) {
+        return cosineSimilarity(xArray, Nd4j.createFromArray(listToArray(Y)));
+    }
+
+    /**
+     * Row-wise cosine similarity between two equal-width matrices.
+     */
+    public static INDArray cosineSimilarity(INDArray xArray, INDArray yArray) {
+        if (xArray.isEmpty() || yArray.isEmpty()) {
             return Nd4j.create(new float[0][0]);
         }
-        INDArray yArray = Nd4j.createFromArray(listToArray(Y));
         if (xArray.shape()[1] != yArray.shape()[1]) {
             throw new IllegalArgumentException(
                     String.format("Number of columns in X and Y must be the same. X has shape %s and Y has shape %s.",

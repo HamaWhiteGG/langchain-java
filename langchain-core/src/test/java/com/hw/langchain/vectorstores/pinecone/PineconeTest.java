@@ -145,6 +145,6 @@ class PineconeTest {
         var retriever = pinecone.asRetriever(MMR);
         var docs = retriever.getRelevantDocuments(query);
 
-        assertThat(docs).isNotNull();
+        assertThat(docs).isNotNull().hasSize(4);
     }
 }

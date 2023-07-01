@@ -28,6 +28,9 @@ import java.util.List;
  */
 public class ArrayUtils {
 
+    private ArrayUtils() {
+    }
+
     public static <T> List<List<T>> arrayToList(T[][] array) {
         List<List<T>> result = Lists.newArrayListWithCapacity(array.length);
         for (T[] subArray : array) {

@@ -18,13 +18,18 @@
 
 package com.hw.langchain.vectorstores.utils;
 
+import com.google.common.collect.Lists;
+
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.ops.transforms.Transforms;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.hw.langchain.math.utils.MathUtils.cosineSimilarity;
+import static com.hw.langchain.vectorstores.utils.Nd4jUtils.createFromList;
+import static java.lang.Float.NEGATIVE_INFINITY;
 
 /**
  * Utility functions for working with vectors and vectorStores.
@@ -48,23 +53,28 @@ public class Utils {
             queryEmbedding = Nd4j.expandDims(queryEmbedding, 0);
         }
         INDArray similarityToQuery = cosineSimilarity(queryEmbedding, embeddingList).getRow(0);
-        // INDArray XArray =Nd4j.create(queryEmbedding);
-        // List<INDArray> indArrayList= embeddingList.stream().map(e->Nd4j.create(e)).toList();
-        // INDArray YArray=Nd4j.create(indArrayList);
-        //
-        //
-        // INDArray XNorm = XArray.norm2(1);
-        // INDArray YNorm = YArray.norm2(1);
-        //
-        // INDArray similarity = XArray.mmul(YArray.transpose()).div(XNorm.reshape(XRows, 1).mmul(YNorm.reshape(1,
-        // YRows)));
-        //
-        // // Handle NaN and Inf values
-        // similarity.maskedReplace(Double.NaN, 0.0);
-        // similarity.maskedReplace(Double.POSITIVE_INFINITY, 0.0);
-        // similarity.maskedReplace(Double.NEGATIVE_INFINITY, 0.0);
-        //
-        // return similarity;
-        return null;
+        int mostSimilar = Nd4j.argMax(similarityToQuery).getInt(0);
+        List<Integer> idxs = Lists.newArrayList(mostSimilar);
+        INDArray selected = createFromList(embeddingList.get(mostSimilar));
+
+        while (idxs.size() < Math.min(k, embeddingList.size())) {
+            float bestScore = NEGATIVE_INFINITY;
+            int idxToAdd = -1;
+            INDArray similarityToSelected = cosineSimilarity(embeddingList, selected);
+            for (int i = 0; i < similarityToQuery.columns(); i++) {
+                if (idxs.contains(i)) {
+                    continue;
+                }
+                float redundantScore = Transforms.max(similarityToSelected.getRow(i), 0).getFloat(0);
+                float equationScore = lambdaMult * similarityToQuery.getFloat(i) - (1 - lambdaMult) * redundantScore;
+                if (equationScore > bestScore) {
+                    bestScore = equationScore;
+                    idxToAdd = i;
+                }
+            }
+            idxs.add(idxToAdd);
+            selected = Nd4j.vstack(selected, createFromList(embeddingList.get(idxToAdd)));
+        }
+        return idxs;
     }
 }

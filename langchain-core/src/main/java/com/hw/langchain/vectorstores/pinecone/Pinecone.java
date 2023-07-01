@@ -27,7 +27,6 @@ import com.hw.pinecone.entity.vector.*;
 import com.hw.pinecone.entity.vector.Vector;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.hw.langchain.vectorstores.utils.ArrayUtils.listToArray;
+import static com.hw.langchain.vectorstores.utils.Nd4jUtils.createFromList;
 import static com.hw.langchain.vectorstores.utils.Utils.maximalMarginalRelevance;
 
 /**
@@ -170,7 +169,7 @@ public class Pinecone extends VectorStore {
         QueryResponse results = index.query(queryRequest);
 
         List<Integer> mmrSelected = maximalMarginalRelevance(
-                Nd4j.createFromArray(listToArray(List.of(embedding))),
+                createFromList(embedding),
                 results.getMatches().stream().map(ScoredVector::getValues).toList(),
                 k,
                 lambdaMult);
