@@ -29,17 +29,22 @@ import java.util.Map;
 
 /**
  * String prompt should expose the format method, returning a prompt.
+ *
  * @author HamaWhite
  */
 @Data
 @NoArgsConstructor
 public abstract class StringPromptTemplate extends BasePromptTemplate {
 
-    public StringPromptTemplate(List<String> inputVariables) {
+    protected StringPromptTemplate(List<String> inputVariables) {
         super(inputVariables);
     }
 
-    public StringPromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
+    protected StringPromptTemplate(List<String> inputVariables, Map<String, Object> partialVariables) {
+        super(inputVariables, partialVariables);
+    }
+
+    protected StringPromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
         super(inputVariables, outputParser);
     }
 

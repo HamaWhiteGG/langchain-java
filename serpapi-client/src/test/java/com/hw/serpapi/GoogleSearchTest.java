@@ -68,8 +68,6 @@ class GoogleSearchTest {
                 .getAsJsonObject()
                 .get("snippet")
                 .getAsString();
-
-        System.out.println(searchResult);
         assertNotNull(searchResult, "The searchResult should not be null");
     }
 }

@@ -31,6 +31,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.hw.langchain.agents.mrkl.prompt.Prompt.*;
+import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
 
 /**
  * Agent for the MRKL chain.
@@ -63,10 +64,7 @@ public class ZeroShotAgent extends Agent {
                 String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
         String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
 
-        formatInstructions = formatInstructions.replace("{tool_names}", toolNames);
-        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
-        formatInstructions = formatInstructions.replace("{{{{", "{{").replace("}}}}", "}}");
-
+        formatInstructions = formatTemplate(formatInstructions, Map.of("tool_names", toolNames));
         String template = String.join("\n\n", prefix, toolStrings, formatInstructions, suffix);
 
         if (inputVariables == null) {

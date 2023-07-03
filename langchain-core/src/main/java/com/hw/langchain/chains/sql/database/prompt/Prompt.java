@@ -68,8 +68,8 @@ public class Prompt {
                     Relevant Table Names:
                     """;
 
-    public static PromptTemplate DECIDER_PROMPT = new PromptTemplate(List.of("query", "table_names"),
-            _DECIDER_TEMPLATE,
+    public static PromptTemplate DECIDER_PROMPT = new PromptTemplate(_DECIDER_TEMPLATE,
+            List.of("query", "table_names"),
             new CommaSeparatedListOutputParser());
 
     private static String _mysql_prompt =

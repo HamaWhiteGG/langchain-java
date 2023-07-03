@@ -21,6 +21,7 @@ package com.hw.langchain.agents.chat.base;
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
 import com.hw.langchain.agents.chat.output.parser.ChatOutputParser;
+import com.hw.langchain.agents.initialize.Initialize;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
@@ -38,6 +39,7 @@ import java.util.Map;
 
 import static com.hw.langchain.agents.chat.prompt.Prompt.*;
 import static com.hw.langchain.agents.utils.Utils.validateToolsSingleInput;
+import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
 
 /**
  * @author HamaWhite
@@ -92,10 +94,7 @@ public class ChatAgent extends Agent {
         String toolStrings =
                 String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
 
-        formatInstructions = formatInstructions.replace("{tool_names}", toolNames);
-        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
-        formatInstructions = formatInstructions.replace("{{{{", "{{").replace("}}}}", "}}");
-
+        formatInstructions = formatTemplate(formatInstructions, Map.of("tool_names", toolNames));
         String template =
                 String.join("\n\n", systemMessagePrefix, toolStrings, formatInstructions, systemMessageSuffix);
 
@@ -110,6 +109,7 @@ public class ChatAgent extends Agent {
 
     /**
      * Construct an agent from an LLM and tools.
+     * This method will be called by the {@link Initialize#initializeAgent} using MethodUtils.invokeStaticMethod.
      */
     public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, Map<String, Object> kwargs) {
         return fromLLMAndTools(llm, tools, null, SYSTEM_MESSAGE_PREFIX, SYSTEM_MESSAGE_SUFFIX, HUMAN_MESSAGE,

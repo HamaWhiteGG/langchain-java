@@ -34,6 +34,10 @@ public abstract class BaseChatPromptTemplate extends BasePromptTemplate {
         super(inputVariables);
     }
 
+    public BaseChatPromptTemplate(List<String> inputVariables, Map<String, Object> partialVariables) {
+        super(inputVariables, partialVariables);
+    }
+
     @Override
     public String format(Map<String, Object> kwargs) {
         return formatPrompt(kwargs).toString();

@@ -16,36 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.prompts.base;
+package com.hw.langchain.output.parsers.structured;
 
-import com.hw.langchain.schema.BaseMessage;
-import com.hw.langchain.schema.HumanMessage;
-import com.hw.langchain.schema.PromptValue;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * StringPromptValue
  * @author HamaWhite
  */
-public class StringPromptValue implements PromptValue {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResponseSchema {
 
-    private final String text;
+    private String name;
 
-    public StringPromptValue(String text) {
-        this.text = text;
-    }
+    private String description;
 
-    @Override
-    public List<BaseMessage> toMessages() {
-        return List.of(new HumanMessage(text));
-    }
+    private String type = "string";
 
-    /**
-     * Return prompt as string.
-     */
-    @Override
-    public String toString() {
-        return text;
+    public ResponseSchema(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 }
