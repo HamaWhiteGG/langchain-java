@@ -42,6 +42,9 @@ import static com.hw.langchain.agents.types.Types.AGENT_TO_CLASS;
  */
 public class Initialize {
 
+    private Initialize() {
+    }
+
     public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
         return initializeAgent(tools, llm, agent, null, Map.of(), Map.of());
     }

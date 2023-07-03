@@ -21,16 +21,17 @@ package com.hw.langchain.prompts.prompt;
 import com.hw.langchain.prompts.base.StringPromptTemplate;
 import com.hw.langchain.schema.BaseOutputParser;
 
-import org.apache.commons.text.StringSubstitutor;
-
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.hw.langchain.prompts.utils.FormatUtils.findVariables;
+import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
+
 /**
  * Schema to represent a prompt for an LLM.
+ *
  * @author HamaWhite
  */
 @Data
@@ -51,29 +52,24 @@ public class PromptTemplate extends StringPromptTemplate {
         this.template = template;
     }
 
-    public PromptTemplate(List<String> inputVariables, String template, BaseOutputParser<?> outputParser) {
+    public PromptTemplate(String template, List<String> inputVariables, Map<String, Object> partialVariables) {
+        super(inputVariables, partialVariables);
+        this.template = template;
+    }
+
+    public PromptTemplate(String template, List<String> inputVariables, BaseOutputParser<?> outputParser) {
         super(inputVariables, outputParser);
         this.template = template;
     }
 
     @Override
     public String format(Map<String, Object> kwargs) {
-        String text = StringSubstitutor.replace(template, kwargs, "{", "}");
-        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
-        return text.replace("{{", "{").replace("}}", "}");
+        kwargs = mergePartialAndUserVariables(kwargs);
+        return formatTemplate(template, kwargs);
     }
 
     public static PromptTemplate fromTemplate(String template) {
-        List<String> variableNames = new ArrayList<>();
-        StringSubstitutor substitutor = new StringSubstitutor(variable -> {
-            if (!variable.startsWith("{") && !variable.endsWith("}")) {
-                variableNames.add(variable);
-            }
-            return null;
-        });
-        substitutor.setVariablePrefix("{");
-        substitutor.setVariableSuffix("}");
-        substitutor.replace(template);
+        List<String> variableNames = findVariables(template);
         return new PromptTemplate(variableNames, template);
     }
 }

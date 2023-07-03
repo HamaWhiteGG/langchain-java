@@ -33,7 +33,11 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
     private final List<?> messages;
 
     public ChatPromptTemplate(List<String> inputVariables, List<?> messages) {
-        super(inputVariables);
+        this(inputVariables, messages, new HashMap<>());
+    }
+
+    public ChatPromptTemplate(List<String> inputVariables, List<?> messages, Map<String, Object> partialVariables) {
+        super(inputVariables, partialVariables);
         this.messages = messages;
 
         validateInputVariables();
@@ -46,10 +50,13 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
                 inputVars.addAll(promptTemplate.inputVariables());
             }
         }
+        if (partialVariables != null) {
+            inputVars.removeAll(partialVariables.keySet());
+        }
         if (inputVariables != null) {
             if (!inputVars.equals(new HashSet<>(inputVariables))) {
                 throw new IllegalArgumentException(String
-                        .format("Got mismatched input_variables. Expected: %s. Got: %s", inputVars, inputVariables));
+                        .format("Got mismatched inputVariables. Expected: %s. Got: %s", inputVars, inputVariables));
             }
         } else {
             inputVariables = List.copyOf(inputVars);
@@ -58,6 +65,7 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
 
     @Override
     public List<BaseMessage> formatMessages(Map<String, Object> kwargs) {
+        kwargs = mergePartialAndUserVariables(kwargs);
         List<BaseMessage> result = new ArrayList<>();
         for (var messageTemplate : messages) {
             if (messageTemplate instanceof BaseMessage baseMessage) {

@@ -22,16 +22,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.hw.langchain.schema.BaseOutputParser;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.hw.langchain.output.parsers.FormatInstructions.STRUCTURED_FORMAT_INSTRUCTIONS;
 import static com.hw.langchain.output.parsers.json.Json.parseAndCheckJsonMarkdown;
+import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
 
 /**
  * @author HamaWhite
  */
 public class StructuredOutputParser extends BaseOutputParser<JsonNode> {
 
-    private static final String LINE_TEMPLATE = "\t\"%s\": %s  // %s";
+    private static final String LINE_TEMPLATE = "\t\"{name}\": {type}  // {description}";
 
     private final List<ResponseSchema> responseSchemas;
 
@@ -44,7 +46,10 @@ public class StructuredOutputParser extends BaseOutputParser<JsonNode> {
     }
 
     private String getSubString(ResponseSchema schema) {
-        return String.format(LINE_TEMPLATE, schema.getName(), schema.getType(), schema.getDescription());
+        Map<String, Object> kwargs = Map.of("name", schema.getName(),
+                "description", schema.getDescription(),
+                "type", schema.getType());
+        return formatTemplate(LINE_TEMPLATE, kwargs);
     }
 
     @Override
@@ -58,6 +63,6 @@ public class StructuredOutputParser extends BaseOutputParser<JsonNode> {
     @Override
     public String getFormatInstructions() {
         var schemaStr = String.join("\n", responseSchemas.stream().map(this::getSubString).toList());
-        return String.format(STRUCTURED_FORMAT_INSTRUCTIONS, schemaStr);
+        return formatTemplate(STRUCTURED_FORMAT_INSTRUCTIONS, Map.of("format", schemaStr));
     }
 }

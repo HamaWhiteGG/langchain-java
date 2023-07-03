@@ -27,9 +27,11 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Base class for all prompt templates, returning a prompt.
+ *
  * @author HamaWhite
  */
 @Data
@@ -48,11 +50,16 @@ public abstract class BasePromptTemplate {
 
     protected Map<String, Object> partialVariables = new HashMap<>();
 
-    public BasePromptTemplate(List<String> inputVariables) {
+    protected BasePromptTemplate(List<String> inputVariables) {
         this.inputVariables = inputVariables;
     }
 
-    public BasePromptTemplate(List<String> inputVariables, BaseOutputParser<?> outputParser) {
+    protected BasePromptTemplate(List<String> inputVariables, Map<String, Object> partialVariables) {
+        this.inputVariables = inputVariables;
+        this.partialVariables = partialVariables;
+    }
+
+    protected BasePromptTemplate(List<String> inputVariables, BaseOutputParser<?> outputParser) {
         this.inputVariables = inputVariables;
         this.outputParser = outputParser;
     }
@@ -63,9 +70,31 @@ public abstract class BasePromptTemplate {
     public abstract PromptValue formatPrompt(Map<String, Object> kwargs);
 
     /**
+     * Merge the partial variables and user variables into a single map.
+     *
+     * @param kwargs Additional user variables provided.
+     * @return Merged map containing partial variables and user variables.
+     */
+    public Map<String, Object> mergePartialAndUserVariables(Map<String, Object> kwargs) {
+        var mergedVariables = new HashMap<String, Object>(partialVariables.size() + kwargs.size());
+        // Add partial variables
+        partialVariables.forEach((key, value) -> {
+            if (value instanceof String stringValue) {
+                mergedVariables.put(key, stringValue);
+            } else if (value instanceof Supplier<?> supplier) {
+                mergedVariables.put(key, supplier.get());
+            }
+        });
+        // Add user variables
+        mergedVariables.putAll(kwargs);
+        return mergedVariables;
+    }
+
+    /**
      * Format the prompt with the inputs.
+     *
      * @param kwargs Any arguments to be passed to the prompt template.
-     * @return  A formatted string.
+     * @return A formatted string.
      */
     public abstract String format(Map<String, Object> kwargs);
 

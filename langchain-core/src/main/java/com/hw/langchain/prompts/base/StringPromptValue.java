@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class StringPromptValue implements PromptValue {
 
-    private String text;
+    private final String text;
 
     public StringPromptValue(String text) {
         this.text = text;

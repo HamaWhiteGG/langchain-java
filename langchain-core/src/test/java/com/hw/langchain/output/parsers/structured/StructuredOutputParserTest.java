@@ -19,16 +19,25 @@
 package com.hw.langchain.output.parsers.structured;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hw.langchain.chat.models.openai.ChatOpenAI;
+import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.langchain.prompts.chat.ChatPromptTemplate;
+import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
+import com.hw.langchain.prompts.prompt.PromptTemplate;
 import com.hw.langchain.schema.OutputParserException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * <a href="https://python.langchain.com/docs/modules/model_io/output_parsers/structured">Structured output parser</a>
+ *
  * @author HamaWhite
  */
 class StructuredOutputParserTest {
@@ -61,4 +70,53 @@ class StructuredOutputParserTest {
         assertThrows(OutputParserException.class, () -> parser.parse(text));
     }
 
+    private StructuredOutputParser createOutputParser() {
+        List<ResponseSchema> responseSchemas = List.of(
+                new ResponseSchema("answer", "answer to the user's question"),
+                new ResponseSchema("source", "source used to answer the user's question, should be a website."));
+        return StructuredOutputParser.fromResponseSchemas(responseSchemas);
+    }
+
+    @Test
+    @Disabled("Test requires costly OpenAI calls, can be run manually.")
+    void testStructuredOutputParserWithLLM() {
+        var outputParser = createOutputParser();
+        var prompt = new PromptTemplate(
+                "answer the users question as best as possible.\n{format_instructions}\n{question}",
+                List.of("question"),
+                Map.of("format_instructions", outputParser.getFormatInstructions()));
+
+        var llm = OpenAI.builder().temperature(0).build().init();
+        var input = prompt.formatPrompt(Map.of("question", "what's the capital of france?"));
+        var output = llm.call(input.toString());
+
+        var actual = outputParser.parse(output);
+        var expected = new ObjectMapper().createObjectNode()
+                .put("answer", "Paris")
+                .put("source", "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Disabled("Test requires costly OpenAI calls, can be run manually.")
+    void testStructuredOutputParserWithChatModel() {
+        var outputParser = createOutputParser();
+
+        var prompt = new ChatPromptTemplate(
+                List.of("question"),
+                List.of(HumanMessagePromptTemplate.fromTemplate(
+                        "answer the users question as best as possible.\n{format_instructions}\n{question}")),
+                Map.of("format_instructions", outputParser.getFormatInstructions()));
+
+        var chatModel = ChatOpenAI.builder().temperature(0).build().init();
+
+        var input = prompt.formatPrompt(Map.of("question", "what's the capital of france?"));
+        var output = chatModel.call(input.toMessages());
+
+        var actual = outputParser.parse(output.getContent());
+        var expected = new ObjectMapper().createObjectNode()
+                .put("answer", "The capital of France is Paris.")
+                .put("source", "https://en.wikipedia.org/wiki/Paris");
+        assertEquals(expected, actual);
+    }
 }
