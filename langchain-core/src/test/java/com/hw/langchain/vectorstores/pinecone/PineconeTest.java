@@ -26,9 +26,7 @@ import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.IndexDescription;
 
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 
@@ -41,10 +39,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author HamaWhite
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Disabled("Test requires costly OpenAI and Pinecone calls, can be run manually.")
-class PineconeTest {
+public class PineconeTest {
 
-    private final String indexName = "langchain-demo";
+    public static final String INDEX_NAME = "langchain-demo";
 
     private final String query = "What did the president say about Ketanji Brown Jackson";
 
@@ -69,7 +68,7 @@ class PineconeTest {
     private Pinecone createPinecone() {
         return Pinecone.builder()
                 .client(client)
-                .indexName(indexName)
+                .indexName(INDEX_NAME)
                 .embeddingFunction(embeddings::embedQuery)
                 .build()
                 .init();
@@ -81,9 +80,9 @@ class PineconeTest {
      * It also waits until the index is ready before returning.
      */
     private void ensureIndexCreated() {
-        if (!client.listIndexes().contains(indexName)) {
+        if (!client.listIndexes().contains(INDEX_NAME)) {
             var request = CreateIndexRequest.builder()
-                    .name(indexName)
+                    .name(INDEX_NAME)
                     .dimension(1536)
                     .build();
             client.createIndex(request);
@@ -97,13 +96,14 @@ class PineconeTest {
                 .atMost(Duration.ofSeconds(120))
                 .pollInterval(Duration.ofSeconds(5))
                 .until(() -> {
-                    IndexDescription indexDescription = client.describeIndex(indexName);
+                    IndexDescription indexDescription = client.describeIndex(INDEX_NAME);
                     return indexDescription != null && indexDescription.getStatus().isReady();
                 });
     }
 
     @Test
-    void testFromDocuments() {
+    @Order(1)
+    public void testFromDocuments() {
         String filePath = "../docs/extras/modules/state_of_the_union.txt";
         var loader = new TextLoader(filePath);
         var documents = loader.load();
@@ -119,6 +119,7 @@ class PineconeTest {
     }
 
     @Test
+    @Order(2)
     void testSimilaritySearch() {
         var pinecone = createPinecone();
         var docs = pinecone.similaritySearch(query);
@@ -138,6 +139,7 @@ class PineconeTest {
     }
 
     @Test
+    @Order(3)
     void testGetRelevantDocuments() {
         var pinecone = createPinecone();
         var retriever = pinecone.asRetriever(MMR);
@@ -147,6 +149,7 @@ class PineconeTest {
     }
 
     @Test
+    @Order(4)
     void testMaxMarginalRelevanceSearch() {
         var pinecone = createPinecone();
         var foundDocs = pinecone.maxMarginalRelevanceSearch(query, 2, 10, 0.5f);

@@ -18,6 +18,7 @@
 
 package com.hw.langchain.vectorstores.pinecone;
 
+import com.google.common.collect.Maps;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.base.VectorStore;
@@ -117,7 +118,7 @@ public class Pinecone extends VectorStore {
         for (var res : results.getMatches()) {
             var metadata = res.getMetadata();
             if (metadata.containsKey(textKey)) {
-                var text = metadata.get(textKey).toString();
+                var text = metadata.remove(textKey).toString();
                 Document document = new Document(text, metadata);
                 docs.add(Pair.of(document, res.getScore()));
             } else {
@@ -220,7 +221,7 @@ public class Pinecone extends VectorStore {
             metadata.addAll(metadatas.subList(start, end));
         } else {
             for (int i = 0; i < linesBatch.size(); i++) {
-                metadata.add(new HashMap<>());
+                metadata.add(Maps.newHashMap());
             }
         }
         for (int j = 0; j < linesBatch.size(); j++) {

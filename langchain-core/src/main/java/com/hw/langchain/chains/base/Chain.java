@@ -65,7 +65,7 @@ public abstract class Chain {
     /**
      * Run the logic of this chain and return the output.
      */
-    public abstract Map<String, String> _call(Map<String, Object> inputs);
+    public abstract Map<String, String> innerCall(Map<String, Object> inputs);
 
     /**
      * Run the logic of this chain and add to output if desired.
@@ -92,7 +92,7 @@ public abstract class Chain {
      */
     public Map<String, String> call(Map<String, Object> inputs, boolean returnOnlyOutputs) {
         inputs = prepInputs(inputs);
-        Map<String, String> outputs = _call(inputs);
+        Map<String, String> outputs = innerCall(inputs);
         return prepOutputs(inputs, outputs, returnOnlyOutputs);
     }
 

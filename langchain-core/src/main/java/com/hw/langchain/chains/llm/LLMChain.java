@@ -97,7 +97,7 @@ public class LLMChain extends Chain {
     }
 
     @Override
-    public Map<String, String> _call(Map<String, Object> inputs) {
+    public Map<String, String> innerCall(Map<String, Object> inputs) {
         LLMResult response = generate(List.of(inputs));
         return createOutputs(response).get(0);
     }
@@ -175,4 +175,9 @@ public class LLMChain extends Chain {
         }
         return (T) result;
     }
+
+    public BasePromptTemplate getPrompt() {
+        return prompt;
+    }
+
 }
