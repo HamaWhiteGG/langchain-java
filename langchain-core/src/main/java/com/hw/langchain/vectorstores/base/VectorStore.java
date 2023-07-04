@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
+import static com.hw.langchain.vectorstores.base.SearchType.SIMILARITY;
+
 /**
  * @author HamaWhite
  */
@@ -175,6 +177,10 @@ public abstract class VectorStore {
      * Return VectorStore initialized from texts and embeddings.
      */
     public abstract int fromTexts(List<String> texts, Embeddings embedding, List<Map<String, Object>> metadatas);
+
+    public VectorStoreRetriever asRetriever() {
+        return asRetriever(SIMILARITY);
+    }
 
     public VectorStoreRetriever asRetriever(SearchType searchType) {
         return new VectorStoreRetriever(this, searchType);
