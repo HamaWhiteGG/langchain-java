@@ -21,8 +21,8 @@ package com.hw.langchain.chains.retrieval.qa.base;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.vectorstores.pinecone.Pinecone;
-import com.hw.pinecone.PineconeClient;
 import com.hw.langchain.vectorstores.pinecone.PineconeTest;
+import com.hw.pinecone.PineconeClient;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

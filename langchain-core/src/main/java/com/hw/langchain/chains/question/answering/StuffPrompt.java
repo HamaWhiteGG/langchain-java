@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class StuffPrompt {
 
-    private StuffPrompt(){
+    private StuffPrompt() {
     }
 
     private static final String PROMPT_TEMPLATE =

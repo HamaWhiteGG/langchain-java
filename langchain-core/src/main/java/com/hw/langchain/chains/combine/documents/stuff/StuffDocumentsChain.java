@@ -64,7 +64,8 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
         this(llmChain, getDefaultDocumentPrompt(), documentVariableName, "\n\n");
     }
 
-    public StuffDocumentsChain(LLMChain llmChain, BasePromptTemplate documentPrompt, String documentVariableName, String documentSeparator) {
+    public StuffDocumentsChain(LLMChain llmChain, BasePromptTemplate documentPrompt, String documentVariableName,
+            String documentSeparator) {
         this.llmChain = llmChain;
         this.documentPrompt = documentPrompt;
         this.documentVariableName = documentVariableName;

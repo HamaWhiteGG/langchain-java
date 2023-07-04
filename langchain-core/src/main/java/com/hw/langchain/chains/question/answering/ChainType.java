@@ -37,7 +37,7 @@ public enum ChainType {
      * Chain type for "refine".
      */
     REFINE("refine"),
-    
+
     /**
      * Chain type for "map_rerank".
      */
