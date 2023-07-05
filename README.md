@@ -46,6 +46,7 @@ export OPENAI_PROXY=http://host:port
 If you want to set the API key and proxy dynamically, you can use the openaiApiKey and openaiProxy parameter when initiating OpenAI class.
 ```java
 var llm = OpenAI.builder()
+        .openaiOrganization("xxx")
         .openaiApiKey("xxx")
         .openaiProxy("http://host:port")
         .build()
