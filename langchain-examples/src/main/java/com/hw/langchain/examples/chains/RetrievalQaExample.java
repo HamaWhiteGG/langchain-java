@@ -21,7 +21,6 @@ package com.hw.langchain.examples.chains;
 import com.hw.langchain.chains.retrieval.qa.base.RetrievalQA;
 import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
-import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
 import com.hw.langchain.vectorstores.pinecone.Pinecone;
