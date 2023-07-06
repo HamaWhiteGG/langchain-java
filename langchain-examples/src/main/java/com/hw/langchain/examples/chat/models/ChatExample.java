@@ -16,28 +16,33 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.chat.models;
+
+import com.hw.langchain.chat.models.openai.ChatOpenAI;
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.schema.HumanMessage;
+
+import java.util.List;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+@RunnableExample
+public class ChatExample {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
+    public static void main(String[] args) {
+        var chat = ChatOpenAI.builder()
+                .temperature(0)
+                .build()
+                .init();
 
-    @Override
-    public String type() {
-        return "system";
-    }
+        var result = chat.predictMessages(
+                List.of(new HumanMessage("Translate this sentence from English to French. I love programming.")));
+        println(result);
 
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+        var output = chat.predict("Translate this sentence from English to French. I love programming.");
+        println(output);
     }
 }

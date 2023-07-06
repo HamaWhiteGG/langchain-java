@@ -16,28 +16,24 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.prompt.templates;
+
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.prompts.prompt.PromptTemplate;
+
+import java.util.Map;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+@RunnableExample
+public class LlmPromptTemplateExample {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
-
-    @Override
-    public String type() {
-        return "system";
-    }
-
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+    public static void main(String[] args) {
+        var prompt = PromptTemplate.fromTemplate("What is a good name for a company that makes {product}?");
+        var output = prompt.format(Map.of("product", "colorful socks"));
+        println(output);
     }
 }

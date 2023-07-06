@@ -49,7 +49,7 @@ class PineconeClientTest {
     @BeforeAll
     static void setup() {
         client = PineconeClient.builder()
-                .requestTimeout(10)
+                .requestTimeout(16)
                 .build()
                 .init();
 

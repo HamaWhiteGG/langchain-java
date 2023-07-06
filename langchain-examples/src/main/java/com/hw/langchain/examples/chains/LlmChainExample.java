@@ -16,28 +16,31 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.chains;
+
+import com.hw.langchain.chains.llm.LLMChain;
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.langchain.prompts.prompt.PromptTemplate;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+@RunnableExample
+public class LlmChainExample {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
+    public static void main(String[] args) {
+        var llm = OpenAI.builder()
+                .temperature(0.9f)
+                .build()
+                .init();
 
-    @Override
-    public String type() {
-        return "system";
-    }
+        var prompt = PromptTemplate.fromTemplate("What is a good name for a company that makes {product}?");
 
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+        var chain = new LLMChain(llm, prompt);
+        var result = chain.run("colorful socks");
+        println(result);
     }
 }

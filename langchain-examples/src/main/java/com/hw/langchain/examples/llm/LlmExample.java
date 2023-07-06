@@ -16,28 +16,26 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.llm;
+
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.llms.openai.OpenAI;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+@RunnableExample
+public class LlmExample {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
+    public static void main(String[] args) {
+        var llm = OpenAI.builder()
+                .temperature(0.9f)
+                .build()
+                .init();
 
-    @Override
-    public String type() {
-        return "system";
-    }
-
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+        var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
+        println(result);
     }
 }

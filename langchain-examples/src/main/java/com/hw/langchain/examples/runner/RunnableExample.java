@@ -16,28 +16,17 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.runner;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
-
-    public SystemMessage(String content) {
-        super(content);
-    }
-
-    @Override
-    public String type() {
-        return "system";
-    }
-
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface RunnableExample {
 }

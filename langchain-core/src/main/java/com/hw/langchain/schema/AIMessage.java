@@ -24,8 +24,6 @@ package com.hw.langchain.schema;
  */
 public class AIMessage extends BaseMessage {
 
-    private boolean example;
-
     public AIMessage(String content) {
         super(content);
     }
@@ -33,5 +31,13 @@ public class AIMessage extends BaseMessage {
     @Override
     public String type() {
         return "ai";
+    }
+
+    @Override
+    public String toString() {
+        return "AIMessage{" +
+                "content='" + content + '\'' +
+                ", additionalKwargs=" + additionalKwargs +
+                '}';
     }
 }
