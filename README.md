@@ -10,9 +10,7 @@ Large language models (LLMs) are emerging as a transformative technology, enabli
 
 This library is aimed at assisting in the development of those types of applications.
 
-Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).
-
-------
+Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).  
 
 The following example  can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
 
