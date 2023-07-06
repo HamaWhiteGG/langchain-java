@@ -72,7 +72,7 @@ var llm = OpenAI.builder()
         .build()
         .init();
 
-  var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
+var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
 print(result);
 ```
 And now we can pass in text and get predictions!
@@ -329,18 +329,18 @@ Certainly! I am an AI language model developed by OpenAI called GPT-3. I have be
 ## 4. Run Test Cases from Source
 
 ```shell
-$ git clone https://github.com/HamaWhiteGG/langchain-java.git
-$ cd langchain-java
+git clone https://github.com/HamaWhiteGG/langchain-java.git
+cd langchain-java
 
 # export JAVA_HOME=JDK17_INSTALL_HOME && mvn clean test
-$ mvn clean test
+mvn clean test
 ```
 
 This project uses Spotless to format the code. If you make any modifications, please remember to format the code using the following command.
 
 ```shell
 # export JAVA_HOME=JDK17_INSTALL_HOME && mvn spotless:apply
-$ mvn spotless:apply
+mvn spotless:apply
 ```
 
 ## 5. Support
