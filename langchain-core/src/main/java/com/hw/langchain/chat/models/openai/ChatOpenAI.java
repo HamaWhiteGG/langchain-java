@@ -82,10 +82,10 @@ public class ChatOpenAI extends BaseChatModel {
     protected String openaiProxy;
 
     /**
-     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     * Timeout for requests to OpenAI completion API. Default is 16 seconds.
      */
     @Builder.Default
-    protected long requestTimeout = 10;
+    protected long requestTimeout = 16;
 
     /**
      * Maximum number of retries to make when generating.

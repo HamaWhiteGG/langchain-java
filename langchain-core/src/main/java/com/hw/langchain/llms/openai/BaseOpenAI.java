@@ -117,10 +117,10 @@ public class BaseOpenAI extends BaseLLM {
     protected int batchSize = 20;
 
     /**
-     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     * Timeout for requests to OpenAI completion API. Default is 16 seconds.
      */
     @Builder.Default
-    protected long requestTimeout = 10;
+    protected long requestTimeout = 16;
 
     /**
      * Adjust the probability of specific tokens being generated.

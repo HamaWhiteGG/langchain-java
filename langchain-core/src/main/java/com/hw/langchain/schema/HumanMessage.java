@@ -24,8 +24,6 @@ package com.hw.langchain.schema;
  */
 public class HumanMessage extends BaseMessage {
 
-    private boolean example;
-
     public HumanMessage(String content) {
         super(content);
     }
@@ -33,5 +31,13 @@ public class HumanMessage extends BaseMessage {
     @Override
     public String type() {
         return "human";
+    }
+
+    @Override
+    public String toString() {
+        return "HumanMessage{" +
+                "content='" + content + '\'' +
+                ", additionalKwargs=" + additionalKwargs +
+                '}';
     }
 }

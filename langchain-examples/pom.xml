@@ -8,12 +8,18 @@
         <version>0.1.8</version>
     </parent>
 
-    <artifactId>serpapi-client</artifactId>
+    <artifactId>langchain-examples</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>io.github.hamawhitegg</groupId>
+            <artifactId>langchain-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
         </dependency>
 
         <dependency>
@@ -24,6 +30,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -43,4 +55,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

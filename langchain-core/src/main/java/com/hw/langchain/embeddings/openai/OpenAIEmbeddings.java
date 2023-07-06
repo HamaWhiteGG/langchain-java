@@ -83,10 +83,10 @@ public class OpenAIEmbeddings implements Embeddings {
     private int maxRetries = 6;
 
     /**
-     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     * Timeout for requests to OpenAI completion API. Default is 16 seconds.
      */
     @Builder.Default
-    protected long requestTimeout = 10;
+    protected long requestTimeout = 16;
 
     /**
      * Validate parameters and init client

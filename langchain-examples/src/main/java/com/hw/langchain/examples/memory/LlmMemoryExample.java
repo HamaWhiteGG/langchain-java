@@ -16,28 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.memory;
+
+import com.hw.langchain.chains.conversation.base.ConversationChain;
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.llms.openai.OpenAI;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+@RunnableExample
+public class LlmMemoryExample {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
+    public static void main(String[] args) {
+        var llm = OpenAI.builder().temperature(0).build().init();
+        var conversation = new ConversationChain(llm);
 
-    @Override
-    public String type() {
-        return "system";
-    }
+        var output = conversation.run("Hi there!");
+        println(output);
 
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+        output = conversation.run("I'm doing well! Just having a conversation with an AI.");
+        println(output);
     }
 }

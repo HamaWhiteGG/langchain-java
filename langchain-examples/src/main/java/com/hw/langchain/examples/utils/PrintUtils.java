@@ -16,28 +16,17 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.utils;
 
 /**
- * Type of message that is a system message.
  * @author HamaWhite
  */
-public class SystemMessage extends BaseMessage {
+public class PrintUtils {
 
-    public SystemMessage(String content) {
-        super(content);
+    private PrintUtils() {
     }
 
-    @Override
-    public String type() {
-        return "system";
-    }
-
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
+    public static void println(Object obj) {
+        System.out.println(obj);
     }
 }

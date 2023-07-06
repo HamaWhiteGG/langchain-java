@@ -33,7 +33,7 @@ class HttpClientTimeoutTest {
     @Test
     void testRequestTimeout() {
         OpenAiClient client = OpenAiClient.builder()
-                .requestTimeout(15)
+                .requestTimeout(20)
                 .build()
                 .init();
 
@@ -48,6 +48,6 @@ class HttpClientTimeoutTest {
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
 
-        assertTrue(executionTime >= 15_000, "Execution time should be greater than or equal to 30 seconds.");
+        assertTrue(executionTime >= 20_000, "Execution time should be greater than or equal to 30 seconds.");
     }
 }

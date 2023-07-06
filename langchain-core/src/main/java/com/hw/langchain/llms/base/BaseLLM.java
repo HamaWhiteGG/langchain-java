@@ -77,7 +77,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
 
     @Override
     public String predict(String text, List<String> stop) {
-        return null;
+        return call(text, stop);
     }
 
     @Override

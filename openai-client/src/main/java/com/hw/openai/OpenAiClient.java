@@ -65,10 +65,10 @@ public class OpenAiClient {
     private String openaiProxy;
 
     /**
-     * Timeout for requests to OpenAI completion API. Default is 10 seconds.
+     * Timeout for requests to OpenAI completion API. Default is 16 seconds.
      */
     @Builder.Default
-    protected long requestTimeout = 10;
+    protected long requestTimeout = 16;
 
     private OpenAiService service;
 

@@ -64,10 +64,10 @@ public class PineconeClient {
     private String projectName;
 
     /**
-     * Default is 10 seconds.
+     * Default is 16 seconds.
      */
     @Builder.Default
-    protected long requestTimeout = 10;
+    protected long requestTimeout = 16;
 
     private OkHttpClient httpClient;
 
