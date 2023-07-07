@@ -66,7 +66,7 @@ public class RetrievalQaExample {
         var llm = OpenAI.builder().temperature(0).requestTimeout(30).build().init();
         var qa = RetrievalQA.fromChainType(llm, STUFF, pinecone.asRetriever());
 
-        String query = "What did the president say about Ketanji Brown Jackson";
+        var query = "What did the president say about Ketanji Brown Jackson";
         var result = qa.run(query);
         println(result);
     }
@@ -77,6 +77,7 @@ public class RetrievalQaExample {
      */
     private static void createPineconeIndex(PineconeClient client) {
         if (!client.listIndexes().contains(INDEX_NAME)) {
+            // the text-embedding-ada-002 model has an output dimension of 1536.
             var request = CreateIndexRequest.builder()
                     .name(INDEX_NAME)
                     .dimension(1536)
