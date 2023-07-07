@@ -77,6 +77,7 @@ public class RetrievalQaExample {
      */
     private static void createPineconeIndex(PineconeClient client) {
         if (!client.listIndexes().contains(INDEX_NAME)) {
+            // the text-embedding-ada-002 model has an output dimension of 1536.
             var request = CreateIndexRequest.builder()
                     .name(INDEX_NAME)
                     .dimension(1536)
