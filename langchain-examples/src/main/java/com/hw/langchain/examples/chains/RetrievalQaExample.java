@@ -66,7 +66,7 @@ public class RetrievalQaExample {
         var llm = OpenAI.builder().temperature(0).requestTimeout(30).build().init();
         var qa = RetrievalQA.fromChainType(llm, STUFF, pinecone.asRetriever());
 
-        String query = "What did the president say about Ketanji Brown Jackson";
+        var query = "What did the president say about Ketanji Brown Jackson";
         var result = qa.run(query);
         println(result);
     }

@@ -56,7 +56,7 @@ var llm = OpenAI.builder()
         .openaiOrganization("xxx")
         .openaiApiKey("xxx")
         .openaiProxy("http://host:port")
-        .requestTimeout(requestTimeout)
+        .requestTimeout(16)
         .build()
         .init();
 ```
