@@ -100,15 +100,17 @@ public class Pinecone extends VectorStore {
     /**
      * Return pinecone documents most similar to query, along with scores.
      *
-     * @param query Text to look up documents similar to.
-     * @param k     Number of Documents to return. Defaults to 4.
+     * @param query  Text to look up documents similar to.
+     * @param k      Number of Documents to return. Defaults to 4.
+     * @param filter Dictionary of argument(s) to filter on metadata
      * @return List of Documents most similar to the query and score for each
      */
-    private List<Pair<Document, Float>> similaritySearchWithScore(String query, int k) {
+    private List<Pair<Document, Float>> similaritySearchWithScore(String query, int k, Map<String, Object> filter) {
         List<Float> queryObj = embeddingFunction.apply(query);
         QueryRequest queryRequest = QueryRequest.builder()
                 .vector(queryObj)
                 .topK(k)
+                .filter(filter)
                 .namespace(namespace)
                 .includeMetadata(true)
                 .build();
@@ -131,13 +133,14 @@ public class Pinecone extends VectorStore {
     /**
      * Return pinecone documents most similar to query.
      *
-     * @param query Text to look up documents similar to.
-     * @param k     Number of Documents to return. Defaults to 4.
+     * @param query  Text to look up documents similar to.
+     * @param k      Number of Documents to return. Defaults to 4.
+     * @param filter Dictionary of argument(s) to filter on metadata
      * @return List of Documents most similar to the query and score for each
      */
     @Override
-    public List<Document> similaritySearch(String query, int k) {
-        List<Pair<Document, Float>> docsAndScores = similaritySearchWithScore(query, k);
+    public List<Document> similaritySearch(String query, int k, Map<String, Object> filter) {
+        List<Pair<Document, Float>> docsAndScores = similaritySearchWithScore(query, k, filter);
         return docsAndScores.stream().map(Pair::getLeft).toList();
     }
 
@@ -235,5 +238,9 @@ public class Pinecone extends VectorStore {
         return IntStream.range(0, idsBatch.size())
                 .mapToObj(k -> new Vector(idsBatch.get(k), embeds.get(k), metadata.get(k)))
                 .toList();
+    }
+
+    public IndexClient getIndex() {
+        return index;
     }
 }

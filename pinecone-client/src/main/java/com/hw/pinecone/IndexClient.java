@@ -33,6 +33,17 @@ public class IndexClient {
     }
 
     /**
+     * The DescribeIndexStats operation returns statistics about the index's contents,
+     * including the vector count per namespace and the number of dimensions.
+     *
+     * @param request the request object for describing index statistics
+     * @return a DescribeIndexStatsResponse with index statistics
+     */
+    public DescribeIndexStatsResponse describeIndexStats(DescribeIndexStatsRequest request) {
+        return vectorService.describeIndexStats(request).blockingGet();
+    }
+
+    /**
      * The Query operation searches a namespace, using a query vector.
      * It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
      *

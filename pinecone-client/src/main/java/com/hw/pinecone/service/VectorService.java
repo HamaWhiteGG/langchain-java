@@ -33,6 +33,16 @@ import java.util.List;
 public interface VectorService {
 
     /**
+     * The DescribeIndexStats operation returns statistics about the index's contents,
+     * including the vector count per namespace and the number of dimensions.
+     *
+     * @param request the request object for describing index statistics
+     * @return a Single emitting the response with index statistics
+     */
+    @POST("/describe_index_stats")
+    Single<DescribeIndexStatsResponse> describeIndexStats(@Body DescribeIndexStatsRequest request);
+
+    /**
      * The Query operation searches a namespace, using a query vector.
      * It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
      *

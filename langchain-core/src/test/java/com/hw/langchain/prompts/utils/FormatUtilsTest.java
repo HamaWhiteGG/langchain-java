@@ -84,7 +84,7 @@ class FormatUtilsTest {
         Map<String, Object> kwargs = Map.of("name", "John");
 
         // python is 'Hello, {{name}}!'
-        String expected = "Hello, {{John}}!";
+        String expected = "Hello, {John}!";
         String actual = formatTemplate(template, kwargs);
         assertEquals(expected, actual);
     }

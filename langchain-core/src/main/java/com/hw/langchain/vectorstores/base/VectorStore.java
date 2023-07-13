@@ -69,9 +69,9 @@ public abstract class VectorStore {
         return addTexts(texts, metadatas, kwargs);
     }
 
-    public List<Document> search(String query, SearchType searchType) {
+    public List<Document> search(String query, SearchType searchType, Map<String, Object> filter) {
         return switch (searchType) {
-            case SIMILARITY -> similaritySearch(query);
+            case SIMILARITY -> similaritySearch(query, filter);
             case MMR -> maxMarginalRelevanceSearch(query);
             default -> throw new IllegalArgumentException(
                     "searchType of " + searchType + " not allowed. Expected searchType to be 'similarity' or 'mmr'.");
@@ -79,19 +79,39 @@ public abstract class VectorStore {
     }
 
     /**
-     * Return docs most similar to query.
+     * Returns the documents most similar to the given query.
+     *
+     * @param query  the input text
+     * @return a list of tuples containing the documents and their similarity scores
      */
     public List<Document> similaritySearch(String query) {
-        return similaritySearch(query, 4);
+        return similaritySearch(query, null);
     }
 
     /**
-     * Return docs most similar to query.
+     * Returns the documents most similar to the given query.
+     *
+     * @param query  the input text
+     * @param filter a filter to apply to the search
+     * @return a list of tuples containing the documents and their similarity scores
      */
-    public abstract List<Document> similaritySearch(String query, int k);
+    public List<Document> similaritySearch(String query, Map<String, Object> filter) {
+        return similaritySearch(query, 4, filter);
+    }
+
+    /**
+     * Returns the documents most similar to the given query.
+     *
+     * @param query  the input text
+     * @param k      the number of documents to return
+     * @param filter a filter to apply to the search
+     * @return a list of tuples containing the documents and their similarity scores
+     */
+    public abstract List<Document> similaritySearch(String query, int k, Map<String, Object> filter);
 
     /**
      * Return docs and relevance scores in the range [0, 1]. 0 is dissimilar, 1 is most similar.
+     * @param query input text
      */
     public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query) {
         return similaritySearchWithRelevanceScores(query, 4);
@@ -102,7 +122,7 @@ public abstract class VectorStore {
      *
      * @param query input text
      * @param k     Number of Documents to return.
-     * @return List of Tuples of (doc, similarity_score)
+     * @return List of Tuples of (doc, similarityScore)
      */
     public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query, int k) {
         List<Pair<Document, Float>> docsAndSimilarities = _similaritySearchWithRelevanceScores(query, k);
@@ -116,6 +136,10 @@ public abstract class VectorStore {
 
     /**
      * Return docs and relevance scores, normalized on a scale from 0 to 1. 0 is dissimilar, 1 is most similar.
+     *
+     * @param query input text
+     * @param k     Number of Documents to return.
+     * @return List of Tuples of (doc, similarityScore)
      */
     protected abstract List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k);
 
@@ -174,7 +198,12 @@ public abstract class VectorStore {
     }
 
     /**
-     * Return VectorStore initialized from texts and embeddings.
+     * Initializes and returns a VectorStore from the given texts, embeddings, and metadata.
+     *
+     * @param texts      the list of texts
+     * @param embedding  the embeddings for the texts
+     * @param metadatas  the list of metadata associated with the texts
+     * @return the initialized VectorStore
      */
     public abstract int fromTexts(List<String> texts, Embeddings embedding, List<Map<String, Object>> metadatas);
 

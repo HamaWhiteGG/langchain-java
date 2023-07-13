@@ -55,6 +55,11 @@ public class QueryRequest implements Serializable {
     private Integer topK = 10;
 
     /**
+     * The filter to apply. You can use vector metadata to limit your search.
+     */
+    private Object filter;
+
+    /**
      * The namespace to query.
      */
     private String namespace;

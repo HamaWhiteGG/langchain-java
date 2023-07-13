@@ -44,19 +44,21 @@ class PineconeClientTest {
 
     private static IndexClient index;
 
-    private static final String indexName = "index-temp";
+    private static final String INDEX_NAME = "index-temp";
+
+    private static final String NAMESPACE = "namespace-temp";
 
     @BeforeAll
     static void setup() {
         client = PineconeClient.builder()
-                .requestTimeout(16)
+                .requestTimeout(60)
                 .build()
                 .init();
 
         // Ensures that a temporary index is created.
         ensureTemporaryIndexCreated();
 
-        index = client.indexClient(indexName);
+        index = client.indexClient(INDEX_NAME);
     }
 
     /**
@@ -65,9 +67,9 @@ class PineconeClientTest {
      * It also waits until the index is ready before returning.
      */
     private static void ensureTemporaryIndexCreated() {
-        if (!client.listIndexes().contains(indexName)) {
+        if (!client.listIndexes().contains(INDEX_NAME)) {
             var request = CreateIndexRequest.builder()
-                    .name(indexName)
+                    .name(INDEX_NAME)
                     .dimension(3)
                     .build();
             client.createIndex(request);
@@ -81,7 +83,7 @@ class PineconeClientTest {
                 .atMost(Duration.ofSeconds(120))
                 .pollInterval(Duration.ofSeconds(5))
                 .until(() -> {
-                    IndexDescription indexDescription = client.describeIndex(indexName);
+                    IndexDescription indexDescription = client.describeIndex(INDEX_NAME);
                     return indexDescription != null && indexDescription.getStatus().isReady();
                 });
     }
@@ -89,19 +91,19 @@ class PineconeClientTest {
     @AfterAll
     static void cleanup() {
         // Delete temporary index
-        client.deleteIndex(indexName);
+        client.deleteIndex(INDEX_NAME);
         client.close();
     }
 
     @Test
     void testListIndexes() {
         List<String> indexes = client.listIndexes();
-        assertTrue(indexes.contains(indexName));
+        assertTrue(indexes.contains(INDEX_NAME));
     }
 
     @Test
     void testDescribeIndex() {
-        IndexDescription indexDescription = client.describeIndex(indexName);
+        IndexDescription indexDescription = client.describeIndex(INDEX_NAME);
         assertNotNull(indexDescription);
         assertNotNull(indexDescription.getDatabase());
         assertNotNull(indexDescription.getStatus());
@@ -109,7 +111,7 @@ class PineconeClientTest {
         // Assert database information
         Database database = indexDescription.getDatabase();
         assertAll(
-                () -> assertEquals(indexName, database.getName()),
+                () -> assertEquals(INDEX_NAME, database.getName()),
                 () -> assertEquals(COSINE, database.getMetric()),
                 () -> assertEquals(3, database.getDimension()),
                 () -> assertEquals(1, database.getReplicas()),
@@ -124,7 +126,7 @@ class PineconeClientTest {
                 () -> assertTrue(status.getWaiting().isEmpty()),
                 () -> assertTrue(status.getCrashed().isEmpty()),
                 () -> {
-                    String host = String.format("%s-%s.svc.%s.pinecone.io", indexName, "b43e233",
+                    String host = String.format("%s-%s.svc.%s.pinecone.io", INDEX_NAME, "b43e233",
                             System.getenv("PINECONE_ENV"));
                     assertEquals(host, status.getHost());
                 },
@@ -137,14 +139,20 @@ class PineconeClientTest {
     void testVectors() {
         Vector v1 = new Vector("v1", List.of(1F, 3F, 5F));
         Vector v2 = new Vector("v2", List.of(5F, 3F, 1F));
-        UpsertRequest upsertRequest = new UpsertRequest(List.of(v1, v2));
+        UpsertRequest upsertRequest = new UpsertRequest(List.of(v1, v2), NAMESPACE);
 
         UpsertResponse upsertResponse = index.upsert(upsertRequest);
         assertNotNull(upsertResponse, "upsertResponse should not be null");
 
+        DescribeIndexStatsRequest statsRequest = new DescribeIndexStatsRequest();
+        DescribeIndexStatsResponse statsResponse = index.describeIndexStats(statsRequest);
+        assertNotNull(statsResponse, "statsResponse should not be null");
+        assertTrue(statsResponse.getNamespaces().containsKey(NAMESPACE));
+
         QueryRequest queryRequest = QueryRequest.builder()
                 .vector(List.of(1F, 2F, 2F))
                 .topK(1)
+                .namespace(NAMESPACE)
                 .build();
 
         QueryResponse queryResponse = index.query(queryRequest);
@@ -152,6 +160,7 @@ class PineconeClientTest {
 
         FetchRequest fetchRequest = FetchRequest.builder()
                 .ids(List.of("v1", "v2"))
+                .namespace(NAMESPACE)
                 .build();
         FetchResponse fetchResponse = index.fetch(fetchRequest);
         assertNotNull(fetchResponse, "fetchResponse should not be null");

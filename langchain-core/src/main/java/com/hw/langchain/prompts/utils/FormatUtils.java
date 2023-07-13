@@ -42,15 +42,14 @@ public class FormatUtils {
      * @return the formatted string
      */
     public static String formatTemplate(String template, Map<String, Object> kwargs) {
-        String result = template;
+        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
+        String result = template.replace("{{", "{").replace("}}", "}");
         for (Map.Entry<String, Object> entry : kwargs.entrySet()) {
             String placeholder = "{" + entry.getKey() + "}";
             String value = entry.getValue().toString();
             result = result.replace(placeholder, value);
         }
-
-        // In Python format() method, the curly braces '{{}}' are used to represent the output '{}'.
-        return result.replace("{{", "{").replace("}}", "}");
+        return result;
     }
 
     /**

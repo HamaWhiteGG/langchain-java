@@ -22,6 +22,7 @@ import com.hw.langchain.schema.BaseOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public abstract class StringPromptTemplate extends BasePromptTemplate {
 
     protected StringPromptTemplate(List<String> inputVariables) {
@@ -44,7 +46,7 @@ public abstract class StringPromptTemplate extends BasePromptTemplate {
         super(inputVariables, partialVariables);
     }
 
-    protected StringPromptTemplate(List<String> inputVariables, BaseOutputParser outputParser) {
+    protected StringPromptTemplate(List<String> inputVariables, BaseOutputParser<?> outputParser) {
         super(inputVariables, outputParser);
     }
 
@@ -52,5 +54,4 @@ public abstract class StringPromptTemplate extends BasePromptTemplate {
     public PromptValue formatPrompt(Map<String, Object> kwargs) {
         return new StringPromptValue(format(kwargs));
     }
-
 }

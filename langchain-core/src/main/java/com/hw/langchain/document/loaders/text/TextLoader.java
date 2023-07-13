@@ -40,7 +40,7 @@ import static com.hw.langchain.document.loaders.helpers.Helpers.detectFileEncodi
  *
  * @author HamaWhite
  */
-public class TextLoader implements BaseLoader {
+public class TextLoader extends BaseLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(TextLoader.class);
 
@@ -96,9 +96,5 @@ public class TextLoader implements BaseLoader {
         } catch (IOException e) {
             throw new LangChainException(errorMessage(filePath), e);
         }
-    }
-
-    private String errorMessage(String filePath) {
-        return "Error loading " + filePath;
     }
 }

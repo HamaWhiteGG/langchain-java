@@ -17,7 +17,9 @@ The following example  can view in the [langchain-example](langchain-examples/sr
 ## 2. User cases
 
 - [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
-- [Retrieval QA + Pinecone](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
+- [Agent with Google Search](langchain-examples/src/main/java/com/hw/langchain/examples/agents/LlmAgentExample.java)
+- [Question answering over documents](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
+- [Context aware text splitting and QA / Chat](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalMarkdownExample.java)
 
 ## 3. Quickstart Guide
 This tutorial gives you a quick walkthrough about building an end-to-end language model application with LangChain.

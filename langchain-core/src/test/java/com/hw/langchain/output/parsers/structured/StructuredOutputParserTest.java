@@ -18,7 +18,6 @@
 
 package com.hw.langchain.output.parsers.structured;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.chat.ChatPromptTemplate;
@@ -52,10 +51,7 @@ class StructuredOutputParserTest {
         var text = "```json\n{\"name\": \"John\", \"age\": 30}\n```";
         var result = parser.parse(text);
 
-        var expectedResult = new ObjectMapper().createObjectNode()
-                .put("name", "John")
-                .put("age", 30);
-
+        var expectedResult = Map.of("name", "John", "age", 30);
         assertEquals(expectedResult, result);
     }
 
@@ -91,9 +87,8 @@ class StructuredOutputParserTest {
         var output = llm.call(input.toString());
 
         var actual = outputParser.parse(output);
-        var expected = new ObjectMapper().createObjectNode()
-                .put("answer", "Paris")
-                .put("source", "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html");
+        var expected = Map.of("answer", "Paris",
+                "source", "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html");
         assertEquals(expected, actual);
     }
 
@@ -114,9 +109,8 @@ class StructuredOutputParserTest {
         var output = chatModel.call(input.toMessages());
 
         var actual = outputParser.parse(output.getContent());
-        var expected = new ObjectMapper().createObjectNode()
-                .put("answer", "The capital of France is Paris.")
-                .put("source", "https://en.wikipedia.org/wiki/Paris");
+        var expected = Map.of("answer", "The capital of France is Paris.",
+                "source", "https://en.wikipedia.org/wiki/Paris");
         assertEquals(expected, actual);
     }
 }
