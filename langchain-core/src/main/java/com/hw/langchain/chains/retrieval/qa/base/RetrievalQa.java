@@ -26,6 +26,7 @@ import com.hw.langchain.schema.Document;
 
 import java.util.List;
 
+import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
 import static com.hw.langchain.chains.question.answering.init.Init.loadQaChain;
 
 /**
@@ -33,11 +34,11 @@ import static com.hw.langchain.chains.question.answering.init.Init.loadQaChain;
  *
  * @author HamaWhite
  */
-public class RetrievalQA extends BaseRetrievalQA {
+public class RetrievalQa extends BaseRetrievalQA {
 
     private final BaseRetriever retriever;
 
-    public RetrievalQA(BaseCombineDocumentsChain combineDocumentsChain, BaseRetriever retriever) {
+    public RetrievalQa(BaseCombineDocumentsChain combineDocumentsChain, BaseRetriever retriever) {
         super(combineDocumentsChain);
         this.retriever = retriever;
     }
@@ -45,9 +46,16 @@ public class RetrievalQA extends BaseRetrievalQA {
     /**
      * Load chain from chain type.
      */
+    public static BaseRetrievalQA fromChainType(BaseLanguageModel llm, BaseRetriever retriever) {
+        return fromChainType(llm, STUFF, retriever);
+    }
+
+    /**
+     * Load chain from chain type.
+     */
     public static BaseRetrievalQA fromChainType(BaseLanguageModel llm, ChainType chainType, BaseRetriever retriever) {
         BaseCombineDocumentsChain combineDocumentsChain = loadQaChain(llm, chainType);
-        return new RetrievalQA(combineDocumentsChain, retriever);
+        return new RetrievalQa(combineDocumentsChain, retriever);
     }
 
     @Override

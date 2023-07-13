@@ -19,11 +19,13 @@
 package com.hw.langchain.output.parsers.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.langchain.schema.OutputParserException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +70,7 @@ public class Json {
      * @param expectedKeys The expected keys in the JSON string.
      * @return The parsed JSON object as a JsonNode.
      */
-    public static JsonNode parseAndCheckJsonMarkdown(String markdown, List<String> expectedKeys) {
+    public static Map<String, Object> parseAndCheckJsonMarkdown(String markdown, List<String> expectedKeys) {
         JsonNode jsonNode = parseJsonMarkdown(markdown);
         for (String key : expectedKeys) {
             if (!jsonNode.has(key)) {
@@ -76,6 +78,7 @@ public class Json {
                         "Got invalid return object. Expected key `%s` to be present, but got %s", key, jsonNode));
             }
         }
-        return jsonNode;
+        return new ObjectMapper().convertValue(jsonNode, new TypeReference<>() {
+        });
     }
 }

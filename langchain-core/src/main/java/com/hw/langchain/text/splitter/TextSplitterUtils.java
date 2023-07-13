@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -38,9 +39,8 @@ public class TextSplitterUtils {
         if (StringUtils.isNotEmpty(separator)) {
             if (keepSeparator) {
                 // The parentheses in the pattern keep the delimiters in the result.
-                Pattern pattern = Pattern.compile(String.format("(%s)", Pattern.quote(separator)));
-                String[] parts = pattern.split(text, -1);
-                for (int i = 1; i < parts.length; i += 2) {
+                String[] parts = splitWithSeparator(text, separator);
+                for (int i = 1; i < parts.length - 1; i += 2) {
                     splits.add(parts[i] + parts[i + 1]);
                 }
                 if (parts.length % 2 == 0) {
@@ -54,5 +54,28 @@ public class TextSplitterUtils {
             splits = List.of(text);
         }
         return splits.stream().filter(StringUtils::isNotEmpty).toList();
+    }
+
+    /**
+     * Split the text by the occurrences of the separator,
+     * returning a list containing the resulting substrings and the separators.
+     */
+    public static String[] splitWithSeparator(String text, String separator) {
+        List<String> splits = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(" + Pattern.quote(separator) + ")");
+        Matcher matcher = pattern.matcher(text);
+        int prevEnd = 0;
+
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            splits.add(text.substring(prevEnd, start));
+            splits.add(text.substring(start, end));
+            prevEnd = end;
+        }
+        if (prevEnd < text.length()) {
+            splits.add(text.substring(prevEnd));
+        }
+        return splits.toArray(new String[0]);
     }
 }

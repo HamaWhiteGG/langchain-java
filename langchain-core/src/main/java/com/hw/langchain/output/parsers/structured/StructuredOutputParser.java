@@ -18,7 +18,6 @@
 
 package com.hw.langchain.output.parsers.structured;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.hw.langchain.schema.BaseOutputParser;
 
 import java.util.List;
@@ -31,11 +30,11 @@ import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
 /**
  * @author HamaWhite
  */
-public class StructuredOutputParser extends BaseOutputParser<JsonNode> {
+public class StructuredOutputParser extends BaseOutputParser<Map<String, Object>> {
 
     private static final String LINE_TEMPLATE = "\t\"{name}\": {type}  // {description}";
 
-    private final List<ResponseSchema> responseSchemas;
+    private final transient List<ResponseSchema> responseSchemas;
 
     public StructuredOutputParser(List<ResponseSchema> responseSchemas) {
         this.responseSchemas = responseSchemas;
@@ -53,7 +52,7 @@ public class StructuredOutputParser extends BaseOutputParser<JsonNode> {
     }
 
     @Override
-    public JsonNode parse(String text) {
+    public Map<String, Object> parse(String text) {
         var expectedKeys = responseSchemas.stream()
                 .map(ResponseSchema::getName)
                 .toList();

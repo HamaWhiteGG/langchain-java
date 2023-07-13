@@ -30,12 +30,17 @@ import java.util.List;
  *
  * @author HamaWhite
  */
-public interface BaseLoader {
+public abstract class BaseLoader {
 
     /**
      * Load data into document objects.
      *
      * @return a List which is materialized in memory.
      */
-    List<Document> load();
+    public abstract List<Document> load();
+
+    protected String errorMessage(String filePath) {
+        return "Error loading " + filePath;
+    }
+
 }

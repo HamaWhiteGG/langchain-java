@@ -64,7 +64,7 @@ public class VectorStoreRetriever implements BaseRetriever {
     @Override
     public List<Document> getRelevantDocuments(String query) {
         return switch (searchType) {
-            case SIMILARITY -> vectorstore.similaritySearch(query);
+            case SIMILARITY -> vectorstore.similaritySearch(query, Map.of());
             case SIMILARITY_SCORE_THRESHOLD -> vectorstore.similaritySearchWithRelevanceScores(query)
                     .stream()
                     .map(Pair::getLeft)
