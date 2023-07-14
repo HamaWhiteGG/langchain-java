@@ -111,6 +111,16 @@ public class BaseOpenAI extends BaseLLM {
     protected String openaiProxy;
 
     /**
+     * the username for proxy authentication (optional)
+     */
+    protected String proxyUsername;
+
+    /**
+     * the password for proxy authentication (optional)
+     */
+    protected String proxyPassword;
+
+    /**
      * Batch size to use when passing multiple documents to generate.
      */
     @Builder.Default

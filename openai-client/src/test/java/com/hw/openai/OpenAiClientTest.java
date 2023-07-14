@@ -102,7 +102,7 @@ class OpenAiClientTest {
                 .messages(List.of(message))
                 .build();
 
-        assertThat(client.chatCompletion(chatCompletion)).isEqualTo("Hello there! How can I assist you today?");
+        assertThat(client.chatCompletion(chatCompletion)).isEqualTo("Hello! How can I assist you today?");
     }
 
     @Test
