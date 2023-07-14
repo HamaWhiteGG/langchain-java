@@ -65,6 +65,16 @@ public class OpenAiClient {
     private String openaiProxy;
 
     /**
+     * the username for proxy authentication (optional)
+     */
+    private String proxyUsername;
+
+    /**
+     * the password for proxy authentication (optional)
+     */
+    private String proxyPassword;
+
+    /**
      * Timeout for requests to OpenAI completion API. Default is 16 seconds.
      */
     @Builder.Default
@@ -109,7 +119,7 @@ public class OpenAiClient {
         httpClientBuilder.addInterceptor(loggingInterceptor);
 
         if (StringUtils.isNotEmpty(openaiProxy)) {
-            httpClientBuilder.proxy(ProxyUtils.http(openaiProxy));
+            httpClientBuilder.proxy(ProxyUtils.http(openaiProxy, proxyUsername, proxyPassword));
         }
         httpClient = httpClientBuilder.build();
 

@@ -20,9 +20,9 @@ package com.hw.openai.utils;
 
 import lombok.experimental.UtilityClass;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URI;
+import java.net.*;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for creating HTTP proxies.
@@ -34,14 +34,35 @@ public class ProxyUtils {
     /**
      * Creates an HTTP proxy object based on the provided address.
      *
-     * @param address the address of the proxy server in the format 'http://host:port'
-     * @return the Proxy object representing the HTTP proxy server
+     * @param address the address of the proxy server in the format <a href="http://host:port">http://host:port</a>
+     * @param username the username for proxy authentication (optional)
+     * @param password the password for proxy authentication (optional)
+     * @return the {@link Proxy} object representing the HTTP proxy server
      */
-    public Proxy http(String address) {
+    public static Proxy http(String address, String username, String password) {
+        requireNonNull(address, "Proxy address cannot be null");
+
         // Parse the proxy server address
-        URI uri = URI.create(address);
+        URI uri;
+        try {
+            uri = new URI(address);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid proxy address: " + address, e);
+        }
+
         String hostname = uri.getHost();
         int port = uri.getPort();
+
+        if (username != null && password != null) {
+            // Set the proxy authentication credentials
+            Authenticator.setDefault(new Authenticator() {
+
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password.toCharArray());
+                }
+            });
+        }
 
         // Create the Proxy object
         return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostname, port));

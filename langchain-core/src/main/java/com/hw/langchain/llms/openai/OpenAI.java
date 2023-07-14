@@ -49,6 +49,8 @@ public class OpenAI extends BaseOpenAI {
                 .openaiApiKey(openaiApiKey)
                 .openaiOrganization(openaiOrganization)
                 .openaiProxy(openaiProxy)
+                .proxyUsername(proxyUsername)
+                .proxyPassword(proxyPassword)
                 .requestTimeout(requestTimeout)
                 .build()
                 .init();
