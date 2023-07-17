@@ -8,18 +8,17 @@ This is the Java language implementation of LangChain.
 
 Large language models (LLMs) are emerging as a transformative technology, enabling developers to build applications that they previously could not. But using these LLMs in isolation is often not enough to create a truly powerful app - the real power comes when you can combine them with other sources of computation or knowledge.
 
-This library is aimed at assisting in the development of those types of applications.
+This library is aimed at assisting in the development of those types of applications. Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).  
 
-Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).  
-
-The following example  can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
+The following example can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
 
 ## 2. User cases
 
 - [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
+- [API Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
 - [Agent with Google Search](langchain-examples/src/main/java/com/hw/langchain/examples/agents/LlmAgentExample.java)
 - [Question answering over documents](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
-- [Context aware text splitting and QA / Chat](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalMarkdownExample.java)
+- [Context aware text splitting and QA](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalMarkdownExample.java)
 
 ## 3. Quickstart Guide
 This tutorial gives you a quick walkthrough about building an end-to-end language model application with LangChain.
