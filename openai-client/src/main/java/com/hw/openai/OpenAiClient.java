@@ -29,20 +29,23 @@ import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.service.OpenAiService;
 import com.hw.openai.utils.ProxyUtils;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import lombok.Builder;
-import lombok.Data;
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.Builder;
+import lombok.Data;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a client for interacting with the OpenAI API.
@@ -53,197 +56,194 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Builder
 public class OpenAiClient {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OpenAiClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenAiClient.class);
 
-	private String openaiApiBase;
+    private String openaiApiBase;
 
-	private String openaiApiKey;
+    private String openaiApiKey;
 
-	private String openaiOrganization;
+    private String openaiOrganization;
 
-	private String openaiProxy;
+    private String openaiProxy;
 
-	/**
-	 * the username for proxy authentication (optional)
-	 */
-	private String proxyUsername;
+    /**
+     * the username for proxy authentication (optional)
+     */
+    private String proxyUsername;
 
-	/**
-	 * the password for proxy authentication (optional)
-	 */
-	private String proxyPassword;
+    /**
+     * the password for proxy authentication (optional)
+     */
+    private String proxyPassword;
 
-	/**
-	 * Timeout for requests to OpenAI completion API. Default is 16 seconds.
-	 */
-	@Builder.Default
-	protected long requestTimeout = 16;
+    /**
+     * Timeout for requests to OpenAI completion API. Default is 16 seconds.
+     */
+    @Builder.Default
+    protected long requestTimeout = 16;
 
-	/**
-	 * list of okhttp interceptors
-	 */
-	private List<Interceptor> interceptorList;
+    private List<Interceptor> interceptorList;
 
-	private OpenAiService service;
+    private OpenAiService service;
 
-	private OkHttpClient httpClient;
+    private OkHttpClient httpClient;
 
-	/**
-	 * Initializes the OpenAiClient instance.
-	 *
-	 * @return the initialized OpenAiClient instance
-	 */
-	public OpenAiClient init() {
-		openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
-		openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
+    /**
+     * Initializes the OpenAiClient instance.
+     *
+     * @return the initialized OpenAiClient instance
+     */
+    public OpenAiClient init() {
+        openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
+        openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
 
-		OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
-			.connectTimeout(requestTimeout, TimeUnit.SECONDS)
-			.readTimeout(requestTimeout, TimeUnit.SECONDS)
-			.writeTimeout(requestTimeout, TimeUnit.SECONDS)
-			.callTimeout(requestTimeout, TimeUnit.SECONDS);
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(requestTimeout, TimeUnit.SECONDS)
+                .readTimeout(requestTimeout, TimeUnit.SECONDS)
+                .writeTimeout(requestTimeout, TimeUnit.SECONDS)
+                .callTimeout(requestTimeout, TimeUnit.SECONDS);
 
-		httpClientBuilder.addInterceptor(chain -> {
-			// If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
-			openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
-			openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
+        httpClientBuilder.addInterceptor(chain -> {
+            // If openaiApiKey is not set, read the value of OPENAI_API_KEY from the environment.
+            openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
+            openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
 
-			Request request = chain.request().newBuilder()
-				.header("Content-Type", "application/json")
-				.header("Authorization", "Bearer " + openaiApiKey)
-				.header("OpenAI-Organization", openaiOrganization)
-				.build();
+            Request request = chain.request().newBuilder()
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + openaiApiKey)
+                    .header("OpenAI-Organization", openaiOrganization)
+                    .build();
 
-			return chain.proceed(request);
-		});
+            return chain.proceed(request);
+        });
 
-		// Add HttpLogging interceptor
-		HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
-		loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-		httpClientBuilder.addInterceptor(loggingInterceptor);
+        // Add HttpLogging interceptor
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        httpClientBuilder.addInterceptor(loggingInterceptor);
+        if(this.interceptorList != null) {
+            this.interceptorList.forEach(httpClientBuilder::addInterceptor);
+        }
 
-		if (this.interceptorList != null) {
-			this.interceptorList.forEach(httpClientBuilder::addInterceptor);
-		}
+        if (StringUtils.isNotEmpty(openaiProxy)) {
+            httpClientBuilder.proxy(ProxyUtils.http(openaiProxy, proxyUsername, proxyPassword));
+        }
+        httpClient = httpClientBuilder.build();
 
-		if (StringUtils.isNotEmpty(openaiProxy)) {
-			httpClientBuilder.proxy(ProxyUtils.http(openaiProxy, proxyUsername, proxyPassword));
-		}
-		httpClient = httpClientBuilder.build();
+        // Used for automatic discovery and registration of Jackson modules
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
 
-		// Used for automatic discovery and registration of Jackson modules
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.findAndRegisterModules();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(openaiApiBase)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .client(httpClient)
+                .build();
 
-		Retrofit retrofit = new Retrofit.Builder()
-			.baseUrl(openaiApiBase)
-			.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-			.addConverterFactory(JacksonConverterFactory.create(objectMapper))
-			.client(httpClient)
-			.build();
+        this.service = retrofit.create(OpenAiService.class);
+        return this;
+    }
 
-		this.service = retrofit.create(OpenAiService.class);
-		return this;
-	}
+    /**
+     * Closes the HttpClient connection pool.
+     */
+    public void close() {
+        // Cancel all ongoing requests
+        httpClient.dispatcher().cancelAll();
 
-	/**
-	 * Closes the HttpClient connection pool.
-	 */
-	public void close() {
-		// Cancel all ongoing requests
-		httpClient.dispatcher().cancelAll();
+        // Shut down the connection pool (if any)
+        httpClient.connectionPool().evictAll();
+        httpClient.dispatcher().executorService().shutdown();
+    }
 
-		// Shut down the connection pool (if any)
-		httpClient.connectionPool().evictAll();
-		httpClient.dispatcher().executorService().shutdown();
-	}
+    private String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
+        if (StringUtils.isNotEmpty(originalValue)) {
+            return originalValue;
+        }
+        String envValue = System.getenv(envKey);
+        if (StringUtils.isNotEmpty(envValue)) {
+            return envValue;
+        }
+        if (defaultValue.length > 0) {
+            return defaultValue[0];
+        }
+        return null;
+    }
 
-	private String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
-		if (StringUtils.isNotEmpty(originalValue)) {
-			return originalValue;
-		}
-		String envValue = System.getenv(envKey);
-		if (StringUtils.isNotEmpty(envValue)) {
-			return envValue;
-		}
-		if (defaultValue.length > 0) {
-			return defaultValue[0];
-		}
-		return null;
-	}
+    /**
+     * Lists the currently available models, and provides basic information about each one
+     * such as the owner and availability.
+     *
+     * @return the response containing the list of available models
+     */
+    public ModelResp listModels() {
+        return service.listModels().blockingGet();
+    }
 
-	/**
-	 * Lists the currently available models, and provides basic information about each one such as the owner and availability.
-	 *
-	 * @return the response containing the list of available models
-	 */
-	public ModelResp listModels() {
-		return service.listModels().blockingGet();
-	}
+    /**
+     * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
+     *
+     * @param model the ID of the model to retrieve
+     * @return the retrieved model
+     */
+    public Model retrieveModel(String model) {
+        return service.retrieveModel(model).blockingGet();
+    }
 
-	/**
-	 * Retrieves a model instance, providing basic information about the model such as the owner and permissions.
-	 *
-	 * @param model the ID of the model to retrieve
-	 * @return the retrieved model
-	 */
-	public Model retrieveModel(String model) {
-		return service.retrieveModel(model).blockingGet();
-	}
+    /**
+     * Creates a completion for the provided prompt and parameters.
+     *
+     * @param completion the completion object containing the prompt and parameters
+     * @return the generated completion text
+     */
+    public String completion(Completion completion) {
+        CompletionResp response = service.completion(completion).blockingGet();
 
-	/**
-	 * Creates a completion for the provided prompt and parameters.
-	 *
-	 * @param completion the completion object containing the prompt and parameters
-	 * @return the generated completion text
-	 */
-	public String completion(Completion completion) {
-		CompletionResp response = service.completion(completion).blockingGet();
+        String text = response.getChoices().get(0).getText();
+        return StringUtils.trim(text);
+    }
 
-		String text = response.getChoices().get(0).getText();
-		return StringUtils.trim(text);
-	}
+    /**
+     * Creates a completion for the provided prompt and parameters.
+     *
+     * @param completion the completion object containing the prompt and parameters
+     * @return the completion response
+     */
+    public CompletionResp create(Completion completion) {
+        return service.completion(completion).blockingGet();
+    }
 
-	/**
-	 * Creates a completion for the provided prompt and parameters.
-	 *
-	 * @param completion the completion object containing the prompt and parameters
-	 * @return the completion response
-	 */
-	public CompletionResp create(Completion completion) {
-		return service.completion(completion).blockingGet();
-	}
+    /**
+     * Creates a model response for the given chat conversation.
+     *
+     * @param chatCompletion the chat completion object containing the conversation
+     * @return the generated model response text
+     */
+    public String chatCompletion(ChatCompletion chatCompletion) {
+        ChatCompletionResp response = service.chatCompletion(chatCompletion).blockingGet();
 
-	/**
-	 * Creates a model response for the given chat conversation.
-	 *
-	 * @param chatCompletion the chat completion object containing the conversation
-	 * @return the generated model response text
-	 */
-	public String chatCompletion(ChatCompletion chatCompletion) {
-		ChatCompletionResp response = service.chatCompletion(chatCompletion).blockingGet();
+        String content = response.getChoices().get(0).getMessage().getContent();
+        return StringUtils.trim(content);
+    }
 
-		String content = response.getChoices().get(0).getMessage().getContent();
-		return StringUtils.trim(content);
-	}
+    /**
+     * Creates a model response for the given chat conversation.
+     *
+     * @param chatCompletion the chat completion object containing the conversation
+     * @return the chat completion response
+     */
+    public ChatCompletionResp create(ChatCompletion chatCompletion) {
+        return service.chatCompletion(chatCompletion).blockingGet();
+    }
 
-	/**
-	 * Creates a model response for the given chat conversation.
-	 *
-	 * @param chatCompletion the chat completion object containing the conversation
-	 * @return the chat completion response
-	 */
-	public ChatCompletionResp create(ChatCompletion chatCompletion) {
-		return service.chatCompletion(chatCompletion).blockingGet();
-	}
-
-	/**
-	 * Creates an embedding vector representing the input text.
-	 *
-	 * @param embedding The Embedding object containing the input text.
-	 * @return The embedding vector response.
-	 */
-	public EmbeddingResp embedding(Embedding embedding) {
-		return service.embedding(embedding).blockingGet();
-	}
+    /**
+     * Creates an embedding vector representing the input text.
+     *
+     * @param embedding The Embedding object containing the input text.
+     * @return The embedding vector response.
+     */
+    public EmbeddingResp embedding(Embedding embedding) {
+        return service.embedding(embedding).blockingGet();
+    }
 }
