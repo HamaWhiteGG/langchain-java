@@ -30,12 +30,12 @@ import com.hw.openai.entity.completions.Usage;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import okhttp3.Interceptor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import okhttp3.Interceptor;
 
 import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
