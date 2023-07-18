@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import okhttp3.Interceptor;
 
 import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
@@ -110,6 +111,11 @@ public class ChatOpenAI extends BaseChatModel {
     protected Integer maxTokens;
 
     /**
+     * list of okhttp interceptor
+     */
+    private List<Interceptor> interceptorList;
+
+    /**
      * Validate parameters and init client
      */
     public ChatOpenAI init() {
@@ -124,6 +130,7 @@ public class ChatOpenAI extends BaseChatModel {
                 .openaiOrganization(openaiOrganization)
                 .openaiProxy(openaiProxy)
                 .requestTimeout(requestTimeout)
+                .interceptorList(interceptorList)
                 .build()
                 .init();
 

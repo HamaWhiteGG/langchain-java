@@ -30,6 +30,8 @@ import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.service.OpenAiService;
 import com.hw.openai.utils.ProxyUtils;
 
+import java.util.List;
+import okhttp3.Interceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +82,8 @@ public class OpenAiClient {
     @Builder.Default
     protected long requestTimeout = 16;
 
+    private List<Interceptor> interceptorList;
+
     private OpenAiService service;
 
     private OkHttpClient httpClient;
@@ -117,6 +121,9 @@ public class OpenAiClient {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClientBuilder.addInterceptor(loggingInterceptor);
+        if(this.interceptorList != null) {
+            this.interceptorList.forEach(httpClientBuilder::addInterceptor);
+        }
 
         if (StringUtils.isNotEmpty(openaiProxy)) {
             httpClientBuilder.proxy(ProxyUtils.http(openaiProxy, proxyUsername, proxyPassword));
