@@ -28,9 +28,9 @@ import com.hw.openai.entity.completions.CompletionResp;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import okhttp3.Interceptor;
 
 import java.util.*;
-import okhttp3.Interceptor;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

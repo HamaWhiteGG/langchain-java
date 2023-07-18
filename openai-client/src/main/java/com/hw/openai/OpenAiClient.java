@@ -30,14 +30,13 @@ import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.service.OpenAiService;
 import com.hw.openai.utils.ProxyUtils;
 
-import java.util.List;
-import okhttp3.Interceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.Builder;
 import lombok.Data;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -45,6 +44,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -121,7 +121,7 @@ public class OpenAiClient {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClientBuilder.addInterceptor(loggingInterceptor);
-        if(this.interceptorList != null) {
+        if (this.interceptorList != null) {
             this.interceptorList.forEach(httpClientBuilder::addInterceptor);
         }
 
