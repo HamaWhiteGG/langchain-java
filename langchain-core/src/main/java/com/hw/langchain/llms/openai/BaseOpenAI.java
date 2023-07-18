@@ -30,6 +30,7 @@ import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 import java.util.*;
+import okhttp3.Interceptor;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -157,6 +158,11 @@ public class BaseOpenAI extends BaseLLM {
      * Set of special tokens that are not allowed.
      */
     protected Set<String> disallowedSpecial;
+
+    /**
+     * list of okhttp interceptor
+     */
+    protected List<Interceptor> interceptorList;
 
     @Override
     public String llmType() {

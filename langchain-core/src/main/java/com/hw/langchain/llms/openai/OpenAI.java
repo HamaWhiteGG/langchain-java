@@ -52,6 +52,7 @@ public class OpenAI extends BaseOpenAI {
                 .proxyUsername(proxyUsername)
                 .proxyPassword(proxyPassword)
                 .requestTimeout(requestTimeout)
+                .interceptorList(interceptorList)
                 .build()
                 .init();
         return this;
