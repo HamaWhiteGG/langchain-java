@@ -18,6 +18,7 @@
         <module>serpapi-client</module>
         <module>pinecone-client</module>
         <module>langchain-examples</module>
+        <module>langchain-bigdata</module>
     </modules>
 
     <properties>
