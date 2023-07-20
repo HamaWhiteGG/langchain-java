@@ -325,7 +325,20 @@ println(output);
 Certainly! I am an AI language model developed by OpenAI called GPT-3. I have been trained on a vast amount of text data from the internet, which allows me to generate human-like responses to a wide range of queries and engage in conversations. My purpose is to assist and provide information to the best of my abilities. Is there anything specific you would like to know about me?
 ```
 
-## 4. Run Test Cases from Source
+## 4. i18n for SQLDatabaseChain
+
+If you want to choose other language instead english, just set environment variable on your host. If you not set, then **en-US** will be default
+```shell
+export USE_LANGUAGE=pt_BR
+```
+
+#### 4.1 Available Languages
+| Language           | Value |
+|--------------------|-------|
+| English(default)   | en_US |
+| Portuguese(Brazil) | pt_BR |
+
+## 5. Run Test Cases from Source
 
 ```shell
 git clone https://github.com/HamaWhiteGG/langchain-java.git
@@ -342,12 +355,12 @@ This project uses Spotless to format the code. If you make any modifications, pl
 mvn spotless:apply
 ```
 
-## 5. Support
+## 6. Support
 Don’t hesitate to ask!
 
 [Open an issue](https://github.com/HamaWhiteGG/langchain-java/issues) if you find a bug in Flink.
 
-## 6. Fork and Contribute
+## 7. Fork and Contribute
 This is an active open-source project. We are always open to people who want to use the system or contribute to it. Please note that pull requests should be merged into the **dev** branch.
 
 Contact [me](baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
