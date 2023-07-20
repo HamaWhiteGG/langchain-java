@@ -19,11 +19,13 @@
 package com.hw.langchain.schema;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author HamaWhite
  */
 @Data
+@NoArgsConstructor
 public class FunctionMessage extends BaseMessage {
 
     private String name;

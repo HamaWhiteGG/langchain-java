@@ -18,10 +18,13 @@
 
 package com.hw.langchain.schema;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Type of message that is spoken by the AI.
  * @author HamaWhite
  */
+@NoArgsConstructor
 public class AIMessage extends BaseMessage {
 
     public AIMessage(String content) {
