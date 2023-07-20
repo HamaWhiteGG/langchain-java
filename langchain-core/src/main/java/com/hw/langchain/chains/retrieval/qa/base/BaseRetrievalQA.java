@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
+import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.schema.Document;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public abstract class BaseRetrievalQA extends Chain {
         Map<String, String> result = Maps.newHashMap();
         result.put(outputKey, answer);
         if (this.returnSourceDocuments) {
-            result.put("source_documents", docs.toString());
+            result.put("source_documents", JsonUtils.toJsonStringWithIndent(docs, 4));
         }
         return result;
     }
