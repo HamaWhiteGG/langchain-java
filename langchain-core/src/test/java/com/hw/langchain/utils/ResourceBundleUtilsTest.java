@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ResourceBundleUtilsTest {
+class ResourceBundleUtilsTest {
 
     @Test
-    public void testResourceBundleGetDefaultLanguageEN() {
+    void testResourceBundleGetDefaultLanguageEN() {
         String suffix = ResourceBundleUtils.getString("prompt.suffix");
         assertEquals("Only use the following tables: {table_info} Question: {input}", suffix);
     }

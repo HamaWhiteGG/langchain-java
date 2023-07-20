@@ -27,6 +27,9 @@ import lombok.experimental.UtilityClass;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * @author Borges
+ */
 @UtilityClass
 public class ResourceBundleUtils {
 
