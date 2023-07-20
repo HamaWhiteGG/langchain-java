@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.hw.langchain.exception.LangChainException;
+import com.sun.jna.platform.win32.Netapi32Util.User;
 
 /**
  * @author HamaWhite
@@ -48,6 +49,14 @@ public class JsonUtils {
             return writer.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new LangChainException("Failed to format attribute info.", e);
+        }
+    }
+
+    public  static <T>  T convertFromJsonStr(String jsonStr, Class<T> clazz) {
+        try {
+            return OBJECT_MAPPER.readValue(jsonStr, clazz);
+        } catch (JsonProcessingException e) {
+            throw new LangChainException("Failed to deserialize json str", e);
         }
     }
 
