@@ -59,7 +59,7 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
     /**
      * Construct the record key to use
      *
-     * @return
+     * @return key
      */
     private String key(String sessionId) {
         if (this.keyPrefix == null) {

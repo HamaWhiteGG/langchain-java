@@ -232,7 +232,6 @@
                 <version>${netty-resolver.version}</version>
             </dependency>
 
-
         </dependencies>
     </dependencyManagement>
 

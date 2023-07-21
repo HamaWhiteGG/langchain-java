@@ -32,6 +32,9 @@ import com.hw.langchain.exception.LangChainException;
  */
 public class JsonUtils {
 
+    private JsonUtils() {
+    }
+
     private static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
 
     private static ObjectMapper createObjectMapper() {

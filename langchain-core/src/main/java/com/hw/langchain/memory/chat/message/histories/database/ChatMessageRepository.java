@@ -31,14 +31,25 @@ import java.util.List;
 public interface ChatMessageRepository {
 
     /**
-     * load all history chat message of given sessionId
+     * Loads all historical chat messages for the given sessionId.
      *
-     * @param sessionId
-     * @return
+     * @param sessionId The unique identifier of the chat session.
+     * @return A List of BaseMessage containing the chat message history for the session.
      */
     List<BaseMessage> loadMessage(String sessionId);
 
+    /**
+     * Saves a chat message to the specified sessionId.
+     *
+     * @param sessionId   The unique identifier of the chat session.
+     * @param baseMessage The BaseMessage to be saved.
+     */
     void saveMessage(String sessionId, BaseMessage baseMessage);
 
+    /**
+     * Clears all chat messages for the specified sessionId.
+     *
+     * @param sessionId The unique identifier of the chat session.
+     */
     void clearSessionChatMessage(String sessionId);
 }
