@@ -6,10 +6,12 @@ import java.util.List;
 
 /**
  * database based chat message history;
+ *
  * @author zhangxiaojia002
  * @date 2023/7/20 9:53 下午
  **/
 public class DataBaseChatMessageHistory extends BaseChatMessageHistory {
+
 	private final String sessionId;
 	private final ChatMessageRepository chatMessageRepository;
 

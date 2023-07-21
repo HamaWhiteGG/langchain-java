@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * interface for database supported chat message repository;
+ *
  * @author zhangxiaojia002
  * @date 2023/7/20 9:50 下午
  **/
@@ -12,6 +13,7 @@ public interface ChatMessageRepository {
 
 	/**
 	 * load all history chat message of given sessionId
+	 *
 	 * @param sessionId
 	 * @return
 	 */
