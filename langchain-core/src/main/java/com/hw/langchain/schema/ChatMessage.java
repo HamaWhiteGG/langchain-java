@@ -19,6 +19,7 @@
 package com.hw.langchain.schema;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Type of message with arbitrary speaker.
@@ -26,6 +27,7 @@ import lombok.Data;
  * @author HamaWhite
  */
 @Data
+@NoArgsConstructor
 public class ChatMessage extends BaseMessage {
 
     private String role;

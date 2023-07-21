@@ -43,6 +43,8 @@
         <jackson-annotation.version>2.15.1</jackson-annotation.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+        <redisson.version>3.17.3</redisson.version>
+        <netty-resolver.version>4.1.43.Final</netty-resolver.version>
 
         <target.java.version>17</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -210,6 +212,26 @@
                 <version>${awaitility.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver</artifactId>
+                <version>${netty-resolver.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.netty/netty-resolver-dns -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver-dns</artifactId>
+                <version>${netty-resolver.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

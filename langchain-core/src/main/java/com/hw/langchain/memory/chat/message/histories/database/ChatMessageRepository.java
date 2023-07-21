@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.memory.chat.message.histories.database;
 
-import lombok.NoArgsConstructor;
+import com.hw.langchain.schema.BaseMessage;
+
+import java.util.List;
 
 /**
- * Type of message that is a system message.
- * @author HamaWhite
- */
-@NoArgsConstructor
-public class SystemMessage extends BaseMessage {
+ * interface for database supported chat message repository;
+ *
+ * @author zhangxiaojia002
+ * @date 2023/7/20 9:50 下午
+ **/
+public interface ChatMessageRepository {
 
-    public SystemMessage(String content) {
-        super(content);
-    }
+    /**
+     * load all history chat message of given sessionId
+     *
+     * @param sessionId
+     * @return
+     */
+    List<BaseMessage> loadMessage(String sessionId);
 
-    @Override
-    public String type() {
-        return "system";
-    }
+    void saveMessage(String sessionId, BaseMessage baseMessage);
 
-    @Override
-    public String toString() {
-        return "SystemMessage{" +
-                "content='" + content + '\'' +
-                ", additionalKwargs=" + additionalKwargs +
-                '}';
-    }
+    void clearSessionChatMessage(String sessionId);
 }
