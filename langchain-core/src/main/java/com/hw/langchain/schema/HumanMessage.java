@@ -18,10 +18,13 @@
 
 package com.hw.langchain.schema;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Type of message that is spoken by the human.
  * @author HamaWhite
  */
+@NoArgsConstructor
 public class HumanMessage extends BaseMessage {
 
     public HumanMessage(String content) {

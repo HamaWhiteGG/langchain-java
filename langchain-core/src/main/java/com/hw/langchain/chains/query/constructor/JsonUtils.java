@@ -19,6 +19,7 @@
 package com.hw.langchain.chains.query.constructor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +49,26 @@ public class JsonUtils {
             return writer.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new LangChainException("Failed to format attribute info.", e);
+        }
+    }
+
+    public static String toJsonStringWithIndent(Object object) {
+        return toJsonStringWithIndent(object, 4);
+    }
+
+    public static <T> T convertFromJsonStr(String jsonStr, Class<T> clazz) {
+        try {
+            return OBJECT_MAPPER.readValue(jsonStr, clazz);
+        } catch (JsonProcessingException e) {
+            throw new LangChainException("Failed to deserialize json str", e);
+        }
+    }
+
+    public static <T> T convertFromJsonStr(String jsonStr, TypeReference<T> typeReference) {
+        try {
+            return OBJECT_MAPPER.readValue(jsonStr, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new LangChainException("Failed to deserialize json str", e);
         }
     }
 

@@ -78,7 +78,8 @@ public abstract class BaseRetrievalQA extends Chain {
         var question = inputs.get(inputKey).toString();
 
         List<Document> docs = getDocs(question);
-        String answer = combineDocumentsChain.run(Map.of("input_documents", docs, "question", question));
+        inputs.put("input_documents", docs);
+        String answer = combineDocumentsChain.run(inputs);
 
         Map<String, String> result = Maps.newHashMap();
         result.put(outputKey, answer);

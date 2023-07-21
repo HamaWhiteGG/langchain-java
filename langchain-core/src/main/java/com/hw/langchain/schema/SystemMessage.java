@@ -18,10 +18,13 @@
 
 package com.hw.langchain.schema;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Type of message that is a system message.
  * @author HamaWhite
  */
+@NoArgsConstructor
 public class SystemMessage extends BaseMessage {
 
     public SystemMessage(String content) {
