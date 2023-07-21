@@ -1,7 +1,8 @@
-package com.hw.langchain.memory.chat.message.histories.database;
+package com.hw.langchain.memory.chat.message.histories.database.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
+import com.hw.langchain.memory.chat.message.histories.database.ChatMessageRepository;
 import com.hw.langchain.schema.BaseMessage;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
