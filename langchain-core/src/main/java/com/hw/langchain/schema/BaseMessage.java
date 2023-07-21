@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.exception.LangChainException;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -56,8 +57,9 @@ public abstract class BaseMessage {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         objectMapper.registerModule(module);
-        Map<String, Object> map = objectMapper.convertValue(this, new TypeReference<>() {});
-       return Map.of("type", type(), "data", map);
+        Map<String, Object> map = objectMapper.convertValue(this, new TypeReference<>() {
+        });
+        return Map.of("type", type(), "data", map);
     }
 
     public static BaseMessage fromMap(Map<String, Object> message) {

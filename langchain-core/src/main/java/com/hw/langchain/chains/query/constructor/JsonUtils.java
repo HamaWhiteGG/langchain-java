@@ -32,9 +32,6 @@ import com.hw.langchain.exception.LangChainException;
  */
 public class JsonUtils {
 
-    private JsonUtils() {
-    }
-
     private static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
 
     private static ObjectMapper createObjectMapper() {
@@ -53,7 +50,7 @@ public class JsonUtils {
     }
 
     public static String toJsonStringWithIndent(Object object) {
-    	return toJsonStringWithIndent(object, 4);
+        return toJsonStringWithIndent(object, 4);
     }
 
     public static <T> T convertFromJsonStr(String jsonStr, Class<T> clazz) {
