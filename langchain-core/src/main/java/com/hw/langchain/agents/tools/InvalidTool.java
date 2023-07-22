@@ -34,7 +34,7 @@ public class InvalidTool extends BaseTool {
     }
 
     @Override
-    public String _run(String toolName, Map<String, Object> kwargs) {
+    public String innerRun(String toolName, Map<String, Object> kwargs) {
         return toolName + " is not a valid tool, try another one.";
     }
 }

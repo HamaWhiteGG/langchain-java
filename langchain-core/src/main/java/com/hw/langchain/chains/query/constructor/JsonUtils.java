@@ -33,6 +33,8 @@ import com.hw.langchain.exception.LangChainException;
 public class JsonUtils {
 
     private JsonUtils() {
+        // private constructor to hide the implicit public one
+        throw new IllegalStateException("Utility class");
     }
 
     private static final ObjectMapper OBJECT_MAPPER = createObjectMapper();

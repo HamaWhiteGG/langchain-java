@@ -40,6 +40,10 @@ import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
  */
 public class ZeroShotAgent extends Agent {
 
+    public ZeroShotAgent(LLMChain llmChain, List<String> allowedTools) {
+        this(llmChain, allowedTools, new MRKLOutputParser());
+    }
+
     public ZeroShotAgent(LLMChain llmChain, List<String> allowedTools, AgentOutputParser outputParser) {
         super(llmChain, allowedTools, outputParser);
     }

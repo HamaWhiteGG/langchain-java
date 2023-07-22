@@ -25,6 +25,7 @@ import com.hw.langchain.schema.AgentFinish;
 import com.hw.langchain.schema.AgentResult;
 import com.hw.langchain.tools.base.BaseTool;
 
+import lombok.Builder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
  *
  * @author HamaWhite
  */
+@Builder
 public class AgentExecutor extends Chain {
 
     private static final Logger LOG = LoggerFactory.getLogger(AgentExecutor.class);
@@ -50,25 +52,22 @@ public class AgentExecutor extends Chain {
 
     private boolean returnIntermediateSteps;
 
+    @Builder.Default
     private Integer maxIterations = 15;
 
     private Float maxExecutionTime;
 
+    @Builder.Default
     private String earlyStoppingMethod = "force";
 
+    @Builder.Default
     private Object handleParsingErrors = false;
 
     /**
      * Create from agent and tools.
      */
-    public static AgentExecutor fromAgentAndTools(BaseSingleActionAgent agent, List<BaseTool> tools,
-            Map<String, Object> kwargs) {
-        return new AgentExecutor(agent, tools, kwargs);
-    }
-
-    private AgentExecutor(BaseSingleActionAgent agent, List<BaseTool> tools, Map<String, Object> kwargs) {
-        this.agent = agent;
-        this.tools = tools;
+    public static AgentExecutor fromAgentAndTools(BaseSingleActionAgent agent, List<BaseTool> tools) {
+        return AgentExecutor.builder().agent(agent).tools(tools).build();
     }
 
     @Override
@@ -92,7 +91,7 @@ public class AgentExecutor extends Chain {
         return agent.returnValues();
     }
 
-    public Map<String, String> _return(AgentFinish output, List<Pair<AgentAction, String>> intermediateSteps) {
+    public Map<String, String> processOutput(AgentFinish output, List<Pair<AgentAction, String>> intermediateSteps) {
         Map<String, String> finalOutput = output.getReturnValues();
         if (returnIntermediateSteps) {
             finalOutput.put("intermediate_steps", intermediateSteps.toString());
@@ -153,9 +152,10 @@ public class AgentExecutor extends Chain {
             var nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
             LOG.info("NextStepOutput: {}", nextStepOutput);
             if (nextStepOutput instanceof AgentFinish agentFinish) {
-                return _return(agentFinish, intermediateSteps);
+                return processOutput(agentFinish, intermediateSteps);
             }
 
+            @SuppressWarnings("unchecked")
             var nextOutput = (List<Pair<AgentAction, String>>) nextStepOutput;
             intermediateSteps.addAll(nextOutput);
 
@@ -164,7 +164,7 @@ public class AgentExecutor extends Chain {
                 // See if tool should return directly
                 AgentFinish toolReturn = getToolReturn(nextStepAction);
                 if (toolReturn != null) {
-                    return _return(toolReturn, intermediateSteps);
+                    return processOutput(toolReturn, intermediateSteps);
                 }
             }
             iterations++;
@@ -172,7 +172,7 @@ public class AgentExecutor extends Chain {
             timeElapsed = (System.currentTimeMillis() - startTime) / 1000.0;
         }
         AgentFinish output = agent.returnStoppedResponse(earlyStoppingMethod, intermediateSteps, inputs);
-        return _return(output, intermediateSteps);
+        return processOutput(output, intermediateSteps);
     }
 
     private boolean shouldContinue(int iterations, double timeElapsed) {
