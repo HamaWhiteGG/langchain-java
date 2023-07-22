@@ -18,11 +18,14 @@
 
 package com.hw.langchain.tools.base;
 
+import com.google.common.collect.Maps;
+
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,26 +37,33 @@ import java.util.stream.Collectors;
 @Data
 public abstract class BaseTool {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BaseTool.class);
+
     /**
      * The unique name of the tool that clearly communicates its purpose.
      */
-    public String name;
+    public final String name;
 
     /**
      * Used to tell the model how/when/why to use the tool.
      * You can provide few-shot examples as a part of the description.
      */
-    public String description;
+    public final String description;
 
     /**
      * Whether to return the tool's output directly. Setting this to true means
      * that after the tool is called, the AgentExecutor will stop looping.
      */
-    public boolean returnDirect = false;
+    public final boolean returnDirect;
 
-    public BaseTool(String name, String description) {
+    protected BaseTool(String name, String description) {
+        this(name, description, false);
+    }
+
+    protected BaseTool(String name, String description, boolean returnDirect) {
         this.name = name;
         this.description = description;
+        this.returnDirect = returnDirect;
     }
 
     /**
@@ -62,45 +72,45 @@ public abstract class BaseTool {
     public boolean isSingleInput() {
         var keys = args().keySet()
                 .stream()
-                .filter(k -> !k.equals("kwargs"))
+                .filter(k -> !"kwargs".equals(k))
                 .collect(Collectors.toSet());
         return keys.size() == 1;
     }
 
     public Map<String, Object> args() {
-        return null;
+        return Map.of();
     }
 
     /**
      * Use the tool.
-     */
-    public abstract Object _run(String args, Map<String, Object> kwargs);
-
-    /**
-     * For backwards compatibility, if run_input is a string,
-     * pass as a positional argument.
      *
-     * @param toolInput String or Map<String, Object>
-     * @return
+     * @param args   Tool arguments as a String.
+     * @param kwargs Keyword arguments as a Map<String, Object>.
+     * @return Result of using the tool as an Object.
      */
+    public abstract Object innerRun(String args, Map<String, Object> kwargs);
+
     public Pair<Object[], Map<String, Object>> toArgsAndKwargs(Object toolInput) {
         if (toolInput instanceof String) {
-            return Pair.of(new Object[]{toolInput}, new HashMap<>());
+            return Pair.of(new Object[]{toolInput}, Maps.newHashMap());
         } else {
-            return Pair.of(new Object[]{}, (Map<String, Object>) toolInput);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> mapInput = (Map<String, Object>) toolInput;
+            return Pair.of(new Object[]{}, mapInput);
         }
     }
 
     /**
      * Run the tool.
      *
-     * @param toolInput String or Map<String, Object>
-     * @param kwargs
-     * @return
+     * @param toolInput Input for the tool, can be a String or a Map<String, Object>.
+     * @param kwargs    Keyword arguments for the tool as a Map<String, Object>.
+     * @return Result of running the tool as an Object.
      */
     public Object run(Object toolInput, Map<String, Object> kwargs) {
+        LOG.debug("kwargs: {}", kwargs);
         Pair<Object[], Map<String, Object>> pair = toArgsAndKwargs(toolInput);
         String args = pair.getKey()[0].toString();
-        return _run(args, pair.getValue());
+        return innerRun(args, pair.getValue());
     }
 }

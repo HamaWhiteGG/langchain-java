@@ -16,31 +16,35 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
+package com.hw.langchain.tools.spark.sql.tool;
 
-import com.hw.langchain.document.loaders.text.TextLoader;
+import com.hw.langchain.utilities.spark.sql.SparkSql;
 
-import org.junit.jupiter.api.Test;
+import lombok.EqualsAndHashCode;
 
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Map;
 
 /**
+ * Tool for getting tables names.
+ *
  * @author HamaWhite
  */
-class DirectoryLoaderTest {
+@EqualsAndHashCode(callSuper = true)
+public class ListSparkSqlTool extends BaseSparkSqlTool {
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
+    private static final String NAME = "list_tables_sql_db";
+    private static final String DESCRIPTION =
+            "Input is an empty string, output is a comma separated list of tables in the Spark SQL.";
 
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
+    public ListSparkSqlTool(SparkSql db) {
+        super(db, NAME, DESCRIPTION);
+    }
 
-        var docs = loader.load();
-        assertEquals(2, docs.size());
+    /**
+     * Get the schema for a specific table.
+     */
+    @Override
+    public Object innerRun(String query, Map<String, Object> kwargs) {
+        return String.join(", ", db.getUsableTableNames());
     }
 }

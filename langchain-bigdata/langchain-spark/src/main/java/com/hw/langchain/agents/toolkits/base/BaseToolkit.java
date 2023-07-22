@@ -16,31 +16,23 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
+package com.hw.langchain.agents.toolkits.base;
 
-import com.hw.langchain.document.loaders.text.TextLoader;
+import com.hw.langchain.tools.base.BaseTool;
 
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 /**
+ * Base Toolkit representing a collection of related tools.
+ *
  * @author HamaWhite
  */
-class DirectoryLoaderTest {
+public interface BaseToolkit {
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
-
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
-
-        var docs = loader.load();
-        assertEquals(2, docs.size());
-    }
+    /**
+     * Get the tools in the toolkit.
+     *
+     * @return a list of tools in the toolkit.
+     */
+    List<BaseTool> getTools();
 }

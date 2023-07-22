@@ -16,25 +16,35 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.agents.tools;
+package com.hw.langchain.tools.spark.sql.tool;
 
-import com.hw.langchain.tools.base.BaseTool;
+import com.hw.langchain.utilities.spark.sql.SparkSql;
 
 import java.util.Map;
 
 /**
- * Tool that is run when invalid tool name is encountered by agent.
+ * Tool for querying a Spark SQL.
  *
  * @author HamaWhite
  */
-public class InvalidTool extends BaseTool {
+public class QuerySparkSqlTool extends BaseSparkSqlTool {
 
-    public InvalidTool() {
-        super("invalid_tool", "Called when tool name is invalid.");
+    private static final String NAME = "query_sql_db";
+    private static final String DESCRIPTION = """
+            Input to this tool is a detailed and correct SQL query, output is a result from the Spark SQL.
+            If the query is not correct, an error message will be returned.
+            If an error is returned, rewrite the query, check the query, and try again.
+            """;
+
+    public QuerySparkSqlTool(SparkSql db) {
+        super(db, NAME, DESCRIPTION);
     }
 
+    /**
+     * Execute the query, return the results or an error message.
+     */
     @Override
-    public String innerRun(String toolName, Map<String, Object> kwargs) {
-        return toolName + " is not a valid tool, try another one.";
+    public Object innerRun(String query, Map<String, Object> kwargs) {
+        return db.runNoThrow(query);
     }
 }

@@ -16,31 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
+package com.hw.langchain.memory.buffer;
 
-import com.hw.langchain.document.loaders.text.TextLoader;
-
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.hw.langchain.schema.BaseChatMessageHistory;
 
 /**
- * @author HamaWhite
- */
-class DirectoryLoaderTest {
+ * @author zhangxiaojia002
+ * @date 2023/7/22 1:12 下午
+ **/
+public class ConversationBufferWindowMemory extends ConversationBufferLimitedMemory {
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
+    public ConversationBufferWindowMemory(int k) {
+        super(new BufferWindowMemoryMessagePicker(k));
+    }
 
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
+    public ConversationBufferWindowMemory(int k, boolean returnMessages) {
+        super(new BufferWindowMemoryMessagePicker(k), returnMessages);
+    }
 
-        var docs = loader.load();
-        assertEquals(2, docs.size());
+    public ConversationBufferWindowMemory(int k, boolean returnMessages, BaseChatMessageHistory chatMessageHistory) {
+        super(new BufferWindowMemoryMessagePicker(k), returnMessages, chatMessageHistory);
     }
 }

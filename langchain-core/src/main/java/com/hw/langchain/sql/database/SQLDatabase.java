@@ -79,7 +79,6 @@ public class SQLDatabase {
     /**
      * Get names of tables available.
      */
-
     public List<String> getUsableTableNames() {
         if (CollectionUtils.isNotEmpty(includeTables)) {
             return includeTables;

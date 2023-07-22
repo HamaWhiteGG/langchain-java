@@ -19,6 +19,8 @@
 package com.hw.langchain.memory.buffer;
 
 import com.hw.langchain.memory.chat.memory.BaseChatMemory;
+import com.hw.langchain.schema.BaseChatMessageHistory;
+import com.hw.langchain.schema.BaseMessage;
 
 import java.util.List;
 import java.util.Map;
@@ -45,15 +47,24 @@ public class ConversationBufferMemory extends BaseChatMemory {
         this.returnMessages = returnMessages;
     }
 
+    public ConversationBufferMemory(boolean returnMessages, BaseChatMessageHistory messageHistory) {
+        super(messageHistory);
+        this.returnMessages = returnMessages;
+    }
+
     /**
      * String buffer of memory.
      */
     public Object buffer() {
         if (returnMessages) {
-            return chatMemory.getMessages();
+            return getMemoryMessages();
         } else {
-            return getBufferString(chatMemory.getMessages(), humanPrefix, aiPrefix);
+            return getBufferString(getMemoryMessages(), humanPrefix, aiPrefix);
         }
+    }
+
+    protected List<BaseMessage> getMemoryMessages() {
+        return chatMemory.getMessages();
     }
 
     /**

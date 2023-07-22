@@ -16,31 +16,20 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
-
-import com.hw.langchain.document.loaders.text.TextLoader;
-
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.hw.langchain.utilities.spark.sql;
 
 /**
  * @author HamaWhite
  */
-class DirectoryLoaderTest {
+public enum FetchType {
+    /**
+     * Represents the fetch type for retrieving only one result.
+     */
+    ONE,
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
+    /**
+     * Represents the fetch type for retrieving all results.
+     */
+    ALL
 
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
-
-        var docs = loader.load();
-        assertEquals(2, docs.size());
-    }
 }

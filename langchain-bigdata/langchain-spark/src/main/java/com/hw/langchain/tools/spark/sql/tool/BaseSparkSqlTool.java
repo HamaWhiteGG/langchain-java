@@ -16,31 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
+package com.hw.langchain.tools.spark.sql.tool;
 
-import com.hw.langchain.document.loaders.text.TextLoader;
+import com.hw.langchain.tools.base.BaseTool;
+import com.hw.langchain.utilities.spark.sql.SparkSql;
 
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import lombok.EqualsAndHashCode;
 
 /**
+ * Base tool for interacting with Spark SQL.
+ *
  * @author HamaWhite
  */
-class DirectoryLoaderTest {
+@EqualsAndHashCode(callSuper = true)
+public abstract class BaseSparkSqlTool extends BaseTool {
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
+    protected final SparkSql db;
 
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
-
-        var docs = loader.load();
-        assertEquals(2, docs.size());
+    protected BaseSparkSqlTool(SparkSql db, String name, String description) {
+        super(name, description);
+        this.db = db;
     }
 }

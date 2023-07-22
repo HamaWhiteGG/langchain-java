@@ -18,24 +18,29 @@
 
 package com.hw.langchain.tools.base;
 
+import com.google.common.collect.Maps;
+
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * Tool that takes in function or coroutine directly.
  *
  * @author HamaWhite
  */
+@EqualsAndHashCode(callSuper = true)
 public class Tool extends BaseTool {
 
     /**
      * The function to run when the tool is called.
      */
-    private Function<String, String> func;
+    private final UnaryOperator<String> func;
 
-    public Tool(String name, String description, Function<String, String> func) {
+    public Tool(String name, String description, UnaryOperator<String> func) {
         super(name, description);
         this.func = func;
     }
@@ -43,14 +48,16 @@ public class Tool extends BaseTool {
     /**
      * The tool's input arguments.
      */
+    @Override
     public Map<String, Object> args() {
         // For backwards compatibility, if the function signature is ambiguous,
         // assume it takes a single string input.
         return Map.of("tool_input", Map.of("type", "string"));
     }
 
+    @Override
     public Pair<Object[], Map<String, Object>> toArgsAndKwargs(Object toolInput) {
-        Pair<Object[], Map<String, Object>> pair = super.toArgsAndKwargs(toolInput);
+        var pair = super.toArgsAndKwargs(toolInput);
         Object[] args = pair.getKey();
         Map<String, Object> kwargs = pair.getValue();
 
@@ -59,14 +66,13 @@ public class Tool extends BaseTool {
 
         if (allArgs.size() != 1) {
             throw new IllegalArgumentException(
-                    "Too many arguments to single-input tool " + this.name + ". Args: " + allArgs);
+                    "Too many arguments to single-input tool " + name + ". Args: " + allArgs);
         }
-
-        return Pair.of(allArgs.toArray(), new HashMap<>());
+        return Pair.of(allArgs.toArray(), Maps.newHashMap());
     }
 
     @Override
-    public Object _run(String args, Map<String, Object> kwargs) {
+    public Object innerRun(String args, Map<String, Object> kwargs) {
         return func.apply(args);
     }
 }

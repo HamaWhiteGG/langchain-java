@@ -43,6 +43,8 @@ import static com.hw.langchain.agents.types.Types.AGENT_TO_CLASS;
 public class Initialize {
 
     private Initialize() {
+        // private constructor to hide the implicit public one
+        throw new IllegalStateException("Utility class");
     }
 
     public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
@@ -86,6 +88,6 @@ public class Initialize {
             throw new IllegalArgumentException(
                     "Somehow both `agent` and `agentPath` are null, this should never happen.");
         }
-        return AgentExecutor.fromAgentAndTools(agentObj, tools, kwargs);
+        return AgentExecutor.fromAgentAndTools(agentObj, tools);
     }
 }

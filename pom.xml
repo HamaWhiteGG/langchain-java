@@ -18,6 +18,7 @@
         <module>serpapi-client</module>
         <module>pinecone-client</module>
         <module>langchain-examples</module>
+        <module>langchain-bigdata</module>
     </modules>
 
     <properties>
@@ -45,7 +46,11 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
+        <mockito-core.version>3.12.4</mockito-core.version>
 
+        <spark.version>3.4.1</spark.version>
+
+        <scala.binary.version>2.13</scala.binary.version>
         <target.java.version>17</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
@@ -225,13 +230,29 @@
                 <version>${netty-resolver.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/io.netty/netty-resolver-dns -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-resolver-dns</artifactId>
                 <version>${netty-resolver.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
+            </dependency>
 
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-core_${scala.binary.version}</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-sql_${scala.binary.version}</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
