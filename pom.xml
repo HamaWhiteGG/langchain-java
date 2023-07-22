@@ -45,6 +45,7 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
+        <mockito-core.version>3.12.4</mockito-core.version>
 
         <target.java.version>17</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -230,6 +231,12 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-resolver-dns</artifactId>
                 <version>${netty-resolver.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>mockito-core</artifactId>
+                <groupId>org.mockito</groupId>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>
