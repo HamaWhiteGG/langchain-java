@@ -5,7 +5,7 @@
 
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-java</artifactId>
-    <version>0.1.9</version>
+    <version>0.1.10</version>
     <packaging>pom</packaging>
     <name>langchain-java</name>
     <description>This is the Java language implementation of LangChain.</description>
