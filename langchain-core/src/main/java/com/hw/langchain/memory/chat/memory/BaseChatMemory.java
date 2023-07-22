@@ -42,6 +42,14 @@ public abstract class BaseChatMemory extends BaseMemory {
 
     protected boolean returnMessages;
 
+    protected BaseChatMemory() {
+
+    }
+
+    protected BaseChatMemory(BaseChatMessageHistory chatMemory) {
+        this.chatMemory = chatMemory;
+    }
+
     private Pair<String, String> getInputOutput(Map<String, Object> inputs, Map<String, String> outputs) {
         String promptInputKey;
         if (inputKey == null) {
