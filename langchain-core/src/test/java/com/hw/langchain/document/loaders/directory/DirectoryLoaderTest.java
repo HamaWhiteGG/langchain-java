@@ -41,6 +41,6 @@ class DirectoryLoaderTest {
                 .build();
 
         var docs = loader.load();
-        assertEquals(1, docs.size());
+        assertEquals(2, docs.size());
     }
 }

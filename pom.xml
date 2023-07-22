@@ -236,8 +236,8 @@
                 <version>${netty-resolver.version}</version>
             </dependency>
             <dependency>
-                <artifactId>mockito-core</artifactId>
                 <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
                 <version>${mockito-core.version}</version>
                 <scope>test</scope>
             </dependency>
