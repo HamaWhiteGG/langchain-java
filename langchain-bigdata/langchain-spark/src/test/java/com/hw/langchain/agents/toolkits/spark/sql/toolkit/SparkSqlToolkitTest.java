@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Due to the error <a href="https://stackoverflow.com/questions/73465937/apache-spark-3-3-0-breaks-on-java-17-with-cannot-access-class-sun-nio-ch-direct">Apache Spark 3.3.0 breaks on Java 17 with 'cannot access class sun.nio.ch.DirectBuffer'</a>
  * <p>
  * Solution: Go to Run/Debug Configurations -> Build and Run -> Modify Options -> Allow Multiple Instances,
- * and then add the JVM option "--add-exports java.base/sun.nio.ch=ALL-UNNAMED."
+ * and then add the JVM option "--add-exports java.base/sun.nio.ch=ALL-UNNAMED"
  *
  * @author HamaWhite
  */
@@ -75,7 +75,7 @@ class SparkSqlToolkitTest {
     }
 
     @Test
-    void testRunningQuery() {
+    void testRunQuery() {
         var sparkSql = SparkSql.builder()
                 .spark(spark)
                 .schema(SCHEMA)

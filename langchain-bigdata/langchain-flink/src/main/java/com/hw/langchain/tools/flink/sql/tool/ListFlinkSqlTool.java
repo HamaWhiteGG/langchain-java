@@ -16,41 +16,35 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.tools.spark.sql.tool;
+package com.hw.langchain.tools.flink.sql.tool;
 
-import com.hw.langchain.utilities.spark.sql.SparkSql;
+import com.hw.langchain.utilities.flink.sql.FlinkSql;
 
 import lombok.EqualsAndHashCode;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Tool for getting metadata about a Spark SQL.
+ * Tool for getting tables names.
  *
  * @author HamaWhite
  */
 @EqualsAndHashCode(callSuper = true)
-public class InfoSparkSQLTool extends BaseSparkSqlTool {
+public class ListFlinkSqlTool extends BaseFlinkSqlTool {
 
-    private static final String NAME = "schema_sql_db";
+    private static final String NAME = "list_tables_sql_db";
     private static final String DESCRIPTION =
-            """
-                    Input to this tool is a comma-separated list of tables, output is the schema and sample rows for those tables.
-                    Be sure that the tables actually exist by calling list_tables_sql_db first!
+            "Input is an empty string, output is a comma separated list of tables in the Flink SQL.";
 
-                    Example Input: "table1, table2, table3"
-                    """;
-
-    public InfoSparkSQLTool(SparkSql db) {
+    public ListFlinkSqlTool(FlinkSql db) {
         super(db, NAME, DESCRIPTION);
     }
 
     /**
-     * Get the schema for tables in a comma-separated list.
+     * Get the schema for a specific table.
      */
     @Override
     public Object innerRun(String query, Map<String, Object> kwargs) {
-        return db.getTableInfoNoThrow(Set.of(query.split(", ")));
+        return String.join(", ", db.getUsableTableNames());
     }
 }

@@ -16,31 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.document.loaders.directory;
+package com.hw.langchain.tools.flink.sql.tool;
 
-import com.hw.langchain.document.loaders.text.TextLoader;
+import com.hw.langchain.tools.base.BaseTool;
+import com.hw.langchain.utilities.flink.sql.FlinkSql;
 
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import lombok.EqualsAndHashCode;
 
 /**
+ * Base tool for interacting with Flink SQL.
+ *
  * @author HamaWhite
  */
-class DirectoryLoaderTest {
+@EqualsAndHashCode(callSuper = true)
+public abstract class BaseFlinkSqlTool extends BaseTool {
 
-    @Test
-    void testLoad() {
-        String path = "../docs/extras/modules/";
+    protected final FlinkSql db;
 
-        var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
-                .loaderCls(TextLoader.class)
-                .build();
-
-        var docs = loader.load();
-        assertTrue(docs.size() >= 1);
+    protected BaseFlinkSqlTool(FlinkSql db, String name, String description) {
+        super(name, description);
+        this.db = db;
     }
 }
