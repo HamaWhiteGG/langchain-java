@@ -10,6 +10,10 @@
 
     <artifactId>langchain-spark</artifactId>
 
+    <properties>
+        <spark.version>3.4.1</spark.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.hamawhitegg</groupId>
@@ -20,11 +24,13 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
 
         <dependency>
