@@ -360,7 +360,7 @@ mvn spotless:apply
 ## 6. Support
 Don’t hesitate to ask!
 
-[Open an issue](https://github.com/HamaWhiteGG/langchain-java/issues) if you find a bug in Flink.
+[Open an issue](https://github.com/HamaWhiteGG/langchain-java/issues) if you find a bug in langchain-java.
 
 ## 7. Fork and Contribute
 This is an active open-source project. We are always open to people who want to use the system or contribute to it. Please note that pull requests should be merged into the **dev** branch.
