@@ -88,7 +88,7 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    public List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas, Map<String, Object> kwargs) {
+    public List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas) {
         return null;
     }
 

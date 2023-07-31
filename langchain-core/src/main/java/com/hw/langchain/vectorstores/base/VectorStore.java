@@ -42,11 +42,9 @@ public abstract class VectorStore {
      *
      * @param texts     Iterable of strings to add to the vectorStore.
      * @param metadatas list of metadatas associated with the texts.
-     * @param kwargs    vectorStore specific parameters
      * @return List of ids from adding the texts into the vectorStore.
      */
-    public abstract List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas,
-            Map<String, Object> kwargs);
+    public abstract List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas);
 
     /**
      * Delete by vector ID.
@@ -66,7 +64,7 @@ public abstract class VectorStore {
     public List<String> addDocuments(List<Document> documents, Map<String, Object> kwargs) {
         var texts = documents.stream().map(Document::getPageContent).toList();
         var metadatas = documents.stream().map(Document::getMetadata).toList();
-        return addTexts(texts, metadatas, kwargs);
+        return addTexts(texts, metadatas);
     }
 
     public List<Document> search(String query, SearchType searchType, Map<String, Object> filter) {

@@ -38,4 +38,8 @@ public class Document {
         this.pageContent = pageContent;
         this.metadata = metadata;
     }
+
+    public Document(String pageContent) {
+        this.pageContent = pageContent;
+    }
 }
