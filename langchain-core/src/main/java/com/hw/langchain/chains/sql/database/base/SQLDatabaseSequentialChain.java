@@ -101,7 +101,7 @@ public class SQLDatabaseSequentialChain extends Chain {
     }
 
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         List<String> tableNameList = sqlChain.getDatabase().getUsableTableNames();
         String tableNames = String.join(", ", tableNameList);
         var llmInputs = Map.of("query", inputs.get(inputKey),

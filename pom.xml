@@ -47,6 +47,7 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
+        <reactor.version>3.5.8</reactor.version>
         <mockito-core.version>3.12.4</mockito-core.version>
 
         <scala.binary.version>2.12</scala.binary.version>
@@ -252,6 +253,13 @@
                 <artifactId>netty-resolver-dns</artifactId>
                 <version>${netty-resolver.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>

@@ -138,7 +138,7 @@ public class AgentExecutor extends Chain {
      * Run text through and get agent response.
      */
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         // Construct a mapping of tool name to tool for easy lookup
         Map<String, BaseTool> nameToToolMap = tools.stream().collect(Collectors.toMap(BaseTool::getName, tool -> tool));
 

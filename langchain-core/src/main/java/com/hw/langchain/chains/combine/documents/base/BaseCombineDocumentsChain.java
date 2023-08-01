@@ -64,8 +64,7 @@ public abstract class BaseCombineDocumentsChain extends Chain {
     public abstract Pair<String, Map<String, String>> combineDocs(List<Document> docs, Map<String, Object> kwargs);
 
     @Override
-
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         @SuppressWarnings("unchecked")
         var docs = (List<Document>) inputs.get(inputKey);
 
