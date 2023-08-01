@@ -39,7 +39,9 @@ public interface BaseLanguageModel {
     /**
      * Predict text from text.
      */
-    String predict(String text);
+    default String predict(String text) {
+        return predict(text, null);
+    }
 
     /**
      * Predict text from text.
@@ -49,10 +51,14 @@ public interface BaseLanguageModel {
     /**
      * Predict message from messages.
      */
-    BaseMessage predictMessages(List<BaseMessage> messages);
+    default BaseMessage predictMessages(List<BaseMessage> messages) {
+        return predictMessages(messages, null);
+    }
 
     /**
      * Predict message from messages.
      */
     BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+
+
 }
