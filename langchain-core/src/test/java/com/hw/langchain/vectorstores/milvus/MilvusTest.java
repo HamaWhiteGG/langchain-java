@@ -66,8 +66,7 @@ class MilvusTest {
     @Test
     void testMilvus() {
         Milvus docSearch = milvusFromTexts(List.of(), true);
-        List<Document> output = docSearch.similaritySearch("foo", Map.of("k", 1));
-
-        // assertEquals(List.of(new Document("foo")), output);
+        List<Document> output = docSearch.similaritySearch("foo", 1, Map.of());
+        assertEquals(List.of(new Document("foo")), output);
     }
 }
