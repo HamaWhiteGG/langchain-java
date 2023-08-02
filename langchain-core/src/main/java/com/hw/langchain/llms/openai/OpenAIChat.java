@@ -19,6 +19,7 @@
 package com.hw.langchain.llms.openai;
 
 import com.hw.langchain.llms.base.BaseLLM;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.utils.Utils;
@@ -29,6 +30,7 @@ import com.hw.openai.entity.chat.Message;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.*;
 
@@ -185,6 +187,11 @@ public class OpenAIChat extends BaseLLM {
         llmOutput.put("model_name", response.getModel());
 
         return new LLMResult(generations, llmOutput);
+    }
+
+    @Override
+    protected Flux<AsyncLLMResult> _agenerate(List<String> prompts, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
     }
 
     private List<Message> getChatMessages(List<String> prompts) {

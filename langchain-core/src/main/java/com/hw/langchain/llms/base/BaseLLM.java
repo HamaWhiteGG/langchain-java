@@ -19,11 +19,13 @@
 package com.hw.langchain.llms.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 
 import lombok.experimental.SuperBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -43,6 +45,10 @@ public abstract class BaseLLM implements BaseLanguageModel {
      * Run the LLM on the given prompts.
      */
     protected abstract LLMResult _generate(List<String> prompts, List<String> stop);
+    /**
+     * Run the LLM on the given prompts async.
+     */
+    protected abstract Flux<AsyncLLMResult> _agenerate(List<String> prompts, List<String> stop);
 
     /**
      * Check Cache and run the LLM on the given prompt and input.
@@ -71,8 +77,21 @@ public abstract class BaseLLM implements BaseLanguageModel {
     }
 
     @Override
+    public List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts, List<String> stop) {
+        List<String> promptStrings = prompts.stream()
+                .map(PromptValue::toString)
+                .toList();
+        return promptStrings.stream().map(s -> _agenerate(List.of(s), stop)).toList();
+    }
+
+    @Override
     public String predict(String text, List<String> stop) {
         return call(text, stop);
+    }
+
+    @Override
+    public Flux<String> apredict(String text, List<String> stop) {
+        return _agenerate(List.of(text), stop).map(result -> result.getGenerations().get(0).getText());
     }
 
     @Override
