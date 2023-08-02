@@ -20,7 +20,9 @@ package com.hw.langchain.chains.base;
 
 import com.google.common.collect.Maps;
 import com.hw.langchain.schema.BaseMemory;
+
 import org.apache.commons.lang3.StringUtils;
+
 import reactor.core.publisher.Flux;
 
 import java.util.*;
@@ -150,7 +152,7 @@ public abstract class Chain {
      * Validate and async prep outputs.
      */
     private Flux<Map<String, String>> prepaOutputs(Map<String, Object> inputs, Flux<Map<String, String>> outputs,
-                                            boolean returnOnlyOutputs) {
+            boolean returnOnlyOutputs) {
         Map<String, String> collector = Maps.newHashMap();
         return outputs.doOnNext(this::validateOutputs)
                 .doOnNext(m -> m.forEach((k, v) -> collector.compute(k, (s, old) -> {

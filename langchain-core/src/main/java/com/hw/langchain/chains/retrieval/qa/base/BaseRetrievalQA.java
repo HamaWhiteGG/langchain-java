@@ -24,6 +24,7 @@ import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.schema.Document;
+
 import reactor.core.publisher.Flux;
 
 import java.util.List;

@@ -23,6 +23,7 @@ import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.Document;
 
 import org.apache.commons.lang3.tuple.Pair;
+
 import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
@@ -66,7 +67,8 @@ public abstract class BaseCombineDocumentsChain extends Chain {
     /**
      * Combine documents into a single string async.
      */
-    public abstract Flux<Pair<String, Map<String, String>>> acombineDocs(List<Document> docs, Map<String, Object> kwargs);
+    public abstract Flux<Pair<String, Map<String, String>>> acombineDocs(List<Document> docs,
+            Map<String, Object> kwargs);
 
     @Override
     protected Map<String, String> innerCall(Map<String, Object> inputs) {
