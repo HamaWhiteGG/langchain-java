@@ -27,6 +27,7 @@ logPath_IS_UNDEFINED
 target
 
 # other ignore
+.java-version
 *.log
 *.tmp
 Thumbs.db
