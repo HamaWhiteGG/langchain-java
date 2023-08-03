@@ -18,6 +18,8 @@
 
 package com.hw.langchain.schema;
 
+import com.google.common.collect.Maps;
+
 import lombok.Data;
 
 import java.util.Map;
@@ -40,6 +42,6 @@ public class Document {
     }
 
     public Document(String pageContent) {
-        this.pageContent = pageContent;
+        this(pageContent, Maps.newHashMap());
     }
 }

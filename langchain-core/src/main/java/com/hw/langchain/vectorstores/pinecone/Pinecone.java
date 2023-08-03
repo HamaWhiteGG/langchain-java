@@ -145,7 +145,7 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k) {
+    protected List<Pair<Document, Float>> innerSimilaritySearchWithRelevanceScores(String query, int k) {
         return null;
     }
 

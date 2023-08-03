@@ -123,7 +123,7 @@ public abstract class VectorStore {
      * @return List of Tuples of (doc, similarityScore)
      */
     public List<Pair<Document, Float>> similaritySearchWithRelevanceScores(String query, int k) {
-        List<Pair<Document, Float>> docsAndSimilarities = _similaritySearchWithRelevanceScores(query, k);
+        List<Pair<Document, Float>> docsAndSimilarities = innerSimilaritySearchWithRelevanceScores(query, k);
 
         // Check relevance scores and filter by threshold
         if (docsAndSimilarities.stream().anyMatch(pair -> pair.getRight() < 0.0f || pair.getRight() > 1.0f)) {
@@ -139,7 +139,7 @@ public abstract class VectorStore {
      * @param k     Number of Documents to return.
      * @return List of Tuples of (doc, similarityScore)
      */
-    protected abstract List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k);
+    protected abstract List<Pair<Document, Float>> innerSimilaritySearchWithRelevanceScores(String query, int k);
 
     /**
      * Return docs most similar to embedding vector.

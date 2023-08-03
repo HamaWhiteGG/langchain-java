@@ -18,6 +18,7 @@
 
 package com.hw.langchain.vectorstores.milvus;
 
+import com.google.common.collect.Maps;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.base.VectorStore;
@@ -36,11 +37,12 @@ import io.milvus.param.collection.*;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.param.dml.SearchParam;
 import io.milvus.param.index.CreateIndexParam;
+import io.milvus.param.index.DescribeIndexParam;
+import io.milvus.response.DescIndexResponseWrapper;
+import io.milvus.response.SearchResultsWrapper;
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.hw.langchain.chains.query.constructor.JsonUtils.writeValueAsString;
 
@@ -53,6 +55,8 @@ import static com.hw.langchain.chains.query.constructor.JsonUtils.writeValueAsSt
 public class Milvus extends VectorStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(Milvus.class);
+
+    private static final String METRIC_TYPE = "metric_type";
 
     /**
      * Function used to embed the text.
@@ -76,7 +80,8 @@ public class Milvus extends VectorStore {
     @Builder.Default
     private ConsistencyLevelEnum consistencyLevel = ConsistencyLevelEnum.STRONG;
 
-    private boolean dropOld;
+    @Builder.Default
+    private boolean dropOld = true;
 
     @Builder.Default
     private int batchSize = 1000;
@@ -106,23 +111,14 @@ public class Milvus extends VectorStore {
 
     private Map<String, Map<String, Object>> defaultSearchParams;
 
+    private Map<String, Object> searchParams;
+
     public Milvus init() {
         milvusClient = new MilvusServiceClient(connectParam);
-
         // default search params when one is not provided.
-        defaultSearchParams = Map.of(
-                "IVF_FLAT", Map.of("metric_type", "L2", "params", Map.of("nprobe", 10)),
-                "IVF_SQ8", Map.of("metric_type", "L2", "params", Map.of("nprobe", 10)),
-                "IVF_PQ", Map.of("metric_type", "L2", "params", Map.of("nprobe", 10)),
-                "HNSW", Map.of("metric_type", "L2", "params", Map.of("ef", 10)),
-                "RHNSW_FLAT", Map.of("metric_type", "L2", "params", Map.of("ef", 10)),
-                "RHNSW_SQ", Map.of("metric_type", "L2", "params", Map.of("ef", 10)),
-                "RHNSW_PQ", Map.of("metric_type", "L2", "params", Map.of("ef", 10)),
-                "IVF_HNSW", Map.of("metric_type", "L2", "params", Map.of("nprobe", 10, "ef", 10)),
-                "ANNOY", Map.of("metric_type", "L2", "params", Map.of("search_k", 10)),
-                "AUTOINDEX", Map.of("metric_type", "L2", "params", Map.of()));
+        initDefaultSearchParams();
 
-        // if need to drop old, drop it
+        // if you need to drop old, drop it
         if (hasCollection() && dropOld) {
             milvusClient.dropCollection(
                     DropCollectionParam.newBuilder()
@@ -130,6 +126,45 @@ public class Milvus extends VectorStore {
                             .build());
         }
         return this;
+    }
+
+    private void initDefaultSearchParams() {
+        // Initialize mutable maps
+        Map<String, Object> innerParams1 = Maps.newHashMap();
+        innerParams1.put("nprobe", 10);
+
+        Map<String, Object> innerParams2 = Maps.newHashMap();
+        innerParams2.put("ef", 10);
+
+        Map<String, Object> innerParams3 = Maps.newHashMap();
+        innerParams3.put("nprobe", 10);
+        innerParams3.put("ef", 10);
+
+        // Initialize the main map
+        defaultSearchParams = Maps.newHashMap();
+        defaultSearchParams.put("IVF_FLAT", createInnerMap("L2", innerParams1));
+        defaultSearchParams.put("IVF_SQ8", createInnerMap("L2", innerParams1));
+        defaultSearchParams.put("IVF_PQ", createInnerMap("L2", innerParams1));
+        defaultSearchParams.put("HNSW", createInnerMap("L2", innerParams2));
+        defaultSearchParams.put("RHNSW_FLAT", createInnerMap("L2", innerParams2));
+        defaultSearchParams.put("RHNSW_SQ", createInnerMap("L2", innerParams2));
+        defaultSearchParams.put("RHNSW_PQ", createInnerMap("L2", innerParams2));
+        defaultSearchParams.put("IVF_HNSW", createInnerMap("L2", innerParams3));
+        defaultSearchParams.put("ANNOY", createInnerMap("L2", createInnerParams("search_k", 10)));
+        defaultSearchParams.put("AUTOINDEX", createInnerMap("L2", Maps.newHashMap()));
+    }
+
+    private Map<String, Object> createInnerMap(String metricType, Map<String, Object> params) {
+        Map<String, Object> innerMap = Maps.newHashMap();
+        innerMap.put(METRIC_TYPE, metricType);
+        innerMap.put("params", params);
+        return innerMap;
+    }
+
+    private Map<String, Object> createInnerParams(String key, Object value) {
+        Map<String, Object> innerParams = Maps.newHashMap();
+        innerParams.put(key, value);
+        return innerParams;
     }
 
     private boolean hasCollection() {
@@ -145,6 +180,7 @@ public class Milvus extends VectorStore {
         }
         extractFields();
         createIndex();
+        createSearchParams();
         load();
     }
 
@@ -169,6 +205,7 @@ public class Milvus extends VectorStore {
                     FieldType fieldType = FieldType.newBuilder()
                             .withName(key)
                             .withDataType(dataType)
+                            .withTypeParams(Map.of(Constant.VARCHAR_MAX_LENGTH, "65535"))
                             .build();
                     builder.addFieldType(fieldType);
                 }
@@ -199,8 +236,8 @@ public class Milvus extends VectorStore {
     }
 
     private DataType inferDataTypeByData(Object value) {
-        // TODO: Find corresponding method in Java
-        return DataType.valueOf(value.toString());
+        LOG.debug("meta value: {}", value);
+        return DataType.VarChar;
     }
 
     /**
@@ -221,7 +258,20 @@ public class Milvus extends VectorStore {
         fields.remove(primaryField);
     }
 
-    private Map<String, Object> getIndex() {
+    private DescIndexResponseWrapper.IndexDesc getIndex() {
+        DescribeIndexParam requestParam = DescribeIndexParam.newBuilder()
+                .withCollectionName(collectionName)
+                .build();
+
+        R<DescribeIndexResponse> response = milvusClient.describeIndex(requestParam);
+        if (response.getData() != null) {
+            DescIndexResponseWrapper wrapper = new DescIndexResponseWrapper(response.getData());
+            for (DescIndexResponseWrapper.IndexDesc desc : wrapper.getIndexDescriptions()) {
+                if (desc.getFieldName().equals(vectorField)) {
+                    return desc;
+                }
+            }
+        }
         return null;
     }
 
@@ -229,24 +279,32 @@ public class Milvus extends VectorStore {
      * Create a index on the collection
      */
     private void createIndex() {
-        Map<String, Object> extraParam = Map.of("M", 8, "efConstruction", 64);
-        CreateIndexParam requestParam = CreateIndexParam.newBuilder()
-                .withCollectionName(collectionName)
-                .withFieldName(vectorField)
-                .withIndexType(IndexType.HNSW)
-                .withMetricType(MetricType.L2)
-                .withExtraParam(writeValueAsString(extraParam))
-                .withSyncMode(false)
-                .build();
-        milvusClient.createIndex(requestParam);
-        LOG.info("Successfully created an index on collection: {}", collectionName);
+        if (getIndex() == null) {
+            Map<String, Object> extraParam = Map.of("M", 8, "efConstruction", 64);
+            CreateIndexParam requestParam = CreateIndexParam.newBuilder()
+                    .withCollectionName(collectionName)
+                    .withFieldName(vectorField)
+                    .withIndexType(IndexType.HNSW)
+                    .withMetricType(MetricType.L2)
+                    .withExtraParam(writeValueAsString(extraParam))
+                    .withSyncMode(false)
+                    .build();
+            milvusClient.createIndex(requestParam);
+            LOG.info("Successfully created an index on collection: {}", collectionName);
+        }
     }
 
     /**
      * Generate search params based on the current index type
      */
     private void createSearchParams() {
-
+        DescIndexResponseWrapper.IndexDesc index = getIndex();
+        if (index != null) {
+            String indexType = index.getParams().get("index_type");
+            String metricType = index.getParams().get(METRIC_TYPE);
+            searchParams = defaultSearchParams.get(indexType);
+            searchParams.put(METRIC_TYPE, metricType);
+        }
     }
 
     /**
@@ -272,7 +330,28 @@ public class Milvus extends VectorStore {
         innerInit(embeddings, metadatas);
 
         // dict to hold all insert columns
-        Map<String, List<?>> insertDict = Map.of(textField, texts, vectorField, embeddings);
+        Map<String, List<?>> insertDict = Maps.newHashMap();
+        insertDict.put(textField, texts);
+        insertDict.put(vectorField, embeddings);
+
+        // collect the metadata into the insert dict.
+        if (metadatas != null) {
+            for (var meta : metadatas) {
+                meta.forEach((key, value) -> {
+                    if (fields.contains(key)) {
+                        @SuppressWarnings("unchecked")
+                        List<Object> dict = (List<Object>) insertDict.get(key);
+                        if (dict == null) {
+                            dict = new ArrayList<>();
+                            insertDict.put(key, dict);
+                        }
+                        dict.add(value);
+                    }
+                });
+            }
+        }
+
+        // total insert count
         int totalCount = embeddings.size();
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < totalCount; i += batchSize) {
@@ -311,15 +390,28 @@ public class Milvus extends VectorStore {
         SearchParam searchParam = SearchParam.newBuilder()
                 .withCollectionName(collectionName)
                 .withConsistencyLevel(consistencyLevel)
-                .withMetricType(MetricType.L2)
+                .withMetricType(MetricType.valueOf(searchParams.get(METRIC_TYPE).toString()))
                 .withOutFields(outputFields)
                 .withTopK(k)
                 .withVectors(List.of(embedding))
                 .withVectorFieldName(vectorField)
-                // .withParams(SEARCH_PARAM)
+                .withParams(writeValueAsString(searchParams.get("params")))
                 .build();
         R<SearchResults> respSearch = milvusClient.search(searchParam);
-        return null;
+        SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
+
+        // organize results.
+        List<Pair<Document, Float>> ret = new ArrayList<>();
+        for (var result : wrapperSearch.getRowRecords()) {
+            Map<String, Object> meta = Maps.newHashMap();
+            for (String x : outputFields) {
+                meta.put(x, result.get(x));
+            }
+            Document doc = new Document((String) meta.remove(textField), meta);
+            Pair<Document, Float> pair = Pair.of(doc, (Float) result.get("distance"));
+            ret.add(pair);
+        }
+        return ret;
     }
 
     @Override
@@ -329,7 +421,7 @@ public class Milvus extends VectorStore {
     }
 
     @Override
-    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k) {
+    protected List<Pair<Document, Float>> innerSimilaritySearchWithRelevanceScores(String query, int k) {
         return null;
     }
 
