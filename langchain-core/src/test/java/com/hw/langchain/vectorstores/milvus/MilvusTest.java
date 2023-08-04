@@ -22,6 +22,7 @@ import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.fake.embeddings.FakeEmbeddings;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.milvus.param.ConnectParam;
@@ -40,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author HamaWhite
  */
+@Disabled("Test requires costly OpenAI and Milvus environment, can be run manually.")
 class MilvusTest {
 
     private Milvus milvusFromTexts(List<Map<String, Object>> metadatas, boolean dropOld) {
