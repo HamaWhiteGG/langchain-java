@@ -26,6 +26,7 @@
         <gson.version>2.10.1</gson.version>
         <junit.version>5.9.3</junit.version>
         <mysql.version>8.0.32</mysql.version>
+        <milvus.version>2.2.9</milvus.version>
         <jython.version>2.7.3</jython.version>
         <nd4j.version>1.0.0-M2.1</nd4j.version>
         <lombok.version>1.18.28</lombok.version>
@@ -186,6 +187,12 @@
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.milvus</groupId>
+                <artifactId>milvus-sdk-java</artifactId>
+                <version>${milvus.version}</version>
             </dependency>
 
             <dependency>

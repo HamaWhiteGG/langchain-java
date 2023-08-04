@@ -88,7 +88,7 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    public List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas, Map<String, Object> kwargs) {
+    public List<String> addTexts(List<String> texts, List<Map<String, Object>> metadatas) {
         return null;
     }
 
@@ -145,7 +145,7 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    protected List<Pair<Document, Float>> _similaritySearchWithRelevanceScores(String query, int k) {
+    protected List<Pair<Document, Float>> innerSimilaritySearchWithRelevanceScores(String query, int k) {
         return null;
     }
 

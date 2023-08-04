@@ -58,6 +58,15 @@ public class JsonUtils {
         return toJsonStringWithIndent(object, 4);
     }
 
+    public static String writeValueAsString(Object object) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new LangChainException("Failed to format attribute info.", e);
+        }
+    }
+
     public static <T> T convertFromJsonStr(String jsonStr, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readValue(jsonStr, clazz);
