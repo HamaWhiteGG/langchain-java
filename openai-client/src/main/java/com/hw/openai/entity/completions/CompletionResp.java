@@ -29,6 +29,8 @@ import java.util.List;
 @Data
 public class CompletionResp {
 
+    private String warning;
+
     private String id;
 
     private String object;
