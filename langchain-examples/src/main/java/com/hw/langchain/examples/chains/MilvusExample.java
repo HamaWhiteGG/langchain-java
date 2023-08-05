@@ -18,13 +18,16 @@
 
 package com.hw.langchain.examples.chains;
 
+import com.hw.langchain.chains.retrieval.qa.base.RetrievalQa;
 import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.embeddings.openai.OpenAIEmbeddings;
+import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
 import com.hw.langchain.vectorstores.milvus.Milvus;
 
 import io.milvus.param.ConnectParam;
 
+import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
@@ -58,7 +61,13 @@ public class MilvusExample {
         var query = "What did the president say about Ketanji Brown Jackson";
         docs = milvus.similaritySearch(query);
 
-        var result = docs.get(0).getPageContent();
+        var pageContent = docs.get(0).getPageContent();
+        println(pageContent);
+
+        var llm = OpenAI.builder().temperature(0).requestTimeout(30).build().init();
+        var qa = RetrievalQa.fromChainType(llm, STUFF, milvus.asRetriever());
+
+        var result = qa.run(query);
         println(result);
     }
 }
