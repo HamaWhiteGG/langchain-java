@@ -18,6 +18,7 @@
 
 package com.hw.openai;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
@@ -133,6 +134,8 @@ public class OpenAiClient {
         // Used for automatic discovery and registration of Jackson modules
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        // Ignore unknown fields
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(openaiApiBase)
