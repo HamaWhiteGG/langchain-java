@@ -8,7 +8,11 @@ This is the Java language implementation of LangChain.
 
 Large language models (LLMs) are emerging as a transformative technology, enabling developers to build applications that they previously could not. But using these LLMs in isolation is often not enough to create a truly powerful app - the real power comes when you can combine them with other sources of computation or knowledge.
 
-This library is aimed at assisting in the development of those types of applications. Looking for the Python version? Check out [LangChain](https://github.com/hwchase17/langchain).  
+This library is aimed at assisting in the development of those types of applications. Looking for the Python version? Check out [LangChain](https://github.com/langchain-ai/langchain).  
+
+If you use WeChat, you can join the following group.
+
+<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:40%;">
 
 The following example can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
 
@@ -41,12 +45,6 @@ Prerequisites for building:
     <version>0.1.11</version>
 </dependency>
 ```
-
-
-If you use WeChat, you can join the following group.
-
-<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:40%;">
-
 
 ### 3.2 Environment Setup
 Using LangChain will usually require integrations with one or more model providers, data stores, apis, etc. 
