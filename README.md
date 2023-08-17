@@ -42,6 +42,11 @@ Prerequisites for building:
 </dependency>
 ```
 
+
+If you use WeChat, you can join the following group.
+<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:70%;">
+
+
 ### 3.2 Environment Setup
 Using LangChain will usually require integrations with one or more model providers, data stores, apis, etc. 
 For this example, we will be using OpenAI’s APIs.
