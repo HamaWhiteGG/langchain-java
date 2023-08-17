@@ -45,7 +45,7 @@ Prerequisites for building:
 
 If you use WeChat, you can join the following group.
 
-<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:30%;">
+<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:40%;">
 
 
 ### 3.2 Environment Setup
