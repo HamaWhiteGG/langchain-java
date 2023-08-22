@@ -155,7 +155,7 @@ public class OpenAIChat extends BaseLLM {
     }
 
     @Override
-    protected LLMResult _generate(List<String> prompts, List<String> stop) {
+    protected LLMResult innerGenerate(List<String> prompts, List<String> stop) {
         List<Message> messages = getChatMessages(prompts);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()

@@ -1,6 +1,6 @@
 # 🦜️ LangChain Java
 
-⚡ Building applications with LLMs through composability ⚡
+Java version of LangChain, bringing the capabilities of LLM to big data platforms like Flink and Spark.
 
 ## 1. What is this?
 
@@ -27,12 +27,21 @@ The following example can view in the [langchain-example](langchain-examples/src
 - [Spark SQL AI](langchain-bigdata/langchain-spark/src/test/java/com/hw/langchain/agents/toolkits/spark/sql/toolkit/SparkSqlToolkitTest.java)
 - [Flink SQL AI](langchain-bigdata/langchain-flink/src/test/java/com/hw/langchain/agents/toolkits/flink/sql/toolkit/FlinkSqlToolkitTest.java)
 
-## 3. Quickstart Guide
+## 3. Integrations
+### 3.1 LLMs
+- [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java)
+- [Ollama](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OllamaExample.java)
+
+### 3.2 Vector stores
+- [Pinecone](langchain-examples/src/main/java/com/hw/langchain/examples/vectorstores/PineconeExample.java)
+- [Milvus](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
+
+## 4. Quickstart Guide
 This tutorial gives you a quick walkthrough about building an end-to-end language model application with LangChain.
 
 View the [Quickstart Guide](https://python.langchain.com/docs/get_started) on the LangChain official website.
 
-### 3.1 Maven Repository
+### 4.1 Maven Repository
 Prerequisites for building:
 * Java 17 or later
 * Unix-like environment (we use Linux, Mac OS X)
@@ -46,7 +55,7 @@ Prerequisites for building:
 </dependency>
 ```
 
-### 3.2 Environment Setup
+### 4.2 Environment Setup
 Using LangChain will usually require integrations with one or more model providers, data stores, apis, etc. 
 For this example, we will be using OpenAI’s APIs.
 
@@ -69,7 +78,7 @@ var llm = OpenAI.builder()
         .init();
 ```
 
-### 3.3 LLMs
+### 4.3 LLMs
 Get predictions from a language model. The basic building block of LangChain is the LLM, which takes in text and generates more text.
 
 ```java
@@ -85,7 +94,7 @@ And now we can pass in text and get predictions!
 ```shell
 Feetful of Fun
 ```
-### 3.4 Chat models
+### 4.4 Chat models
 
 Chat models are a variation on language models. While chat models use language models under the hood, the interface they expose is a bit different: rather than expose a "text in, text out" API, they expose an interface where "chat messages" are the inputs and outputs.
 
@@ -114,12 +123,12 @@ println(output);
 J'adore la programmation.
 ```
 
-### 3.5 Prompt Templates
+### 4.5 Prompt Templates
 Most LLM applications do not pass user input directly into an LLM. Usually they will add the user input to a larger piece of text, called a prompt template, that provides additional context on the specific task at hand.
 
 In the previous example, the text we passed to the model contained instructions to generate a company name. For our application, it'd be great if the user only had to provide the description of a company/product, without having to worry about giving the model instructions.
 
-#### 3.5.1 LLMs
+#### 4.5.1 LLMs
 
 With PromptTemplates this is easy! In this case our template would be very simple:
 
@@ -132,7 +141,7 @@ println(output)
 What is a good name for a company that makes colorful socks?
 ```
 
-#### 3.5.2 Chat models
+#### 4.5.2 Chat models
 
 Similar to LLMs, you can make use of templating by using a `MessagePromptTemplate`. You can build a `ChatPromptTemplate` from one or more `MessagePromptTemplate`s. You can use `ChatPromptTemplate`'s `formatMessages` method to generate the formatted messages.
 
@@ -156,11 +165,11 @@ println(output);
 ]
 ```
 
-### 3.6 Chains
+### 4.6 Chains
 
 Now that we've got a model and a prompt template, we'll want to combine the two. Chains give us a way to link (or chain) together multiple primitives, like models, prompts, and other chains.
 
-#### 3.6.1 LLMs
+#### 4.6.1 LLMs
 The simplest and most common type of chain is an LLMChain, which passes an input first to a PromptTemplate and then to an LLM. We can construct an LLM chain from our existing model and prompt template.
 ```java
 var chain = new LLMChain(llm, prompt);
@@ -170,7 +179,7 @@ println(result);
 ```shell
 Feetful of Fun
 ```
-#### 3.6.2 Chat models
+#### 4.6.2 Chat models
 The `LLMChain` can be used with chat models as well:
 ```java
 var chain = new LLMChain(chat, chatPrompt);
@@ -181,7 +190,7 @@ println(result);
 J'adore la programmation.
 ```
 
-### 3.7 Agents
+### 4.7 Agents
 Our first chain ran a pre-determined sequence of steps. To handle complex workflows, we need to be able to dynamically choose actions based on inputs.
 
 Agents do just this: they use a language model to determine which actions to take and in what order. Agents are given access to tools, and they repeatedly choose a tool, run the tool, and observe the output until they come up with a final answer.
@@ -191,7 +200,7 @@ Set the appropriate environment variables.
 export SERPAPI_API_KEY=xxx
 ```
 
-#### 3.7.1 LLMs
+#### 4.7.1 LLMs
 
 ```java
 //  The language model we're going to use to control the agent.
@@ -221,7 +230,7 @@ Thought: I now know the final answer
 Final Answer: 1.10257635505
 ```
 
-#### 3.7.2 Chat models
+#### 4.7.2 Chat models
 
 Agents can also be used with chat models, you can initialize one using `AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION` as the agent type.
 
@@ -240,7 +249,7 @@ var agent = initializeAgent(tools, chat, AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPT
 agent.run("Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?");
 ```
 
-### 3.8 Memory
+### 4.8 Memory
 
 The chains and agents we've looked at so far have been stateless, but for many applications it's necessary to reference past interactions. This is clearly the case with a chatbot for example, where you want it to understand new messages in the context of past messages.
 
@@ -248,7 +257,7 @@ The Memory module gives you a way to maintain application state. The base Memory
 
 There are a number of built-in memory systems. The simplest of these is a buffer memory which just prepends the last few inputs/outputs to the current input - we will use this in the example below.
 
-#### 3.8.1 LLMs
+#### 4.8.1 LLMs
 
 ```java
 var llm = OpenAI.builder().temperature(0).build().init();
@@ -289,7 +298,7 @@ AI:
  That's great! It's always nice to have a conversation with someone new. What would you like to talk about?
 ```
 
-#### 3.8.2 Chat models
+#### 4.8.2 Chat models
 
 You can use Memory with chains and agents initialized with chat models. The main difference between this and Memory for LLMs is that rather than trying to condense all previous messages into a string, we can keep them as their own unique memory object.
 
@@ -332,19 +341,6 @@ println(output);
 Certainly! I am an AI language model developed by OpenAI called GPT-3. I have been trained on a vast amount of text data from the internet, which allows me to generate human-like responses to a wide range of queries and engage in conversations. My purpose is to assist and provide information to the best of my abilities. Is there anything specific you would like to know about me?
 ```
 
-## 4. i18n for SQLDatabaseChain
-
-If you want to choose other language instead english, just set environment variable on your host. If you not set, then **en-US** will be default
-```shell
-export USE_LANGUAGE=pt_BR
-```
-
-#### 4.1 Available Languages
-| Language           | Value |
-|--------------------|-------|
-| English(default)   | en_US |
-| Portuguese(Brazil) | pt_BR |
-
 ## 5. Run Test Cases from Source
 
 ```shell
@@ -362,12 +358,25 @@ This project uses Spotless to format the code. If you make any modifications, pl
 mvn spotless:apply
 ```
 
-## 6. Support
+## 6. i18n for SQLDatabaseChain
+
+If you want to choose other language instead english, just set environment variable on your host. If you not set, then **en-US** will be default
+```shell
+export USE_LANGUAGE=pt_BR
+```
+
+#### 6.1 Available Languages
+| Language           | Value |
+|--------------------|-------|
+| English(default)   | en_US |
+| Portuguese(Brazil) | pt_BR |
+
+## 7. Support
 Don’t hesitate to ask!
 
 [Open an issue](https://github.com/HamaWhiteGG/langchain-java/issues) if you find a bug in langchain-java.
 
-## 7. Fork and Contribute
+## 8. Fork and Contribute
 This is an active open-source project. We are always open to people who want to use the system or contribute to it. Please note that pull requests should be merged into the **dev** branch.
 
 Contact [me](baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.

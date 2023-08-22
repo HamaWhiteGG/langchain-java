@@ -40,18 +40,28 @@ public class TextRequestsWrapper {
         this.headers = headers;
     }
 
+    /**
+     * Performs an HTTP request using the provided `Requests` instance.
+     *
+     * @param requests The `Requests` instance to use for sending the request
+     * @param url      The URL to send the request to
+     * @param method   The HTTP method to use (e.g., "GET", "POST")
+     * @param data     The data to send in the request body (can be null)
+     * @return The response body as a string, or null if the response body is empty
+     * @throws LangChainException If an error occurs while performing the request
+     */
     private String performRequest(Requests requests, String url, String method, Map<String, Object> data) {
         try (Response response = requests.sendRequest(url, method, data)) {
             if (response.isSuccessful()) {
                 ResponseBody responseBody = response.body();
-                if (responseBody != null) {
-                    return responseBody.string();
-                }
+                return responseBody != null ? responseBody.string() : null;
+            } else {
+                throw new LangChainException("Failed with status code %d. messages: %s", response.code(),
+                        response.message());
             }
         } catch (IOException e) {
             throw new LangChainException("An error occurred while performing " + method + " request.", e);
         }
-        return null;
     }
 
     public String get(String url) {
