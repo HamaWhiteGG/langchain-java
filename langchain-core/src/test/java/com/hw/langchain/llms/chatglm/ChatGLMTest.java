@@ -16,36 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.llms.chatglm;
 
-import lombok.Data;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Class that contains all relevant information for an LLM Result.
+ * <a href="https://github.com/THUDM/ChatGLM2-6B/blob/main/api.py">ChatGLM2-6B API reference</a>
+ *
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+@Disabled("Test requires ChatGLM environment, can be run manually.")
+class ChatGLMTest {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
+    @Test
+    void testChatGLM() {
+        var llm = ChatGLM.builder().build().init();
+        var actual = llm.predict("Say foo:");
 
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
-
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
+        var expected = "Foo.";
+        assertEquals(expected, actual);
     }
 
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
-    }
 }
