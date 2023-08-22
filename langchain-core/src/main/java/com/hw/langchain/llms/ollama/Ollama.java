@@ -203,7 +203,7 @@ public class Ollama extends BaseLLM {
             }
             generations.add(List.of(requireNonNull(finalChunk)));
         }
-        return new LLMResult(generations, null);
+        return new LLMResult(generations);
     }
 
     /**

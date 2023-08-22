@@ -16,36 +16,29 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
-
-import lombok.Data;
+package com.hw.langchain.llms;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Class that contains all relevant information for an LLM Result.
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+public class Utils {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
-
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
-
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
+    private Utils() {
+        // private constructor to hide the implicit public one
+        throw new IllegalStateException("Utility class");
     }
 
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
+    /**
+     * Cuts off the text as soon as any stop words occur.
+     *
+     * @param text The input text to be processed.
+     * @param stop List of stop words to identify cut-off points.
+     * @return The processed text after enforcing stop tokens.
+     */
+    public static String enforceStopTokens(String text, List<String> stop) {
+        String[] parts = text.split(String.join("|", stop));
+        return parts[0];
     }
 }
