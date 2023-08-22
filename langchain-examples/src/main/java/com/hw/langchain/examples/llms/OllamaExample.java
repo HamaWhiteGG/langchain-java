@@ -16,26 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llm;
+package com.hw.langchain.examples.llms;
 
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.langchain.llms.ollama.Ollama;
 
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
  * @author HamaWhite
  */
-@RunnableExample
-public class LlmExample {
+public class OllamaExample {
 
     public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
+        var llm = Ollama.builder()
+                .baseUrl("http://localhost:11434")
+                .model("llama2")
+                .temperature(0f)
                 .build()
                 .init();
 
-        var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
+        var result = llm.predict("What is the capital of China?");
+
+        // The capital of China is Beijing.
         println(result);
     }
 }

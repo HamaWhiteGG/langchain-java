@@ -177,7 +177,7 @@ public class BaseOpenAI extends BaseLLM {
      * @return The full LLM output.
      */
     @Override
-    protected LLMResult _generate(List<String> prompts, List<String> stop) {
+    protected LLMResult innerGenerate(List<String> prompts, List<String> stop) {
         List<Choice> choices = new ArrayList<>();
         List<List<String>> subPrompts = getSubPrompts(prompts);
         Completion completion = Completion.builder()

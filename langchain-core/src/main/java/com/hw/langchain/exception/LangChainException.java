@@ -18,12 +18,16 @@
 
 package com.hw.langchain.exception;
 
+import java.io.Serial;
+
 /**
  * LangChainException
+ *
  * @author HamaWhite
  */
 public class LangChainException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 193141189399279147L;
 
     /**
@@ -33,6 +37,16 @@ public class LangChainException extends RuntimeException {
      */
     public LangChainException(String message) {
         super(message);
+    }
+
+    /**
+     * Creates a new LangChainException with the given formatted message and arguments.
+     *
+     * @param message The exception message format string
+     * @param args    Arguments to format the message
+     */
+    public LangChainException(String message, Object... args) {
+        super(String.format(message, args));
     }
 
     /**

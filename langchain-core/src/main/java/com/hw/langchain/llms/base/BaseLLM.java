@@ -42,7 +42,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
     /**
      * Run the LLM on the given prompts.
      */
-    protected abstract LLMResult _generate(List<String> prompts, List<String> stop);
+    protected abstract LLMResult innerGenerate(List<String> prompts, List<String> stop);
 
     /**
      * Check Cache and run the LLM on the given prompt and input.
@@ -59,7 +59,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
      * Run the LLM on the given prompt and input.
      */
     public LLMResult generate(List<String> prompts, List<String> stop) {
-        return _generate(prompts, stop);
+        return innerGenerate(prompts, stop);
     }
 
     @Override
