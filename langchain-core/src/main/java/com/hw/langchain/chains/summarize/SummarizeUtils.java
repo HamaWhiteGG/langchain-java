@@ -16,40 +16,14 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.chains.question.answering;
+package com.hw.langchain.chains.summarize;
 
 /**
  * @author HamaWhite
  */
-public enum ChainType {
+public class SummarizeUtils {
 
-    /**
-     * Chain type for "stuff".
-     */
-    STUFF("stuff"),
-
-    /**
-     * Chain type for "map_reduce".
-     */
-    MAP_REDUCE("map_reduce"),
-
-    /**
-     * Chain type for "refine".
-     */
-    REFINE("refine"),
-
-    /**
-     * Chain type for "map_rerank".
-     */
-    MAP_RERANK("map_rerank");
-
-    private final String value;
-
-    ChainType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+    private SummarizeUtils() {
+        throw new IllegalStateException("Utility class");
     }
 }

@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.chains.question.answering.init;
+package com.hw.langchain.chains.question.answering;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.chains.ChainType;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
 import com.hw.langchain.chains.combine.documents.stuff.StuffDocumentsChain;
 import com.hw.langchain.chains.llm.LLMChain;
-import com.hw.langchain.chains.question.answering.ChainType;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
+import static com.hw.langchain.chains.ChainType.STUFF;
 import static com.hw.langchain.chains.question.answering.StuffPrompt.PROMPT_SELECTOR;
 
 /**
@@ -37,6 +37,7 @@ import static com.hw.langchain.chains.question.answering.StuffPrompt.PROMPT_SELE
 public class Init {
 
     private Init() {
+        throw new IllegalStateException("Utility class");
     }
 
     private static final Map<ChainType, Function<BaseLanguageModel, BaseCombineDocumentsChain>> LOADER_MAPPING = Map.of(

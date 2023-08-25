@@ -2,17 +2,16 @@
 
 Java version of LangChain, bringing the capabilities of LLM to big data platforms like Flink and Spark.
 
+> If you are interested, you can add me on WeChat: HamaWhite, or send email to baisongxx@gmail.com
+
 ## 1. What is this?
 
 This is the Java language implementation of LangChain.
 
 Large language models (LLMs) are emerging as a transformative technology, enabling developers to build applications that they previously could not. But using these LLMs in isolation is often not enough to create a truly powerful app - the real power comes when you can combine them with other sources of computation or knowledge.
 
-This library is aimed at assisting in the development of those types of applications. Looking for the Python version? Check out [LangChain](https://github.com/langchain-ai/langchain).  
+This library is aimed at assisting in the development of those types of applications. 
 
-If you use WeChat, you can join the following group.
-
-<img src="https://github.com/HamaWhiteGG/langchain-java/blob/dev/docs/images/wechat-group.png" alt="wechat-group.png" style="width:40%;">
 
 The following example can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
 
