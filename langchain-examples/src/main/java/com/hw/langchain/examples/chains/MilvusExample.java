@@ -27,7 +27,7 @@ import com.hw.langchain.vectorstores.milvus.Milvus;
 
 import io.milvus.param.ConnectParam;
 
-import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
+import static com.hw.langchain.chains.ChainType.STUFF;
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
