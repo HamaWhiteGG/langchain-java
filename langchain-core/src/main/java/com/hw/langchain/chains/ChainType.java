@@ -16,36 +16,40 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
-
-import lombok.Data;
-
-import java.util.List;
-import java.util.Map;
+package com.hw.langchain.chains;
 
 /**
- * Class that contains all relevant information for an LLM Result.
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+public enum ChainType {
 
     /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
+     * Chain type for "stuff".
      */
-    private List<? extends List<? extends Generation>> generations;
+    STUFF("stuff"),
 
     /**
-     * For arbitrary LLM provider specific output.
+     * Chain type for "map_reduce".
      */
-    private Map<String, Object> llmOutput;
+    MAP_REDUCE("map_reduce"),
 
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
+    /**
+     * Chain type for "refine".
+     */
+    REFINE("refine"),
+
+    /**
+     * Chain type for "map_rerank".
+     */
+    MAP_RERANK("map_rerank");
+
+    private final String value;
+
+    ChainType(String value) {
+        this.value = value;
     }
 
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
+    public String getValue() {
+        return value;
     }
 }

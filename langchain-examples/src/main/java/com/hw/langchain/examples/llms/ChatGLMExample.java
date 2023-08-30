@@ -16,40 +16,27 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.chains.question.answering;
+package com.hw.langchain.examples.llms;
+
+import com.hw.langchain.llms.chatglm.ChatGLM;
+
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
  * @author HamaWhite
  */
-public enum ChainType {
+public class ChatGLMExample {
 
-    /**
-     * Chain type for "stuff".
-     */
-    STUFF("stuff"),
+    public static void main(String[] args) {
+        var llm = ChatGLM.builder()
+                .endpointUrl("http://127.0.0.1:8000/")
+                .temperature(0.95f)
+                .build()
+                .init();
 
-    /**
-     * Chain type for "map_reduce".
-     */
-    MAP_REDUCE("map_reduce"),
+        var result = llm.predict("What is the capital of China?");
 
-    /**
-     * Chain type for "refine".
-     */
-    REFINE("refine"),
-
-    /**
-     * Chain type for "map_rerank".
-     */
-    MAP_RERANK("map_rerank");
-
-    private final String value;
-
-    ChainType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+        // The capital of China is Beijing.
+        println(result);
     }
 }

@@ -19,15 +19,15 @@
 package com.hw.langchain.chains.retrieval.qa.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.chains.ChainType;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
-import com.hw.langchain.chains.question.answering.ChainType;
 import com.hw.langchain.schema.BaseRetriever;
 import com.hw.langchain.schema.Document;
 
 import java.util.List;
 
-import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
-import static com.hw.langchain.chains.question.answering.init.Init.loadQaChain;
+import static com.hw.langchain.chains.ChainType.STUFF;
+import static com.hw.langchain.chains.question.answering.Init.loadQaChain;
 
 /**
  * Chain for question-answering against an index.

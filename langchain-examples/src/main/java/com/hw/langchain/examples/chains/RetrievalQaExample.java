@@ -23,7 +23,7 @@ import com.hw.langchain.document.loaders.text.TextLoader;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.text.splitter.CharacterTextSplitter;
 
-import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
+import static com.hw.langchain.chains.ChainType.STUFF;
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 import static com.hw.langchain.examples.vectorstores.PineconeExample.*;
 

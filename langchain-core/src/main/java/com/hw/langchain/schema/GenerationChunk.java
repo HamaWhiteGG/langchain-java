@@ -18,34 +18,32 @@
 
 package com.hw.langchain.schema;
 
-import lombok.Data;
+import com.google.common.collect.Maps;
 
-import java.util.List;
+import lombok.Getter;
+
 import java.util.Map;
 
 /**
- * Class that contains all relevant information for an LLM Result.
+ * A Generation chunk, which can be concatenated with other Generation chunks.
+ *
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+@Getter
+public class GenerationChunk extends Generation {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
-
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
-
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
+    public GenerationChunk(String text, Map<String, Object> generationInfo) {
+        super(text, generationInfo);
     }
 
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
+    public GenerationChunk add(GenerationChunk other) {
+        Map<String, Object> generationInfo = Maps.newHashMap();
+        if (this.getGenerationInfo() != null) {
+            generationInfo.putAll(this.getGenerationInfo());
+        }
+        if (other.getGenerationInfo() != null) {
+            generationInfo.putAll(other.getGenerationInfo());
+        }
+        return new GenerationChunk(this.getText() + other.getText(), generationInfo);
     }
 }

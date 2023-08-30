@@ -16,26 +16,14 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llm;
-
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
-
-import static com.hw.langchain.examples.utils.PrintUtils.println;
+package com.hw.langchain.chains.summarize;
 
 /**
  * @author HamaWhite
  */
-@RunnableExample
-public class LlmExample {
+public class SummarizeUtils {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
-
-        var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
-        println(result);
+    private SummarizeUtils() {
+        throw new IllegalStateException("Utility class");
     }
 }

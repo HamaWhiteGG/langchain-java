@@ -16,36 +16,28 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.llms;
 
-import lombok.Data;
+import com.hw.langchain.llms.ollama.Ollama;
 
-import java.util.List;
-import java.util.Map;
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Class that contains all relevant information for an LLM Result.
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+public class OllamaExample {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
+    public static void main(String[] args) {
+        var llm = Ollama.builder()
+                .baseUrl("http://localhost:11434")
+                .model("llama2")
+                .temperature(0f)
+                .build()
+                .init();
 
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
+        var result = llm.predict("What is the capital of China?");
 
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
-    }
-
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
+        // The capital of China is Beijing.
+        println(result);
     }
 }

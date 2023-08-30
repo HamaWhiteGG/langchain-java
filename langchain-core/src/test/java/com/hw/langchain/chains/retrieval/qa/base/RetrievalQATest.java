@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static com.hw.langchain.chains.question.answering.ChainType.STUFF;
+import static com.hw.langchain.chains.ChainType.STUFF;
 import static com.hw.langchain.vectorstores.pinecone.PineconeTest.INDEX_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 

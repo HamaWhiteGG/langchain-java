@@ -16,36 +16,26 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.examples.llms;
 
-import lombok.Data;
+import com.hw.langchain.examples.runner.RunnableExample;
+import com.hw.langchain.llms.openai.OpenAI;
 
-import java.util.List;
-import java.util.Map;
+import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
- * Class that contains all relevant information for an LLM Result.
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+@RunnableExample
+public class OpenAIExample {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
+    public static void main(String[] args) {
+        var llm = OpenAI.builder()
+                .temperature(0.9f)
+                .build()
+                .init();
 
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
-
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
-    }
-
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
+        var result = llm.predict("What would be a good company name for a company that makes colorful socks?");
+        println(result);
     }
 }

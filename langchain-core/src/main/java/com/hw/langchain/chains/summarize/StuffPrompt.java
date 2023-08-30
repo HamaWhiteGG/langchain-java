@@ -16,36 +16,27 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.langchain.chains.summarize;
 
-import lombok.Data;
+import com.hw.langchain.prompts.prompt.PromptTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Class that contains all relevant information for an LLM Result.
  * @author HamaWhite
  */
-@Data
-public class LLMResult {
+public class StuffPrompt {
 
-    /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
-     */
-    private List<? extends List<? extends Generation>> generations;
-
-    /**
-     * For arbitrary LLM provider specific output.
-     */
-    private Map<String, Object> llmOutput;
-
-    public LLMResult(List<? extends List<? extends Generation>> generations) {
-        this.generations = generations;
+    private StuffPrompt() {
+        throw new IllegalStateException("Utility class");
     }
 
-    public LLMResult(List<? extends List<? extends Generation>> generations, Map<String, Object> llmOutput) {
-        this.generations = generations;
-        this.llmOutput = llmOutput;
-    }
+    public static final PromptTemplate PROMPT = new PromptTemplate(
+            List.of("text"),
+            """
+                    Write a concise summary of the following:
+
+                    "{text}"
+
+                    CONCISE SUMMARY:""");
 }
