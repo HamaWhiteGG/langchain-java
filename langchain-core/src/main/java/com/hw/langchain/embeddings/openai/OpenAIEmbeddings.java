@@ -68,6 +68,10 @@ public class OpenAIEmbeddings implements Embeddings {
 
     private String openaiApiKey;
 
+    private String openaiApiType;
+
+    private String openaiApiVersion;
+
     protected String openaiOrganization;
 
     /**
@@ -96,10 +100,14 @@ public class OpenAIEmbeddings implements Embeddings {
         openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
         openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
+        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE","");
+        openaiApiVersion = getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION","");
 
         this.client = OpenAiClient.builder()
                 .openaiApiBase(openaiApiBase)
                 .openaiApiKey(openaiApiKey)
+                .openaiApiVersion(openaiApiVersion)
+                .openaiApiType(openaiApiType)
                 .openaiOrganization(openaiOrganization)
                 .openaiProxy(openaiProxy)
                 .requestTimeout(requestTimeout)
