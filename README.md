@@ -1,4 +1,4 @@
-# 🦜️ LangChain Java
+# 🦜️ LangChain.Java
 
 Java version of LangChain, bringing the capabilities of LLM to big data platforms like Flink and Spark.
 
