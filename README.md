@@ -29,7 +29,7 @@ The following example can view in the [langchain-example](langchain-examples/src
 ## 3. Integrations
 ### 3.1 LLMs
 - [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java)
-- [ChatGPT](langchain-examples/src/main/java/com/hw/langchain/examples/llms/ChatGLMExample.java)
+- [ChatGLM2-6B](langchain-examples/src/main/java/com/hw/langchain/examples/llms/ChatGLMExample.java)
 - [Ollama](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OllamaExample.java)
 
 ### 3.2 Vector stores
