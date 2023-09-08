@@ -21,6 +21,8 @@ package com.hw.serpapi;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import com.hw.restapi.AggregateAPI;
+import com.hw.restapi.RestApiRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -37,13 +39,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author HamaWhite
  */
 @Disabled("Test requires costly SerpApi calls, can be run manually.")
-class GoogleSearchTest {
+class AggregateAPITest {
 
     @Test
     void testReturnOrganicResults() {
         Map<String, String> parameter = new HashMap<>();
         parameter.put("q", "Coffee");
-        SerpApiSearch search = new GoogleSearch(parameter);
+        RestApiRequest search = new AggregateAPI(parameter);
         JsonObject result = search.getJson();
         JsonArray organicResults = result.getAsJsonArray("organic_results");
         assertNotNull(organicResults, "The organicResults should not be null");
@@ -51,7 +53,7 @@ class GoogleSearchTest {
 
     @Test
     void testReturnSearchResultSnippet() {
-        SerpApiSearch search = new GoogleSearch("46e4196f9e63981ef415ee6c370fefe05b26f7518abac391f1aeb5391218e6ac");
+        RestApiRequest search = new AggregateAPI("46e4196f9e63981ef415ee6c370fefe05b26f7518abac391f1aeb5391218e6ac");
 
         Map<String, String> parameter = new HashMap<>();
         parameter.put("engine", "google");

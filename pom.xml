@@ -19,6 +19,7 @@
         <module>pinecone-client</module>
         <module>langchain-examples</module>
         <module>langchain-bigdata</module>
+        <module>restapi-client</module>
     </modules>
 
     <properties>
