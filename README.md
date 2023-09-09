@@ -19,9 +19,10 @@ The following example can view in the [langchain-example](langchain-examples/src
 
 - [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
 - [API Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
-- [QA-Milvus](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
-- [QA-Pinecone](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
+- [QA-Milvus-Text](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
+- [QA-Pinecone-Text](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
 - [QA-Pinecone-Markdown](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalMarkdownExample.java)
+- [Summarization](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SummarizationExample.java)
 - [Agent with Google Search](langchain-examples/src/main/java/com/hw/langchain/examples/agents/LlmAgentExample.java)
 - [Spark SQL AI](langchain-bigdata/langchain-spark/src/test/java/com/hw/langchain/agents/toolkits/spark/sql/toolkit/SparkSqlToolkitTest.java)
 - [Flink SQL AI](langchain-bigdata/langchain-flink/src/test/java/com/hw/langchain/agents/toolkits/flink/sql/toolkit/FlinkSqlToolkitTest.java)

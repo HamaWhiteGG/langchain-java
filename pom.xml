@@ -13,8 +13,6 @@
     <modules>
         <module>openai-client</module>
         <module>langchain-core</module>
-        <module>langchain-server</module>
-        <module>langchain-web</module>
         <module>serpapi-client</module>
         <module>pinecone-client</module>
         <module>langchain-examples</module>
@@ -28,6 +26,7 @@
         <mysql.version>8.0.32</mysql.version>
         <milvus.version>2.2.9</milvus.version>
         <jython.version>2.7.3</jython.version>
+        <jsoup.version>1.16.1</jsoup.version>
         <nd4j.version>1.0.0-M2.1</nd4j.version>
         <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
@@ -155,6 +154,12 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>${reflections.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
 
             <dependency>
