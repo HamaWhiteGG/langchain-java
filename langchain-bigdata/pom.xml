@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.hamawhitegg</groupId>
         <artifactId>langchain-java</artifactId>
-        <version>0.1.11</version>
+        <version>0.1.12</version>
     </parent>
 
     <artifactId>langchain-bigdata</artifactId>
