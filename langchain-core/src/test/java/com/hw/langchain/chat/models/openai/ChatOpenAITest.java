@@ -60,7 +60,7 @@ class ChatOpenAITest {
         var message = new HumanMessage("Translate this sentence from English to French. I love programming.");
         var actual = chat.call(List.of(message));
 
-        var expected = new AIMessage("J'aime programmer.");
+        var expected = new AIMessage("J'adore la programmation.");
         assertEquals(expected, actual);
     }
 

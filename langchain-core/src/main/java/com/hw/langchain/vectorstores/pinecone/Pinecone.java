@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Function;
@@ -52,6 +53,7 @@ public class Pinecone extends VectorStore {
 
     private PineconeClient client;
 
+    @Getter
     private IndexClient index;
 
     private String indexName;
@@ -93,8 +95,12 @@ public class Pinecone extends VectorStore {
     }
 
     @Override
-    public boolean delete(List<String> ids) {
-        return false;
+    public void delete(List<String> ids) {
+        DeleteRequest deleteRequest = DeleteRequest.builder()
+                .ids(ids)
+                .namespace(namespace)
+                .build();
+        index.delete(deleteRequest);
     }
 
     /**
@@ -238,9 +244,5 @@ public class Pinecone extends VectorStore {
         return IntStream.range(0, idsBatch.size())
                 .mapToObj(k -> new Vector(idsBatch.get(k), embeds.get(k), metadata.get(k)))
                 .toList();
-    }
-
-    public IndexClient getIndex() {
-        return index;
     }
 }

@@ -374,8 +374,7 @@ public class Milvus extends VectorStore {
     }
 
     @Override
-    public boolean delete(List<String> ids) {
-        return false;
+    public void delete(List<String> ids) {
     }
 
     private List<Pair<Document, Float>> similaritySearchWithScore(String query, int k, Map<String, Object> filter) {

@@ -33,6 +33,7 @@ import okhttp3.Interceptor;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.hw.langchain.utils.Resilience4jRetryUtils.retryWithExponentialBackoff;
 
 /**
  * Wrapper around OpenAI large language models.
@@ -100,6 +101,16 @@ public class BaseOpenAI extends BaseLLM {
      * Base URL for OpenAI API.
      */
     protected String openaiApiBase;
+
+    /**
+     * Api type for Azure OpenAI API.
+     */
+    protected String openaiApiType;
+
+    /**
+     * Api version for Azure OpenAI API.
+     */
+    protected String openaiApiVersion;
 
     /**
      * Organization ID for OpenAI.
@@ -194,7 +205,7 @@ public class BaseOpenAI extends BaseLLM {
 
         for (var prompt : subPrompts) {
             completion.setPrompt(prompt);
-            CompletionResp response = client.create(completion);
+            CompletionResp response = retryWithExponentialBackoff(maxRetries, () -> client.create(completion));
             choices.addAll(response.getChoices());
         }
 
