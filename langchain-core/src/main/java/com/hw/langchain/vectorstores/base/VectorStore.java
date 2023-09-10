@@ -50,9 +50,8 @@ public abstract class VectorStore {
      * Delete by vector ID.
      *
      * @param ids List of ids to delete.
-     * @return true if deletion is successful, false otherwise
      */
-    public abstract boolean delete(List<String> ids);
+    public abstract void delete(List<String> ids);
 
     /**
      * Run more documents through the embeddings and add to the vectorStore.

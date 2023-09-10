@@ -55,6 +55,16 @@ public class IndexClient {
     }
 
     /**
+     * The Delete operation deletes vectors, by id, from a single namespace.
+     * You can delete items by their id, from a single namespace.
+     *
+     * @param request the DeleteRequest containing the ids to delete
+     */
+    public void delete(DeleteRequest request) {
+        vectorService.delete(request).blockingAwait();
+    }
+
+    /**
      * The Fetch operation looks up and returns vectors, by ID, from a single namespace.
      * The returned vectors include the vector data and/or metadata.
      *
@@ -67,9 +77,9 @@ public class IndexClient {
 
     /**
      * The Upsert operation writes vectors into a namespace.
-     * If a new value is upserted for an existing vector id, it will overwrite the previous value.
+     * If a new value is upsert for an existing vector id, it will overwrite the previous value.
      *
-     * @param request the UpsertRequest containing the vectors to be upserted
+     * @param request the UpsertRequest containing the vectors to be upsert
      * @return  an UpsertResponse indicating the result of the upsert operation
      */
     public UpsertResponse upsert(UpsertRequest request) {
