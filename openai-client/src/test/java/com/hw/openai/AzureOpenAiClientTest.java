@@ -22,6 +22,7 @@ import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.embeddings.Embedding;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Tingliang Wang
  */
-@Disabled("Test requires costly OpenAI calls, can be run manually.")
+@Disabled("Test requires costly Azure OpenAI calls, can be run manually.")
 class AzureOpenAiClientTest {
 
     private static OpenAiClient client;

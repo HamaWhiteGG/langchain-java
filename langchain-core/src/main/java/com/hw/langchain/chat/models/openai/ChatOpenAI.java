@@ -128,8 +128,8 @@ public class ChatOpenAI extends BaseChatModel {
         openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
         openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
-        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE","");
-        openaiApiVersion = getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION","");
+        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "");
+        openaiApiVersion = getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION", "");
 
         this.client = OpenAiClient.builder()
                 .openaiApiBase(openaiApiBase)
