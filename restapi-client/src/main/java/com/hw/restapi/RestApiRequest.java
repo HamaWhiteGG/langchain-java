@@ -19,38 +19,26 @@
 package com.hw.restapi;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  * @author artisan
  */
-public class RestApiRequest {
-
-    /**
-     * Set of constant
-     */
-    protected String apiKeyName;
+public abstract class RestApiRequest {
 
     /**
      * user secret API key
      */
-    protected String restApiKey;
-
-    /**
-     * Current search engine
-     */
-    protected String apiPlateForm;
+    private String restApiKey;
 
     /**
      * request parameters
      */
-    public Map<String, String> parameter;
+    private Map<String, Object> parameter;
 
     /**
      * initialize gson
@@ -60,76 +48,54 @@ public class RestApiRequest {
     /**
      * https search implementation for Java 7+
      */
-    public RestApiHttpClient restApiHttpClient;
+    private RestApiHttpClient restApiHttpClient;
+
+    protected abstract Map<String, Object> getRequestProperty();
+
+    protected abstract String getApiKeyName();
+
+    protected abstract String getRestBaseUrl();
 
     /***
      * Constructor
      *
      * @param parameter user search
      * @param restApiKey secret user API key
-     * @param apiKeyName specific api key name, api_key, key, secret_key
      */
-    public RestApiRequest(Map<String, String> parameter, String restApiKey, String apiKeyName) {
+    public RestApiRequest(Map<String, Object> parameter, String restApiKey) {
         this.parameter = parameter;
         this.restApiKey = restApiKey;
-        this.apiKeyName = apiKeyName;
     }
 
-    /**
-     * Constructor
-     *
-     * @param restApiKey secret API key
-     * @param platform service like: public openapi, private openapi
-     */
-    public RestApiRequest(String restApiKey, String platform) {
-        this.restApiKey = restApiKey;
-        this.apiPlateForm = platform;
-    }
 
     /***
      * Build a serp API query by expanding existing parameter
      *
      * @param path backend HTTP path
-     * @param output type of output format (json, html, json_with_images)
      * @return format parameter hash map
      * @throws RestApiException wraps backend error message
      */
-    public Map<String, String> buildQuery(String path, String output) throws RestApiException {
-        // Initialize search if not done
+    public Map<String, Object> buildQuery(String path) throws RestApiException {
         if (restApiHttpClient == null) {
-            this.restApiHttpClient = new RestApiHttpClient(path);
-            this.restApiHttpClient.setHttpConnectionTimeout(6000);
+            this.restApiHttpClient = new RestApiHttpClient(getRestBaseUrl(), path);
+            this.restApiHttpClient.setHttpConnectionTimeout(15000);
+            this.restApiHttpClient.setHttpReadTimeout(5000);
+            this.restApiHttpClient.setRequestProperty(getRequestProperty());
         } else {
             this.restApiHttpClient.path = path;
         }
 
-        // Set current programming language
-        this.parameter.put("source", "java");
-
+        String apiKeyName = getApiKeyName();
         // Set api_key
         if (this.parameter.get(apiKeyName) == null) {
             if (this.restApiKey != null) {
                 this.parameter.put(apiKeyName, this.restApiKey);
-            } else if (getApiKeyFromEnv() != null) {
-                this.parameter.put(apiKeyName, getApiKeyFromEnv());
             } else {
                 throw new RestApiException(apiKeyName + " is not defined");
             }
         }
 
-        this.parameter.put("plateForm", this.apiPlateForm);
-
-        // Set output format
-        this.parameter.put("output", output);
-
         return this.parameter;
-    }
-
-    /**
-     * @return current secret api key
-     */
-    public static String getApiKeyFromEnv() {
-        return System.getenv("SERPAPI_API_KEY");
     }
 
     /***
@@ -138,8 +104,8 @@ public class RestApiRequest {
      * @return JsonObject parent node
      * @throws RestApiException wraps backend error message
      */
-    public JsonObject getJson() throws RestApiException {
-        Map<String, String> query = buildQuery("/search", "json");
+    public JsonObject getResultByPath(String path) throws RestApiException {
+        Map<String, Object> query = buildQuery(path);
         return asJson(restApiHttpClient.getResults(query));
     }
 
@@ -151,24 +117,10 @@ public class RestApiRequest {
      */
     public JsonObject asJson(String content) {
         JsonElement element = gson.fromJson(content, JsonElement.class);
-        return element.getAsJsonObject();
+        return element.getAsJsonObject().getAsJsonObject("result");
     }
 
-    /***
-     * Get search result from the Search Archive API
-     *
-     * @param searchID archived search result = search_metadata.id
-     * @return JsonObject search result
-     * @throws RestApiException wraps backend error message
-     */
-    public JsonObject getSearchArchive(String searchID) throws RestApiException {
-        Map<String, String> query = buildQuery("/searches/" + searchID + ".json", "json");
-        query.remove("output");
-        query.remove("q");
-        return asJson(restApiHttpClient.getResults(query));
-    }
-
-    public void setParameter(Map<String, String> parameter) {
+    public void setParameter(Map<String, Object> parameter) {
         this.parameter = parameter;
     }
 }

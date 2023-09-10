@@ -36,13 +36,13 @@ public class ParameterStringBuilder {
      * @return concatenated parameters
      * @throws UnsupportedEncodingException when none UTF-8 character is part of the parameter
      */
-    public static String getParamsString(Map<String, String> params) throws UnsupportedEncodingException {
+    public static String getParamsString(Map<String, Object> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
 
-        for (Map.Entry<String, String> entry : params.entrySet()) {
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            result.append(URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
             result.append("&");
         }
 

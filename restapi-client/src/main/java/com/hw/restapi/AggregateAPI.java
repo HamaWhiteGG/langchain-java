@@ -18,47 +18,57 @@
 
 package com.hw.restapi;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * AggregateAPI By Free PlateForm
  *
- * @author HamaWhite
+ * @author Artisan
  */
 public class AggregateAPI extends RestApiRequest {
+
+
+    /**
+     * api url
+     */
+    private String baseApiUrl;
+
+    @Override
+    protected Map<String, Object> getRequestProperty() {
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("Content-Type", "application/x-www-form-urlencoded");
+        return requestMap;
+    }
+
+    @Override
+    protected String getApiKeyName() {
+        return "key";
+    }
+
+    @Override
+    protected String getRestBaseUrl() {
+        if(StringUtils.isNotEmpty(baseApiUrl)){
+            return baseApiUrl;
+        }
+        return "http://apis.juhe.cn";
+    }
 
     /**
      * Constructor
      *
      * @param parameter     search parameter
-     * @param serpapiApiKey secret API key
+     * @param restApiKey secret API key
      */
-    public AggregateAPI(Map<String, String> parameter, String serpapiApiKey) {
-        super(parameter, serpapiApiKey, "google");
+    public AggregateAPI(Map<String, Object> parameter, String restApiKey) {
+        super(parameter, restApiKey);
     }
 
-    /**
-     * Constructor
-     */
-    public AggregateAPI() {
-        super("google");
+    public AggregateAPI(Map<String, Object> parameter, String baseApiUrl, String restApiKey) {
+        super(parameter, restApiKey);
+        this.baseApiUrl = baseApiUrl;
     }
 
-    /**
-     * Constructor
-     *
-     * @param serpapiApiKey secret API key
-     */
-    public AggregateAPI(String serpapiApiKey) {
-        super(serpapiApiKey, "google");
-    }
-
-    /**
-     * Constructor
-     *
-     * @param parameter search parameter
-     */
-    public AggregateAPI(Map<String, String> parameter) {
-        super(parameter, "google");
-    }
 }

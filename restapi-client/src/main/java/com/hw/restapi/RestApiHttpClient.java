@@ -20,6 +20,8 @@ package com.hw.restapi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 
 import javax.net.ssl.*;
 
@@ -32,25 +34,36 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 
 /**
- * HTTPS search for Serp API
+ * Open API for RestfulAPI Request
  *
- * @author HamaWhite
+ * @author Artisan
  */
 public class RestApiHttpClient {
 
+    /**
+     * can config
+     */
     private int httpConnectionTimeout;
 
+    /**
+     * can config by lion
+     */
     private int httpReadTimeout;
 
     /**
-     * backend service
+     * can config
      */
-    public static String BACKEND = "https://serpapi.com";
+    private Map<String, Object> httpRequestProperty;
 
     /**
      * initialize gson
      */
     private static Gson gson = new Gson();
+
+    /**
+     * http rest backend url
+     */
+    private String restBaseUrl;
 
     /**
      * current backend HTTP path
@@ -59,9 +72,11 @@ public class RestApiHttpClient {
 
     /***
      * Constructor
+     * @param restBaseUrl
      * @param path HTTP url path
      */
-    public RestApiHttpClient(String path) {
+    public RestApiHttpClient(String restBaseUrl, String path) {
+        this.restBaseUrl = restBaseUrl;
         this.path = path;
     }
 
@@ -69,77 +84,31 @@ public class RestApiHttpClient {
      * Build URL
      *
      * @param path url end point
-     * @param parameter search parameter map like: { "q": "coffee", "location": "Austin, TX"}
+     * @param parameter search parameter map like: { "city": "nanjing", "key": "3kdskndglaskdjg"}
      * @return httpUrlConnection
      * @throws RestApiException wraps error message
      */
-    protected HttpURLConnection buildConnection(String path, Map<String, String> parameter)
+    protected HttpURLConnection buildConnection(String path, Map<String, Object> parameter)
             throws RestApiException {
         HttpURLConnection con;
         try {
-            allowHTTPS();
             String query = ParameterStringBuilder.getParamsString(parameter);
-            URL url = new URL(BACKEND + path + "?" + query);
+            URL url = new URL(restBaseUrl + path + "?" + query);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
+            con.setConnectTimeout(getHttpConnectionTimeout());
+            con.setReadTimeout(getHttpReadTimeout());
+            if(MapUtils.isNotEmpty(httpRequestProperty)){
+                for(String key : httpRequestProperty.keySet()){
+                    con.setRequestProperty(key, httpRequestProperty.get(key).toString());
+                }
+            }
+            con.connect();
         } catch (IOException e) {
             throw new RestApiException(e);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new RestApiException(e);
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-            throw new RestApiException(e);
         }
 
-        String outputFormat = parameter.get("output");
-        if (outputFormat == null) {
-            if (path.startsWith("/search?")) {
-                throw new RestApiException("output format must be defined: " + path);
-            }
-        } else if (outputFormat.startsWith("json")) {
-            con.setRequestProperty("Content-Type", "application/json");
-        }
-
-        con.setConnectTimeout(getHttpConnectionTimeout());
-        con.setReadTimeout(getHttpReadTimeout());
-
-        con.setDoOutput(true);
         return con;
-    }
-
-    private void allowHTTPS() throws NoSuchAlgorithmException, KeyManagementException {
-        TrustManager[] trustAllCerts;
-        trustAllCerts = new TrustManager[]{new X509TrustManager() {
-
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-
-        }};
-
-        SSLContext sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-        // Create all-trusting host name verifier
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
-        // Install the all-trusting host verifier
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        /*
-         * end of the fix
-         */
     }
 
     /***
@@ -149,7 +118,7 @@ public class RestApiHttpClient {
      * @return http response body
      * @throws RestApiException wraps error message
      */
-    public String getResults(Map<String, String> parameter) throws RestApiException {
+    public String getResults(Map<String, Object> parameter) throws RestApiException {
         HttpURLConnection con = buildConnection(this.path, parameter);
 
         // Get HTTP status
@@ -237,4 +206,11 @@ public class RestApiHttpClient {
         this.httpReadTimeout = httpReadTimeout;
     }
 
+    /**
+     * header request body
+     * @param requestProperty
+     */
+    public void setRequestProperty(Map<String, Object> requestProperty) {
+        this.httpRequestProperty = requestProperty;
+    }
 }

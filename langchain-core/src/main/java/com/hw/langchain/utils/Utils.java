@@ -48,6 +48,19 @@ public class Utils {
     }
 
     /**
+     * Retrieves the value from the dictionary
+     * @param data
+     * @param key
+     * @return
+     */
+    public static String getFromDict(Map<String, Object> data, String key) {
+        if (data.containsKey(key) && data.get(key) != null) {
+            return data.get(key).toString();
+        }
+        return null;
+    }
+
+    /**
      * Retrieves the value from the environment variable or the default value.
      *
      * @param key          The key to lookup in the environment variables.
