@@ -1,6 +1,6 @@
 # 🦜️ LangChain Java
 
-Java version of LangChain, while empowering LLM for big data.
+Java version of LangChain, while empowering LLM for Big Data.
 
 > If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](mailto:baisongxx@gmail.com).
 
