@@ -1,8 +1,8 @@
 # 🦜️ LangChain Java
 
-Java version of LangChain, bringing the capabilities of LLM to big data platforms like Flink and Spark.
+Java version of LangChain, while empowering LLM for big data.
 
-> If you are interested, you can add me on WeChat: HamaWhite, or send email to baisongxx@gmail.com
+> If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](baisongxx@gmail.com).
 
 ## 1. What is this?
 

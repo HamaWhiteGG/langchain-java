@@ -35,6 +35,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class Resilience4jRetryUtils {
 
+    private Resilience4jRetryUtils() {
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(Resilience4jRetryUtils.class);
 
     public static <T> T retryWithExponentialBackoff(int maxRetries, Supplier<T> action) {
