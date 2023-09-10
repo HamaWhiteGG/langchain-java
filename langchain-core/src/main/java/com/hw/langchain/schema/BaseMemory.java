@@ -26,26 +26,26 @@ import java.util.Map;
  *
  * @author HamaWhite
  */
-public abstract class BaseMemory {
+public interface BaseMemory {
 
     /**
      * Input keys this memory class will load dynamically
      */
-    public abstract List<String> memoryVariables();
+    List<String> memoryVariables();
 
     /**
      * Return key-value pairs given the text input to the chain.
      * If None, return all memories
      */
-    public abstract Map<String, Object> loadMemoryVariables(Map<String, Object> inputs);
+    Map<String, Object> loadMemoryVariables(Map<String, Object> inputs);
 
     /**
      * Save the context of this model run to memory.
      */
-    public abstract void saveContext(Map<String, Object> inputs, Map<String, String> outputs);
+    void saveContext(Map<String, Object> inputs, Map<String, String> outputs);
 
     /**
      * Clear memory contents.
      */
-    public abstract void clear();
+    void clear();
 }
