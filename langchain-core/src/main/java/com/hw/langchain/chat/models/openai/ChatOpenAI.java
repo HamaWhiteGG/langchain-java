@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
+import static com.hw.langchain.utils.Resilience4jRetryUtils.retryWithExponentialBackoff;
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
 
 /**
@@ -158,7 +159,7 @@ public class ChatOpenAI extends BaseChatModel {
     }
 
     @Override
-    public ChatResult _generate(List<BaseMessage> messages, List<String> stop) {
+    public ChatResult innerGenerate(List<BaseMessage> messages, List<String> stop) {
         var chatMessages = convertMessages(messages);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
@@ -171,7 +172,7 @@ public class ChatOpenAI extends BaseChatModel {
                 .stop(stop)
                 .build();
 
-        var response = client.create(chatCompletion);
+        var response = retryWithExponentialBackoff(maxRetries, () -> client.create(chatCompletion));
         return createChatResult(response);
     }
 
