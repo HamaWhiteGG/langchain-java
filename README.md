@@ -2,7 +2,7 @@
 
 Java version of LangChain, while empowering LLM for big data.
 
-> If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](baisongxx@gmail.com).
+> If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](mailto:baisongxx@gmail.com).
 
 ## 1. What is this?
 
@@ -380,5 +380,5 @@ Don’t hesitate to ask!
 ## 8. Fork and Contribute
 This is an active open-source project. We are always open to people who want to use the system or contribute to it. Please note that pull requests should be merged into the **dev** branch.
 
-Contact [me](baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
+Contact [me](mailto:baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
 
