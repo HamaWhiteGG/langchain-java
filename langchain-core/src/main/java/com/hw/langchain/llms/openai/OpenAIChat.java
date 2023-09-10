@@ -33,6 +33,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
 
 /**
  * Wrapper around OpenAI Chat large language models.
@@ -95,6 +96,16 @@ public class OpenAIChat extends BaseLLM {
     protected String openaiApiBase;
 
     /**
+     * Api type for Azure OpenAI API.
+     */
+    protected String openaiApiType;
+
+    /**
+     * Api version for Azure OpenAI API.
+     */
+    protected String openaiApiVersion;
+
+    /**
      * Organization ID for OpenAI.
      */
     protected String openaiOrganization;
@@ -137,10 +148,14 @@ public class OpenAIChat extends BaseLLM {
         openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
         openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
+        openaiApiType = Utils.getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE","");
+        openaiApiVersion = Utils.getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION","");
 
         this.client = OpenAiClient.builder()
                 .openaiApiBase(openaiApiBase)
                 .openaiApiKey(openaiApiKey)
+                .openaiApiVersion(openaiApiVersion)
+                .openaiApiType(openaiApiType)
                 .openaiOrganization(openaiOrganization)
                 .openaiProxy(openaiProxy)
                 .requestTimeout(requestTimeout)
