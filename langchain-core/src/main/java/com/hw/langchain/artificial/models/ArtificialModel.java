@@ -2,7 +2,6 @@ package com.hw.langchain.artificial.models;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hw.langchain.agents.artificial.ArtificialAgent;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
@@ -12,7 +11,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
-import org.python.antlr.ast.Str;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +20,9 @@ import java.util.*;
  * Artificial Language Model for Rules Mapstruct
  */
 @SuperBuilder
-public class ArtificialLanguageModel implements BaseLanguageModel {
+public class ArtificialModel implements BaseLanguageModel {
 
-    private static final Logger logger = LoggerFactory.getLogger(ArtificialLanguageModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArtificialModel.class);
 
     @Override
     public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
@@ -149,7 +147,7 @@ public class ArtificialLanguageModel implements BaseLanguageModel {
                 return false;
             }
             requiredList.addAll(Arrays.asList(requiredInfo.split(",")));
-            mapstructObject.putAll((JSONObject) requiredObject.get("mapstruct"));
+            mapstructObject.putAll(JSON.parseObject(requiredObject.get("mapstruct").toString()));
         }catch (Exception exception){
             logger.error("parse required object failed,exception-", exception);
             return false;

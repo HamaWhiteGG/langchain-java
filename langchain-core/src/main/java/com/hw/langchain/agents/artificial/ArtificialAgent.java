@@ -31,7 +31,7 @@ public class ArtificialAgent {
         this.kwargs = params;
     }
 
-    public ArtificialAgent fromLMAndTools(BaseLanguageModel lm, List<BaseTool> tools, Map<String, Object> kwargs) {
+    public static ArtificialAgent fromLMAndTools(BaseLanguageModel lm, List<BaseTool> tools, Map<String, Object> kwargs) {
         return new ArtificialAgent(lm, tools, kwargs);
     }
 
@@ -56,6 +56,9 @@ public class ArtificialAgent {
             Object response = tool.innerRun(input, kwargs);
             if(Objects.isNull(response)){
                 return false;
+            }
+            if(logger.isInfoEnabled()){
+                logger.info("the tool -{}-, response result is: {}", tool.name, response);
             }
             kwargs = JSON.parseObject(response.toString());
         }

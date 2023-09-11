@@ -30,7 +30,6 @@ import java.util.Map;
  */
 public class AggregateAPI extends RestApiRequest {
 
-
     /**
      * api url
      */
