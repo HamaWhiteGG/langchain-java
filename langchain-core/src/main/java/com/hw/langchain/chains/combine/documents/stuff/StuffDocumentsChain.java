@@ -119,9 +119,9 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
     }
 
     @Override
-    public Flux<Pair<String, Map<String, String>>> acombineDocs(List<Document> docs, Map<String, Object> kwargs) {
+    public Flux<Pair<String, Map<String, String>>> asyncCombineDocs(List<Document> docs, Map<String, Object> kwargs) {
         var inputs = getInputs(docs, kwargs);
-        return llmChain.apredict(inputs).map(s -> Pair.of(s, Map.of()));
+        return llmChain.asyncPredict(inputs).map(s -> Pair.of(s, Map.of()));
     }
 
     @Override

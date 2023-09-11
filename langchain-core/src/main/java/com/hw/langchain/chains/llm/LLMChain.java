@@ -26,6 +26,7 @@ import com.hw.langchain.schema.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Getter;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class LLMChain extends Chain {
     /**
      * Prompt object to use.
      */
+    @Getter
     protected BasePromptTemplate prompt;
 
     protected String outputKey = "text";
@@ -102,8 +104,8 @@ public class LLMChain extends Chain {
     }
 
     @Override
-    protected Flux<Map<String, String>> ainnerCall(Map<String, Object> inputs) {
-        var response = agenerate(List.of(inputs));
+    protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
+        var response = asyncGenerate(List.of(inputs));
         return response.get(0).map(this::createAsyncOutputs);
     }
 
@@ -119,7 +121,7 @@ public class LLMChain extends Chain {
     /**
      * Generate LLM result from inputs async.
      */
-    private List<Flux<AsyncLLMResult>> agenerate(List<Map<String, Object>> inputList) {
+    private List<Flux<AsyncLLMResult>> asyncGenerate(List<Map<String, Object>> inputList) {
         List<String> stop = prepStop(inputList);
         List<PromptValue> prompts = prepPrompts(inputList);
         return llm.asyncGeneratePrompt(prompts, stop);
@@ -197,24 +199,21 @@ public class LLMChain extends Chain {
      * @param kwargs Keys to pass to prompt template.
      * @return Completion from LLM.
      */
-    public Flux<String> apredict(Map<String, Object> kwargs) {
-        var flux = acall(kwargs, false);
+    public Flux<String> asyncPredict(Map<String, Object> kwargs) {
+        var flux = asyncCall(kwargs, false);
         return flux.map(m -> m.get(outputKey));
     }
 
     /**
      * Call predict and then parse the results.
      */
+    @SuppressWarnings("all")
     public <T> T predictAndParse(Map<String, Object> kwargs) {
         String result = predict(kwargs);
         if (prompt.getOutputParser() != null) {
             return (T) prompt.getOutputParser().parse(result);
         }
         return (T) result;
-    }
-
-    public BasePromptTemplate getPrompt() {
-        return prompt;
     }
 
 }

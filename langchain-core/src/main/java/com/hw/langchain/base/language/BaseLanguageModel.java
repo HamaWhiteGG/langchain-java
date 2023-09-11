@@ -64,37 +64,37 @@ public interface BaseLanguageModel {
     BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
 
     /**
-     * Take in a list of prompt values and return an Flux&lt;AsyncLLMResult&gt; for every PromptValue.
+     * Take in a list of prompt values and return an Flux<AsyncLLMResult> for every PromptValue.
      */
     default List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts) {
         return asyncGeneratePrompt(prompts, null);
     }
 
     /**
-     * Take in a list of prompt values and return an Flux&lt;AsyncLLMResult&gt; for every PromptValue.
+     * Take in a list of prompt values and return an Flux<AsyncLLMResult> for every PromptValue.
      */
     default List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts, List<String> stop) {
         throw new UnsupportedOperationException("not supported yet.");
-    };
-
-    /**
-     * Predict text from text async.
-     */
-    default Flux<String> apredict(String text) {
-        return apredict(text, null);
     }
 
     /**
      * Predict text from text async.
      */
-    default Flux<String> apredict(String text, List<String> stop) {
+    default Flux<String> asyncPredict(String text) {
+        return asyncPredict(text, null);
+    }
+
+    /**
+     * Predict text from text async.
+     */
+    default Flux<String> asyncPredict(String text, List<String> stop) {
         throw new UnsupportedOperationException("not supported yet.");
     }
 
     /**
      * Predict message from messages async.
      */
-    default Flux<BaseMessage> apredictMessages(List<BaseMessage> messages, List<String> stop) {
+    default Flux<BaseMessage> asyncPredictMessages(List<BaseMessage> messages, List<String> stop) {
         throw new UnsupportedOperationException("not supported yet.");
     }
 

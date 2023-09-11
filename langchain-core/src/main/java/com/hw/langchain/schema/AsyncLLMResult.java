@@ -31,7 +31,7 @@ import java.util.Map;
 public class AsyncLLMResult {
 
     /**
-     * List of the things generated. This is List<List<Generation>> because each input could have multiple generations.
+     * List of the things generated.
      */
     private List<? extends Generation> generations;
 

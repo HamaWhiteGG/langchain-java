@@ -48,7 +48,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
     /**
      * Run the LLM on the given prompts async.
      */
-    protected abstract Flux<AsyncLLMResult> _agenerate(List<String> prompts, List<String> stop);
+    protected abstract Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop);
 
     /**
      * Check Cache and run the LLM on the given prompt and input.
@@ -81,7 +81,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
         List<String> promptStrings = prompts.stream()
                 .map(PromptValue::toString)
                 .toList();
-        return promptStrings.stream().map(s -> _agenerate(List.of(s), stop)).toList();
+        return promptStrings.stream().map(s -> asyncInnerGenerate(List.of(s), stop)).toList();
     }
 
     @Override
@@ -90,8 +90,8 @@ public abstract class BaseLLM implements BaseLanguageModel {
     }
 
     @Override
-    public Flux<String> apredict(String text, List<String> stop) {
-        return _agenerate(List.of(text), stop).map(result -> result.getGenerations().get(0).getText());
+    public Flux<String> asyncPredict(String text, List<String> stop) {
+        return asyncInnerGenerate(List.of(text), stop).map(result -> result.getGenerations().get(0).getText());
     }
 
     @Override

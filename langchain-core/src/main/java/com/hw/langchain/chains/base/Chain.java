@@ -85,7 +85,7 @@ public abstract class Chain {
      * @param inputs the inputs to be processed by the chain
      * @return a map flux containing the output generated event by the chain
      */
-    protected Flux<Map<String, String>> ainnerCall(Map<String, Object> inputs) {
+    protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -118,15 +118,15 @@ public abstract class Chain {
         return prepOutputs(inputs, outputs, returnOnlyOutputs);
     }
 
-    public Flux<Map<String, String>> acall(String input, boolean returnOnlyOutputs) {
+    public Flux<Map<String, String>> asyncCall(Object input, boolean returnOnlyOutputs) {
         Map<String, Object> inputs = prepInputs(input);
-        return acall(inputs, returnOnlyOutputs);
+        return asyncCall(inputs, returnOnlyOutputs);
     }
 
-    public Flux<Map<String, String>> acall(Map<String, Object> inputs, boolean returnOnlyOutputs) {
+    public Flux<Map<String, String>> asyncCall(Map<String, Object> inputs, boolean returnOnlyOutputs) {
         inputs = prepInputs(inputs);
-        Flux<Map<String, String>> outputs = ainnerCall(inputs);
-        return prepaOutputs(inputs, outputs, returnOnlyOutputs);
+        Flux<Map<String, String>> outputs = asyncInnerCall(inputs);
+        return asyncPrepOutputs(inputs, outputs, returnOnlyOutputs);
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class Chain {
     /**
      * Validate and async prep outputs.
      */
-    private Flux<Map<String, String>> prepaOutputs(Map<String, Object> inputs, Flux<Map<String, String>> outputs,
+    private Flux<Map<String, String>> asyncPrepOutputs(Map<String, Object> inputs, Flux<Map<String, String>> outputs,
             boolean returnOnlyOutputs) {
         Map<String, String> collector = Maps.newHashMap();
         return outputs.doOnNext(this::validateOutputs)
@@ -240,25 +240,25 @@ public abstract class Chain {
     /**
      * Run the chain as text in, text out async
      */
-    public Flux<String> arun(String args) {
+    public Flux<String> asyncRun(Object args) {
         if (outputKeys().size() != 1) {
             throw new IllegalArgumentException(
                     "The `run` method is not supported when there is not exactly one output key. Got " + outputKeys()
                             + ".");
         }
-        return acall(args, false).map(m -> m.get(outputKeys().get(0)));
+        return asyncCall(args, false).map(m -> m.get(outputKeys().get(0)));
     }
 
     /**
      * Run the chain as multiple variables, text out async.
      */
-    public Flux<String> arun(Map<String, Object> args) {
+    public Flux<String> asyncRun(Map<String, Object> args) {
         if (outputKeys().size() != 1) {
             throw new IllegalArgumentException(
                     "The `run` method is not supported when there is not exactly one output key. Got " + outputKeys()
                             + ".");
         }
-        return acall(args, false).map(m -> m.get(outputKeys().get(0)));
+        return asyncCall(args, false).map(m -> m.get(outputKeys().get(0)));
     }
 
 }

@@ -95,7 +95,7 @@ public abstract class BaseRetrievalQA extends Chain {
     }
 
     @Override
-    protected Flux<Map<String, String>> ainnerCall(Map<String, Object> inputs) {
+    protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
         var question = inputs.get(inputKey).toString();
 
         List<Document> docs = getDocs(question);
@@ -103,7 +103,7 @@ public abstract class BaseRetrievalQA extends Chain {
         if (!inputs.containsKey("question")) {
             inputs.put("question", question);
         }
-        Flux<String> answer = combineDocumentsChain.arun(inputs);
+        Flux<String> answer = combineDocumentsChain.asyncRun(inputs);
         return answer.map(s -> Map.of(outputKey, s));
     }
 }

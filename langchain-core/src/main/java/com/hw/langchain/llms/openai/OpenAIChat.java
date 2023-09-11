@@ -204,7 +204,7 @@ public class OpenAIChat extends BaseLLM {
     }
 
     @Override
-    protected Flux<AsyncLLMResult> _agenerate(List<String> prompts, List<String> stop) {
+    protected Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop) {
         throw new UnsupportedOperationException("not supported yet.");
     }
 
