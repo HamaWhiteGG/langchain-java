@@ -67,7 +67,6 @@ public abstract class RestApiRequest {
         this.restApiKey = restApiKey;
     }
 
-
     /***
      * Build a serp API query by expanding existing parameter
      *

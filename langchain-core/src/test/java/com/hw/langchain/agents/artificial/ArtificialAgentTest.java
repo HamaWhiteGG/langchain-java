@@ -1,14 +1,10 @@
 package com.hw.langchain.agents.artificial;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 import com.hw.langchain.artificial.models.ArtificialModel;
 import com.hw.langchain.tools.base.BaseTool;
 import com.hw.langchain.tools.base.Tool;
 import com.hw.langchain.utilities.restapi.RestAPIWrapper;
-import com.hw.restapi.AggregateAPI;
-import com.hw.restapi.RestApiRequest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
