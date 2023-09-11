@@ -21,13 +21,12 @@ package com.hw.langchain.chains.llm;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
-import com.hw.langchain.schema.BaseLLMOutputParser;
-import com.hw.langchain.schema.LLMResult;
-import com.hw.langchain.schema.NoOpOutputParser;
-import com.hw.langchain.schema.PromptValue;
+import com.hw.langchain.schema.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,9 +96,15 @@ public class LLMChain extends Chain {
     }
 
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         LLMResult response = generate(List.of(inputs));
         return createOutputs(response).get(0);
+    }
+
+    @Override
+    protected Flux<Map<String, String>> ainnerCall(Map<String, Object> inputs) {
+        var response = agenerate(List.of(inputs));
+        return response.get(0).map(this::createAsyncOutputs);
     }
 
     /**
@@ -109,6 +114,15 @@ public class LLMChain extends Chain {
         List<String> stop = prepStop(inputList);
         List<PromptValue> prompts = prepPrompts(inputList);
         return llm.generatePrompt(prompts, stop);
+    }
+
+    /**
+     * Generate LLM result from inputs async.
+     */
+    private List<Flux<AsyncLLMResult>> agenerate(List<Map<String, Object>> inputList) {
+        List<String> stop = prepStop(inputList);
+        List<PromptValue> prompts = prepPrompts(inputList);
+        return llm.asyncGeneratePrompt(prompts, stop);
     }
 
     /**
@@ -155,6 +169,18 @@ public class LLMChain extends Chain {
     }
 
     /**
+     * Create outputs from response async.
+     */
+    private Map<String, String> createAsyncOutputs(AsyncLLMResult llmResult) {
+        Map<String, String> result = Map.of(outputKey, outputParser.parseResult(llmResult.getGenerations()),
+                "full_generation", llmResult.getGenerations().toString());
+        if (returnFinalOnly) {
+            result = Map.of(outputKey, result.get(outputKey));
+        }
+        return result;
+    }
+
+    /**
      * Format prompt with kwargs and pass to LLM.
      *
      * @param kwargs Keys to pass to prompt template.
@@ -163,6 +189,17 @@ public class LLMChain extends Chain {
     public String predict(Map<String, Object> kwargs) {
         Map<String, String> resultMap = call(kwargs, false);
         return resultMap.get(outputKey);
+    }
+
+    /**
+     * Format prompt with kwargs and pass to LLM async.
+     *
+     * @param kwargs Keys to pass to prompt template.
+     * @return Completion from LLM.
+     */
+    public Flux<String> apredict(Map<String, Object> kwargs) {
+        var flux = acall(kwargs, false);
+        return flux.map(m -> m.get(outputKey));
     }
 
     /**

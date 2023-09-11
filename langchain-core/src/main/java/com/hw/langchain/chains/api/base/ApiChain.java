@@ -103,7 +103,7 @@ public class ApiChain extends Chain {
     }
 
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         var question = inputs.get(QUESTION_KEY);
         String apiUrl = apiRequestChain.predict(Map.of(QUESTION_KEY, question, API_DOCS, apiDocs));
         apiUrl = apiUrl.strip();

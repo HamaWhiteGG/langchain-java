@@ -91,22 +91,12 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     }
 
     @Override
-    public String predict(String text) {
-        return predict(text, null);
-    }
-
-    @Override
     public String predict(String text, List<String> stop) {
         List<String> copyStop = stop != null ? List.copyOf(stop) : null;
         BaseMessage message = new HumanMessage(text);
 
         BaseMessage result = call(List.of(message), copyStop);
         return result.getContent();
-    }
-
-    @Override
-    public BaseMessage predictMessages(List<BaseMessage> messages) {
-        return predictMessages(messages, null);
     }
 
     @Override

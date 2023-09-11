@@ -127,7 +127,7 @@ public class LLMMathChain extends Chain {
     }
 
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         var kwargs = Map.of("question", inputs.get(inputKey), "stop", List.of("```output"));
         String llmOutput = llmChain.predict(kwargs);
         return processLLMResult(llmOutput);
