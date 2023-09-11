@@ -20,9 +20,9 @@ package com.hw.openai;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
-import com.hw.openai.entity.common.OpenaiApiType;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
@@ -46,6 +46,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +65,8 @@ public class OpenAiClient {
 
     private String openaiApiKey;
 
-    private String openaiApiType;
+    @Builder.Default
+    private OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     private String openaiApiVersion;
 
@@ -99,25 +101,17 @@ public class OpenAiClient {
      *
      * @return the initialized OpenAiClient instance
      */
+
     public OpenAiClient init() {
-        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "openai");
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE");
             if (openaiApiBase == null) {
-                throw new IllegalArgumentException(
-                        String.format(
-                                "Did not find %s, please add an environment variable `%s` which contains it, or pass `%s` as a named parameter.",
-                                "OPENAI_API_BASE", "OPENAI_API_BASE", "OPENAI_API_BASE"));
+                throw new NullPointerException(
+                        "Did not find OPENAI_API_BASE, please add an environment variable `OPENAI_API_BASE` which contains it, or pass `OPENAI_API_BASE` as a named parameter.");
             }
-            openaiApiBase += (openaiApiBase.endsWith("/") ? "" : "/") + "openai/deployments/";
-        } else if (openaiApiType.equals(OpenaiApiType.OPENAI.getValue())) {
-            openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
+            openaiApiBase = StringUtils.appendIfMissing(openaiApiBase, "/") + "openai/deployments/";
         } else {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The API type %s provided in invalid. Please select one of the supported API types: 'azure', 'azure_ad', 'openai'",
-                            "OPENAI_API_TYPE"));
+            openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
         }
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
 
@@ -134,16 +128,13 @@ public class OpenAiClient {
 
             Request.Builder requestBuilder = chain.request().newBuilder();
             requestBuilder.header("Content-Type", "application/json");
-            if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                    || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            if (isAzureApiType()) {
                 requestBuilder.header("api-key", openaiApiKey);
             } else {
                 requestBuilder.header("Authorization", "Bearer " + openaiApiKey);
                 requestBuilder.header("OpenAI-Organization", openaiOrganization);
             }
-
             Request request = requestBuilder.build();
-
             return chain.proceed(request);
         });
 
@@ -231,8 +222,7 @@ public class OpenAiClient {
      */
     public String completion(Completion completion) {
         CompletionResp response;
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             response = service.completion(completion.getModel(), openaiApiVersion, completion).blockingGet();
         } else {
             response = service.completion(completion).blockingGet();
@@ -249,8 +239,7 @@ public class OpenAiClient {
      * @return the completion response
      */
     public CompletionResp create(Completion completion) {
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             return service.completion(completion.getModel(), openaiApiVersion, completion).blockingGet();
         }
         return service.completion(completion).blockingGet();
@@ -264,8 +253,7 @@ public class OpenAiClient {
      */
     public String chatCompletion(ChatCompletion chatCompletion) {
         ChatCompletionResp response;
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             response =
                     service.chatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion).blockingGet();
         } else {
@@ -283,8 +271,7 @@ public class OpenAiClient {
      * @return the chat completion response
      */
     public ChatCompletionResp create(ChatCompletion chatCompletion) {
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             return service.chatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion).blockingGet();
         }
         return service.chatCompletion(chatCompletion).blockingGet();
@@ -297,10 +284,18 @@ public class OpenAiClient {
      * @return The embedding vector response.
      */
     public EmbeddingResp embedding(Embedding embedding) {
-        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
-                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+        if (isAzureApiType()) {
             return service.embedding(embedding.getModel(), openaiApiVersion, embedding).blockingGet();
         }
         return service.embedding(embedding).blockingGet();
+    }
+
+    /**
+     * Checks if the Openai API type matches Azure or Azure AD.
+     *
+     * @return true if the API type is Azure or Azure AD, otherwise false
+     */
+    private boolean isAzureApiType() {
+        return EnumSet.of(OpenaiApiType.AZURE, OpenaiApiType.AZURE_AD).contains(openaiApiType);
     }
 }

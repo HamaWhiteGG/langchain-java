@@ -24,6 +24,7 @@ import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.utils.Utils;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.chat.Message;
@@ -99,7 +100,8 @@ public class OpenAIChat extends BaseLLM {
     /**
      * Api type for Azure OpenAI API.
      */
-    protected String openaiApiType;
+    @Builder.Default
+    protected OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     /**
      * Api version for Azure OpenAI API.
@@ -149,7 +151,6 @@ public class OpenAIChat extends BaseLLM {
         openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
         openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
-        openaiApiType = Utils.getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "");
         openaiApiVersion = Utils.getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION", "");
 
         this.client = OpenAiClient.builder()

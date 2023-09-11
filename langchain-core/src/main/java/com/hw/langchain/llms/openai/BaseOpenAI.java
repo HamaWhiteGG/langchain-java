@@ -23,6 +23,7 @@ import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.completions.Choice;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
@@ -107,7 +108,8 @@ public class BaseOpenAI extends BaseLLM {
     /**
      * Api type for Azure OpenAI API.
      */
-    protected String openaiApiType;
+    @Builder.Default
+    protected OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     /**
      * Api version for Azure OpenAI API.

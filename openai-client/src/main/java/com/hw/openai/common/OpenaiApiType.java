@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.common;
+package com.hw.openai.common;
 
 /**
- * OpenaiApiType
  * @author Tingliang Wang
  */
 public enum OpenaiApiType {
@@ -27,26 +26,15 @@ public enum OpenaiApiType {
     /**
      * azure.
      */
-    AZURE("azure"),
+    AZURE,
 
     /**
      * azure_ad.
      */
-    AZURE_AD("azure_ad"),
+    AZURE_AD,
 
     /**
      * openai.
      */
-    OPENAI("openai");
-
-    private final String value;
-
-    OpenaiApiType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+    OPENAI
 }

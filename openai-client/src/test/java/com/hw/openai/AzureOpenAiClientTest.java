@@ -18,6 +18,7 @@
 
 package com.hw.openai;
 
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
@@ -44,7 +45,7 @@ class AzureOpenAiClientTest {
     static void setup() {
         client = OpenAiClient.builder()
                 .openaiApiKey("xxx")
-                .openaiApiType("azure")
+                .openaiApiType(OpenaiApiType.AZURE)
                 .openaiApiBase("https://xxx.openai.azure.com/")
                 .openaiApiVersion("2023-05-15")
                 .build()
