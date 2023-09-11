@@ -19,6 +19,7 @@
 package com.hw.langchain.llms.openai;
 
 import com.hw.langchain.llms.base.BaseLLM;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.openai.OpenAiClient;
@@ -29,6 +30,7 @@ import com.hw.openai.entity.completions.CompletionResp;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import okhttp3.Interceptor;
+import reactor.core.publisher.Flux;
 
 import java.util.*;
 
@@ -210,6 +212,11 @@ public class BaseOpenAI extends BaseLLM {
         }
 
         return createLLMResult(choices, prompts, Map.of());
+    }
+
+    @Override
+    protected Flux<AsyncLLMResult> _agenerate(List<String> prompts, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
     }
 
     /**

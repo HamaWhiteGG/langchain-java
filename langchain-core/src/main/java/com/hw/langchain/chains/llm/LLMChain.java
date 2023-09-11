@@ -25,6 +25,7 @@ import com.hw.langchain.schema.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -171,7 +172,8 @@ public class LLMChain extends Chain {
      * Create outputs from response async.
      */
     private Map<String, String> createAsyncOutputs(AsyncLLMResult llmResult) {
-        Map<String, String> result = Map.of(outputKey, outputParser.parseResult(llmResult.getGenerations()), "full_generation", llmResult.getGenerations().toString());
+        Map<String, String> result = Map.of(outputKey, outputParser.parseResult(llmResult.getGenerations()),
+                "full_generation", llmResult.getGenerations().toString());
         if (returnFinalOnly) {
             result = Map.of(outputKey, result.get(outputKey));
         }
