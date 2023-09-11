@@ -32,7 +32,6 @@ import java.util.Map;
 /**
  * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
  *
- * Completion
  * @author HamaWhite
  */
 @Data

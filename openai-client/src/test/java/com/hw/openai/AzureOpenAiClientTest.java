@@ -33,8 +33,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
- *
  * @author Tingliang Wang
  */
 @Disabled("Test requires costly Azure OpenAI calls, can be run manually.")
