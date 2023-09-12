@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
+import com.hw.openai.entity.common.OpenaiApiType;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
@@ -63,6 +64,10 @@ public class OpenAiClient {
 
     private String openaiApiKey;
 
+    private String openaiApiType;
+
+    private String openaiApiVersion;
+
     private String openaiOrganization;
 
     private String openaiProxy;
@@ -95,7 +100,25 @@ public class OpenAiClient {
      * @return the initialized OpenAiClient instance
      */
     public OpenAiClient init() {
-        openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
+        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "openai");
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE");
+            if (openaiApiBase == null) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Did not find %s, please add an environment variable `%s` which contains it, or pass `%s` as a named parameter.",
+                                "OPENAI_API_BASE", "OPENAI_API_BASE", "OPENAI_API_BASE"));
+            }
+            openaiApiBase += (openaiApiBase.endsWith("/") ? "" : "/") + "openai/deployments/";
+        } else if (openaiApiType.equals(OpenaiApiType.OPENAI.getValue())) {
+            openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "https://api.openai.com/v1/");
+        } else {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "The API type %s provided in invalid. Please select one of the supported API types: 'azure', 'azure_ad', 'openai'",
+                            "OPENAI_API_TYPE"));
+        }
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY");
 
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
@@ -109,11 +132,17 @@ public class OpenAiClient {
             openaiApiKey = getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
             openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
 
-            Request request = chain.request().newBuilder()
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + openaiApiKey)
-                    .header("OpenAI-Organization", openaiOrganization)
-                    .build();
+            Request.Builder requestBuilder = chain.request().newBuilder();
+            requestBuilder.header("Content-Type", "application/json");
+            if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                    || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+                requestBuilder.header("api-key", openaiApiKey);
+            } else {
+                requestBuilder.header("Authorization", "Bearer " + openaiApiKey);
+                requestBuilder.header("OpenAI-Organization", openaiOrganization);
+            }
+
+            Request request = requestBuilder.build();
 
             return chain.proceed(request);
         });
@@ -201,7 +230,13 @@ public class OpenAiClient {
      * @return the generated completion text
      */
     public String completion(Completion completion) {
-        CompletionResp response = service.completion(completion).blockingGet();
+        CompletionResp response;
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            response = service.completion(completion.getModel(), openaiApiVersion, completion).blockingGet();
+        } else {
+            response = service.completion(completion).blockingGet();
+        }
 
         String text = response.getChoices().get(0).getText();
         return StringUtils.trim(text);
@@ -214,6 +249,10 @@ public class OpenAiClient {
      * @return the completion response
      */
     public CompletionResp create(Completion completion) {
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            return service.completion(completion.getModel(), openaiApiVersion, completion).blockingGet();
+        }
         return service.completion(completion).blockingGet();
     }
 
@@ -224,7 +263,14 @@ public class OpenAiClient {
      * @return the generated model response text
      */
     public String chatCompletion(ChatCompletion chatCompletion) {
-        ChatCompletionResp response = service.chatCompletion(chatCompletion).blockingGet();
+        ChatCompletionResp response;
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            response =
+                    service.chatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion).blockingGet();
+        } else {
+            response = service.chatCompletion(chatCompletion).blockingGet();
+        }
 
         String content = response.getChoices().get(0).getMessage().getContent();
         return StringUtils.trim(content);
@@ -237,6 +283,10 @@ public class OpenAiClient {
      * @return the chat completion response
      */
     public ChatCompletionResp create(ChatCompletion chatCompletion) {
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            return service.chatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion).blockingGet();
+        }
         return service.chatCompletion(chatCompletion).blockingGet();
     }
 
@@ -247,6 +297,10 @@ public class OpenAiClient {
      * @return The embedding vector response.
      */
     public EmbeddingResp embedding(Embedding embedding) {
+        if (openaiApiType.equals(OpenaiApiType.AZURE.getValue())
+                || openaiApiType.equals(OpenaiApiType.AZURE_AD.getValue())) {
+            return service.embedding(embedding.getModel(), openaiApiVersion, embedding).blockingGet();
+        }
         return service.embedding(embedding).blockingGet();
     }
 }

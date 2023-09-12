@@ -16,36 +16,37 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
-
-import java.util.List;
-import java.util.Map;
+package com.hw.openai.entity.common;
 
 /**
- * Base interface for memory in chains.
- *
- * @author HamaWhite
+ * OpenaiApiType
+ * @author Tingliang Wang
  */
-public interface BaseMemory {
+public enum OpenaiApiType {
 
     /**
-     * Input keys this memory class will load dynamically
+     * azure.
      */
-    List<String> memoryVariables();
+    AZURE("azure"),
 
     /**
-     * Return key-value pairs given the text input to the chain.
-     * If None, return all memories
+     * azure_ad.
      */
-    Map<String, Object> loadMemoryVariables(Map<String, Object> inputs);
+    AZURE_AD("azure_ad"),
 
     /**
-     * Save the context of this model run to memory.
+     * openai.
      */
-    void saveContext(Map<String, Object> inputs, Map<String, String> outputs);
+    OPENAI("openai");
 
-    /**
-     * Clear memory contents.
-     */
-    void clear();
+    private final String value;
+
+    OpenaiApiType(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
 }

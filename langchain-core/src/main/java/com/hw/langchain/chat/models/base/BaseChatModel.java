@@ -50,7 +50,7 @@ public abstract class BaseChatModel implements BaseLanguageModel {
      */
     public LLMResult generate(List<List<BaseMessage>> messages, List<String> stop) {
         List<ChatResult> results = messages.stream()
-                .map(message -> _generate(message, stop))
+                .map(message -> innerGenerate(message, stop))
                 .toList();
 
         List<Map<String, Object>> llmOutputs = results.stream()
@@ -75,7 +75,7 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     /**
      * Top Level call
      */
-    public abstract ChatResult _generate(List<BaseMessage> messages, List<String> stop);
+    public abstract ChatResult innerGenerate(List<BaseMessage> messages, List<String> stop);
 
     public BaseMessage call(List<BaseMessage> messages) {
         return call(messages, null);

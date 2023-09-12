@@ -164,5 +164,15 @@ class PineconeClientTest {
                 .build();
         FetchResponse fetchResponse = index.fetch(fetchRequest);
         assertNotNull(fetchResponse, "fetchResponse should not be null");
+        assertEquals(2, fetchResponse.getVectors().size());
+
+        DeleteRequest deleteRequest = DeleteRequest.builder()
+                .ids(List.of("v1"))
+                .namespace(NAMESPACE)
+                .build();
+        index.delete(deleteRequest);
+
+        fetchResponse = index.fetch(fetchRequest);
+        assertEquals(1, fetchResponse.getVectors().size());
     }
 }
