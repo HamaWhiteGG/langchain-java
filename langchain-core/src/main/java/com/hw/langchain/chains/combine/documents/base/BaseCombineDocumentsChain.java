@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.combine.documents.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.Document;
@@ -42,12 +43,12 @@ public abstract class BaseCombineDocumentsChain extends Chain {
 
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     /**
@@ -67,12 +68,12 @@ public abstract class BaseCombineDocumentsChain extends Chain {
 
     public Map<String, String> innerCall(Map<String, Object> inputs) {
         @SuppressWarnings("unchecked")
-        var docs = (List<Document>) inputs.get(inputKey);
+        List<Document> docs = (List<Document>) inputs.get(inputKey);
 
         Map<String, Object> otherKeys = Maps.filterKeys(inputs, key -> !key.equals(inputKey));
-        var result = this.combineDocs(docs, otherKeys);
+        Pair<String, Map<String, String>> result = this.combineDocs(docs, otherKeys);
 
-        var extraReturnDict = new HashMap<>(result.getRight());
+        HashMap<String, String> extraReturnDict = new HashMap<>(result.getRight());
         extraReturnDict.put(outputKey, result.getLeft());
         return extraReturnDict;
     }

@@ -1,5 +1,7 @@
 package com.hw.langchain.artificial.models;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hw.langchain.base.language.BaseLanguageModel;
@@ -7,15 +9,12 @@ import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Artificial Language Model for Rules Mapstruct
@@ -57,7 +56,7 @@ public class ArtificialModel implements BaseLanguageModel {
      */
     @Override
     public String predict(String template, List<String> frontInput) {
-        if(StringUtils.isEmpty(template) || CollectionUtils.isEmpty(frontInput)){
+        if(StringUtils.isEmpty(template) || CollUtil.isEmpty(frontInput)){
             return null;
         }
         List<String> requiredList = Lists.newArrayList();
@@ -67,7 +66,7 @@ public class ArtificialModel implements BaseLanguageModel {
         }
         String frontInputInfo = frontInput.iterator().next();
         Map<String, Object> frontInputObject = adaptAndValidateFrontInfo(frontInputInfo, requiredList);
-        if(MapUtils.isEmpty(frontInputObject)){
+        if(MapUtil.isEmpty(frontInputObject)){
             return null;
         }
         Map<String, Object> predictInput = new HashMap<>();
@@ -114,7 +113,7 @@ public class ArtificialModel implements BaseLanguageModel {
     private Map<String, Object> adaptAndValidateFrontInfo(String frontInputInfo, List<String> requiredList) {
         try {
             Map<String, Object> frontInputObject = JSON.parseObject(frontInputInfo);
-            if(MapUtils.isEmpty(frontInputObject)){
+            if(MapUtil.isEmpty(frontInputObject)){
                 logger.error("parse front input object empty");
                 return null;
             }
@@ -140,7 +139,7 @@ public class ArtificialModel implements BaseLanguageModel {
     private boolean adaptAndValidateTemplate(String template, JSONObject mapstructObject, List<String> requiredList){
         try {
             JSONObject requiredObject = JSON.parseObject(template);
-            if(MapUtils.isEmpty(requiredObject)){
+            if(MapUtil.isEmpty(requiredObject)){
                 return false;
             }
             String requiredInfo = (String) requiredObject.get("required");

@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.combine.documents.stuff;
 
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.chains.combine.documents.base.BaseUtils.formatDocument;
 import static com.hw.langchain.chains.combine.documents.stuff.StuffUtils.getDefaultDocumentPrompt;
@@ -99,7 +101,7 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
         // Format each document according to the prompt
         List<String> docStrings = docs.stream()
                 .map(doc -> formatDocument(doc, documentPrompt))
-                .toList();
+                .collect(Collectors.toList());
         // Join the documents together to put them in the prompt.
         Map<String, Object> inputs = Maps.filterKeys(kwargs, llmChain.getPrompt().getInputVariables()::contains);
         inputs.put(documentVariableName, String.join(documentSeparator, docStrings));
@@ -111,9 +113,9 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
      */
     @Override
     public Pair<String, Map<String, String>> combineDocs(List<Document> docs, Map<String, Object> kwargs) {
-        var inputs = getInputs(docs, kwargs);
+        Map<String, Object> inputs = getInputs(docs, kwargs);
         // Call predict on the LLM.
-        return Pair.of(llmChain.predict(inputs), Map.of());
+        return Pair.of(llmChain.predict(inputs), MapUtil.empty());
     }
 
     @Override

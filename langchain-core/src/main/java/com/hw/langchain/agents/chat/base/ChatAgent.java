@@ -19,6 +19,7 @@
 package com.hw.langchain.agents.chat.base;
 
 import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Lists;
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
@@ -98,7 +99,7 @@ public class ChatAgent extends Agent {
         String toolStrings =
                 tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).collect(Collectors.joining("\n"));
 
-        formatInstructions = formatTemplate(formatInstructions, MapBuilder.create(new HashMap<String, Object>()).put("tool_names", toolNames).map());
+        formatInstructions = formatTemplate(formatInstructions, MapUtil.of("tool_names", toolNames));
         String template =
                 String.join("\n\n", systemMessagePrefix, toolStrings, formatInstructions, systemMessageSuffix);
 

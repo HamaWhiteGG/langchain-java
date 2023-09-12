@@ -18,9 +18,9 @@
 
 package com.hw.langchain.chains.api.prompt;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
-
-import java.util.List;
+import com.hw.langchain.utils.ResourceBundleUtils;
 
 /**
  * @author HamaWhite
@@ -30,33 +30,15 @@ public class Prompt {
     private Prompt() {
     }
 
-    private static final String API_URL_PROMPT_TEMPLATE =
-            """
-                        You are given the below API Documentation:
-                    {api_docs}
-                    Using this documentation, generate the full API url to call for answering the user question.
-                    You should build the API url in order to get a response that is as short as possible, while still getting the necessary information to answer the question. Pay attention to deliberately exclude any unnecessary pieces of data in the API call.
-
-                    Question:{question}
-                    API url:""";
+    private static final String API_URL_PROMPT_TEMPLATE = ResourceBundleUtils.getString("prompt.api.url.template");
 
     public static final PromptTemplate API_URL_PROMPT =
-            new PromptTemplate(List.of("api_docs", "question"), API_URL_PROMPT_TEMPLATE);
+            new PromptTemplate(ListUtil.of("api_docs", "question"), API_URL_PROMPT_TEMPLATE);
 
     private static final String API_RESPONSE_PROMPT_TEMPLATE =
-            API_URL_PROMPT_TEMPLATE
-                    + """
-                            {api_url}
-
-                            Here is the response from the API:
-
-                            {api_response}
-
-                            Summarize this response to answer the original question.
-
-                            Summary:""";
+            API_URL_PROMPT_TEMPLATE + ResourceBundleUtils.getString("prompt.api.response.template");
 
     public static final PromptTemplate API_RESPONSE_PROMPT = new PromptTemplate(
-            List.of("api_docs", "question", "api_url", "api_response"), API_RESPONSE_PROMPT_TEMPLATE);
+            ListUtil.of("api_docs", "question", "api_url", "api_response"), API_RESPONSE_PROMPT_TEMPLATE);
 
 }

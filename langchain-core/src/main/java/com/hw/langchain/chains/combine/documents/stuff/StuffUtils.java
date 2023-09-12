@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.combine.documents.stuff;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
 import java.util.List;
@@ -36,6 +37,6 @@ public class StuffUtils {
      * @return The default document prompt.
      */
     public static PromptTemplate getDefaultDocumentPrompt() {
-        return new PromptTemplate(List.of("page_content"), "{page_content}");
+        return new PromptTemplate(ListUtil.of("page_content"), "{page_content}");
     }
 }

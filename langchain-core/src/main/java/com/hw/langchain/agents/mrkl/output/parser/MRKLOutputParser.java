@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.mrkl.output.parser;
 
+import cn.hutool.core.util.StrUtil;
 import com.hw.langchain.agents.agent.AgentOutputParser;
 import com.hw.langchain.schema.AgentAction;
 import com.hw.langchain.schema.AgentFinish;
@@ -42,7 +43,7 @@ public class MRKLOutputParser extends AgentOutputParser {
     public AgentResult parse(String text) {
         if (text.contains(FINAL_ANSWER_ACTION)) {
             String[] splitText = text.split(FINAL_ANSWER_ACTION);
-            String output = splitText[splitText.length - 1].strip();
+            String output = StrUtil.strip(splitText[splitText.length - 1], " ");
             Map<String, String> returnValues = new HashMap<>();
             returnValues.put("output", output);
             return new AgentFinish(returnValues, text);
@@ -71,10 +72,10 @@ public class MRKLOutputParser extends AgentOutputParser {
             }
         }
 
-        String action = match.group(1).strip();
+        String action = StrUtil.strip(match.group(1), " ");
         String actionInput = match.group(2);
 
-        String toolInput = actionInput.strip();
+        String toolInput = StrUtil.strip(actionInput, " ");
         // ensure if it's a well-formed SQL query we don't remove any trailing " chars
         if (!toolInput.startsWith("SELECT ")) {
             toolInput = toolInput.replaceAll("^\"|\"$", "");

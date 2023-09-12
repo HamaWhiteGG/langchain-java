@@ -82,7 +82,7 @@ public class Initialize {
                         "Got unknown agent type: " + agent + ". Valid types are: " + AGENT_TO_CLASS.keySet() + ".");
             }
             Class<? extends BaseSingleActionAgent> clazz = AGENT_TO_CLASS.get(agent);
-            agentKwargs = agentKwargs != null ? agentKwargs : MapUtil.newHashMap();
+            agentKwargs = agentKwargs != null ? agentKwargs : MapUtil.empty();
             agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLLMAndTools",
                     llm, tools, agentKwargs);
         } else if (agentPath != null) {
