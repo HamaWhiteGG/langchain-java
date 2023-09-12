@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.hamawhitegg</groupId>
         <artifactId>langchain-java</artifactId>
-        <version>0.1.11</version>
+        <version>0.1.12</version>
     </parent>
 
     <artifactId>langchain-core</artifactId>
@@ -73,6 +73,16 @@
         <dependency>
             <groupId>com.knuddels</groupId>
             <artifactId>jtokkit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-retry</artifactId>
         </dependency>
 
         <dependency>

@@ -32,7 +32,7 @@ import static com.hw.langchain.output.parsers.list.Utils.getPromptInputKey;
 /**
  * @author HamaWhite
  */
-public abstract class BaseChatMemory extends BaseMemory {
+public abstract class BaseChatMemory implements BaseMemory {
 
     protected BaseChatMessageHistory chatMemory = new ChatMessageHistory();
 

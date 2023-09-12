@@ -18,6 +18,12 @@
 
 package com.hw.langchain.chains.summarize;
 
+import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.chains.combine.documents.stuff.StuffDocumentsChain;
+import com.hw.langchain.chains.combine.documents.stuff.StuffUtils;
+import com.hw.langchain.chains.llm.LLMChain;
+import com.hw.langchain.prompts.base.BasePromptTemplate;
+
 /**
  * @author HamaWhite
  */
@@ -25,5 +31,16 @@ public class SummarizeUtils {
 
     private SummarizeUtils() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static StuffDocumentsChain loadStuffChain(BaseLanguageModel llm) {
+        return loadStuffChain(llm, StuffPrompt.PROMPT, "text", "\n\n");
+    }
+
+    public static StuffDocumentsChain loadStuffChain(BaseLanguageModel llm, BasePromptTemplate prompt,
+            String documentVariableName, String documentSeparator) {
+        LLMChain llmChain = new LLMChain(llm, prompt);
+        return new StuffDocumentsChain(llmChain, StuffUtils.getDefaultDocumentPrompt(), documentVariableName,
+                documentSeparator);
     }
 }

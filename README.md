@@ -1,8 +1,8 @@
 # 🦜️ LangChain.Java
 
-Java version of LangChain, bringing the capabilities of LLM to big data platforms like Flink and Spark.
+Java version of LangChain, while empowering LLM for Big Data.
 
-> If you are interested, you can add me on WeChat: HamaWhite, or send email to baisongxx@gmail.com
+> If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](mailto:baisongxx@gmail.com).
 
 ## 1. What is this?
 
@@ -19,9 +19,10 @@ The following example can view in the [langchain-example](langchain-examples/src
 
 - [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
 - [API Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
-- [QA-Milvus](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
-- [QA-Pinecone](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
+- [QA-Milvus-Text](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
+- [QA-Pinecone-Text](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
 - [QA-Pinecone-Markdown](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalMarkdownExample.java)
+- [Summarization](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SummarizationExample.java)
 - [Agent with Google Search](langchain-examples/src/main/java/com/hw/langchain/examples/agents/LlmAgentExample.java)
 - [Spark SQL AI](langchain-bigdata/langchain-spark/src/test/java/com/hw/langchain/agents/toolkits/spark/sql/toolkit/SparkSqlToolkitTest.java)
 - [Flink SQL AI](langchain-bigdata/langchain-flink/src/test/java/com/hw/langchain/agents/toolkits/flink/sql/toolkit/FlinkSqlToolkitTest.java)
@@ -29,7 +30,8 @@ The following example can view in the [langchain-example](langchain-examples/src
 ## 3. Integrations
 ### 3.1 LLMs
 - [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java)
-- [ChatGLM2-6B](langchain-examples/src/main/java/com/hw/langchain/examples/llms/ChatGLMExample.java)
+- [Azure OpenAI](openai-client/src/test/java/com/hw/openai/AzureOpenAiClientTest.java)
+- [ChatGLM2](langchain-examples/src/main/java/com/hw/langchain/examples/llms/ChatGLMExample.java)
 - [Ollama](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OllamaExample.java)
 
 ### 3.2 Vector stores
@@ -51,7 +53,7 @@ Prerequisites for building:
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-core</artifactId>
-    <version>0.1.11</version>
+    <version>0.1.12</version>
 </dependency>
 ```
 
@@ -379,5 +381,5 @@ Don’t hesitate to ask!
 ## 8. Fork and Contribute
 This is an active open-source project. We are always open to people who want to use the system or contribute to it. Please note that pull requests should be merged into the **dev** branch.
 
-Contact [me](baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
+Contact [me](mailto:baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
 

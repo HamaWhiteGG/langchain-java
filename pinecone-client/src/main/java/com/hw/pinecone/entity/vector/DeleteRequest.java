@@ -16,36 +16,43 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.schema;
+package com.hw.pinecone.entity.vector;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Base interface for memory in chains.
- *
  * @author HamaWhite
  */
-public interface BaseMemory {
+@Data
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class DeleteRequest implements Serializable {
 
     /**
-     * Input keys this memory class will load dynamically
+     * Vectors to delete.
      */
-    List<String> memoryVariables();
+    private List<String> ids;
 
     /**
-     * Return key-value pairs given the text input to the chain.
-     * If None, return all memories
+     * This indicates that all vectors in the namespace should be deleted.
+     * Not supported by projects on the gcp-starter environment.
      */
-    Map<String, Object> loadMemoryVariables(Map<String, Object> inputs);
+    private boolean deleteAll;
 
     /**
-     * Save the context of this model run to memory.
+     * The namespace to delete vectors from, if applicable.
      */
-    void saveContext(Map<String, Object> inputs, Map<String, String> outputs);
+    private String namespace;
 
     /**
-     * Clear memory contents.
+     * If specified, the metadata filter here will be used to select the vectors to delete. This is mutually exclusive
+     * with specifying IDs to delete in the ids param or using delete_all=True.
      */
-    void clear();
+    private Object filter;
 }
