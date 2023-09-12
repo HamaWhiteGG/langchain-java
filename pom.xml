@@ -49,9 +49,10 @@
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
         <mockito-core.version>3.12.4</mockito-core.version>
+        <hutool-core.version>5.8.9</hutool-core.version>
 
         <scala.binary.version>2.12</scala.binary.version>
-        <target.java.version>17</target.java.version>
+        <target.java.version>8</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
         <spotless-maven-plugin.version>2.27.1</spotless-maven-plugin.version>
@@ -247,6 +248,12 @@
                 <version>${mockito-core.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-core.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

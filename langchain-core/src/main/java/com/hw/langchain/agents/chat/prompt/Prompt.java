@@ -18,13 +18,15 @@
 
 package com.hw.langchain.agents.chat.prompt;
 
+
 /**
  * @author HamaWhite
  */
 public class Prompt {
 
-    public static String SYSTEM_MESSAGE_PREFIX = """
-            Answer the following questions as best you can. You have access to the following tools:""";
+    public static String SYSTEM_MESSAGE_PREFIX = "" +
+            "Answer the following questions as best you can. You have access to the following tools:" +
+            "";
 
     public static String FORMAT_INSTRUCTIONS =
             """

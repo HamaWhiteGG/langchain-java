@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Artificial Language Model for Rules Mapstruct
@@ -117,7 +118,7 @@ public class ArtificialModel implements BaseLanguageModel {
                 logger.error("parse front input object empty");
                 return null;
             }
-            List<String> frontKeyList = frontInputObject.keySet().stream().toList();
+            List<String> frontKeyList = new ArrayList<>(frontInputObject.keySet());
             if(!frontKeyList.containsAll(requiredList)){
                 logger.error("the frontInput key list can not contains all required key list");
                 return null;

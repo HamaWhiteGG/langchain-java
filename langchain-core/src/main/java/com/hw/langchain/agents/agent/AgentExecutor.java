@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.agent;
 
+import com.google.common.collect.Lists;
 import com.hw.langchain.agents.tools.InvalidTool;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.AgentAction;
@@ -31,10 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,12 +111,13 @@ public class AgentExecutor extends Chain {
         LOG.info("Plan output: {}", output);
         if (output instanceof AgentFinish) {
             return output;
-        } else if (output instanceof AgentAction agentAction) {
+        } else if (output instanceof AgentAction) {
+            AgentAction agentAction = (AgentAction)output;
             String observation;
             if (nameToToolMap.containsKey(agentAction.getTool())) {
-                var tool = nameToToolMap.get(agentAction.getTool());
+                BaseTool tool = nameToToolMap.get(agentAction.getTool());
                 boolean returnDirect = tool.isReturnDirect();
-                var toolRunKwargs = agent.toolRunLoggingKwargs();
+                Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
                 if (returnDirect) {
                     toolRunKwargs.put("llm_prefix", "");
                 }
@@ -126,10 +125,10 @@ public class AgentExecutor extends Chain {
                 observation = tool.run(agentAction.getToolInput(), toolRunKwargs).toString();
                 LOG.info("Observation: {}", observation);
             } else {
-                var toolRunKwargs = agent.toolRunLoggingKwargs();
+                Map<String, Object> toolRunKwargs = agent.toolRunLoggingKwargs();
                 observation = new InvalidTool().run(agentAction.getTool(), toolRunKwargs).toString();
             }
-            return List.of(Pair.of(agentAction, observation));
+            return Lists.newArrayList(Pair.of(agentAction, observation));
         }
         return null;
     }
@@ -150,14 +149,15 @@ public class AgentExecutor extends Chain {
 
         // We now enter the agent loop (until it returns something).
         while (shouldContinue(iterations, timeElapsed)) {
-            var nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
+            Object nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
             LOG.info("NextStepOutput: {}", nextStepOutput);
-            if (nextStepOutput instanceof AgentFinish agentFinish) {
+            if (nextStepOutput instanceof AgentFinish) {
+                AgentFinish agentFinish = (AgentFinish) nextStepOutput;
                 return processOutput(agentFinish, intermediateSteps);
             }
 
             @SuppressWarnings("unchecked")
-            var nextOutput = (List<Pair<AgentAction, String>>) nextStepOutput;
+            List<Pair<AgentAction, String>> nextOutput = (List<Pair<AgentAction, String>>) nextStepOutput;
             intermediateSteps.addAll(nextOutput);
 
             if (nextOutput.size() == 1) {

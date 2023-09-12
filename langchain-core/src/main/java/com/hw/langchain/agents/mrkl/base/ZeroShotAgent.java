@@ -18,6 +18,8 @@
 
 package com.hw.langchain.agents.mrkl.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
 import com.hw.langchain.agents.mrkl.output.parser.MRKLOutputParser;
@@ -28,6 +30,7 @@ import com.hw.langchain.tools.base.BaseTool;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.hw.langchain.agents.mrkl.prompt.Prompt.*;
@@ -65,14 +68,14 @@ public class ZeroShotAgent extends Agent {
     public static PromptTemplate createPrompt(List<BaseTool> tools, String prefix, String suffix,
             String formatInstructions, List<String> inputVariables) {
         String toolStrings =
-                String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
-        String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
+                tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).collect(Collectors.joining("\n"));
+        String toolNames = tools.stream().map(BaseTool::getName).collect(Collectors.joining(", "));
 
-        formatInstructions = formatTemplate(formatInstructions, Map.of("tool_names", toolNames));
+        formatInstructions = formatTemplate(formatInstructions, MapUtil.of("tool_names", toolNames));
         String template = String.join("\n\n", prefix, toolStrings, formatInstructions, suffix);
 
         if (inputVariables == null) {
-            inputVariables = List.of("input", "agent_scratchpad");
+            inputVariables = ListUtil.of("input", "agent_scratchpad");
         }
         return new PromptTemplate(inputVariables, template);
     }
@@ -94,7 +97,7 @@ public class ZeroShotAgent extends Agent {
         PromptTemplate prompt = createPrompt(tools, prefix, suffix, formatInstructions, inputVariables);
         LLMChain llmChain = new LLMChain(llm, prompt);
 
-        List<String> toolNames = tools.stream().map(BaseTool::getName).toList();
+        List<String> toolNames = tools.stream().map(BaseTool::getName).collect(Collectors.toList());
         outputParser = (outputParser != null) ? outputParser : getDefaultOutputParser(kwargs);
 
         return new ZeroShotAgent(llmChain, toolNames, outputParser);

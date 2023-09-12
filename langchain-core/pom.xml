@@ -139,10 +139,16 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.hamawhitegg</groupId>
             <artifactId>restapi-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>

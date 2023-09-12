@@ -18,6 +18,8 @@
 
 package com.hw.langchain.agents.chat.output.parser;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hw.langchain.agents.agent.AgentOutputParser;
@@ -45,7 +47,7 @@ public class ChatOutputParser extends AgentOutputParser {
             String action = text.split("```")[1];
             Type mapType = new TypeToken<Map<String, Object>>() {
             }.getType();
-            Map<String, Object> response = new Gson().fromJson(action.strip(), mapType);
+            Map<String, Object> response = new Gson().fromJson(StrUtil.strip(action, " "), mapType);
 
             boolean includesAction = response.containsKey("action") && response.containsKey("action_input");
             if (includesAnswer && includesAction) {
@@ -58,8 +60,8 @@ public class ChatOutputParser extends AgentOutputParser {
                 throw new OutputParserException("Could not parse LLM output: " + text);
             }
             String[] splitText = text.split(FINAL_ANSWER_ACTION);
-            String output = splitText[splitText.length - 1].strip();
-            return new AgentFinish(Map.ofEntries(Map.entry("output", output)), text);
+            String output = StrUtil.strip(splitText[splitText.length - 1], " ");
+            return new AgentFinish(MapUtil.ofEntries(MapUtil.entry("output", output)), text);
         }
     }
 
