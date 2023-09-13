@@ -28,6 +28,6 @@ public class OpenMeteoDocs {
     private OpenMeteoDocs() {
     }
 
-    public static final String OPEN_METEO_DOCS = ResourceBundleUtils.getString("promote.open.meter.docs");
+    public static final String OPEN_METEO_DOCS = ResourceBundleUtils.getString("prompt.open.meter.docs");
 
 }

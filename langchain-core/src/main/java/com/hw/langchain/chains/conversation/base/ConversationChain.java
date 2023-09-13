@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.conversation.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.google.common.collect.Sets;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -56,7 +57,7 @@ public class ConversationChain extends LLMChain {
      */
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     /**

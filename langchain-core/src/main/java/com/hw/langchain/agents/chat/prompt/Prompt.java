@@ -26,11 +26,11 @@ import com.hw.langchain.utils.ResourceBundleUtils;
  */
 public class Prompt {
 
-    public static String SYSTEM_MESSAGE_PREFIX = ResourceBundleUtils.getString("promote.chat.system.prefix");
+    public static String SYSTEM_MESSAGE_PREFIX = ResourceBundleUtils.getString("prompt.chat.system.prefix");
 
-    public static String FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("promote.chat.format.instructions");
+    public static String FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("prompt.chat.format.instructions");
 
-    public static String SYSTEM_MESSAGE_SUFFIX = ResourceBundleUtils.getString("promote.chat.system.suffix");
+    public static String SYSTEM_MESSAGE_SUFFIX = ResourceBundleUtils.getString("prompt.chat.system.suffix");
 
     public static String HUMAN_MESSAGE = "{input}\n\n{agent_scratchpad}";
 }

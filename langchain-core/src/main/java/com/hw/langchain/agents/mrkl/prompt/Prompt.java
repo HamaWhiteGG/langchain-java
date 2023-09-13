@@ -25,10 +25,10 @@ import com.hw.langchain.utils.ResourceBundleUtils;
  */
 public class Prompt {
 
-    public static String PREFIX = ResourceBundleUtils.getString("promote.mrkl.prefix");
+    public static String PREFIX = ResourceBundleUtils.getString("prompt.mrkl.prefix");
 
-    public static String FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("promote.mrkl.format.instructions");
+    public static String FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("prompt.mrkl.format.instructions");
 
-    public static String SUFFIX = ResourceBundleUtils.getString("promote.mrkl.suffix");
+    public static String SUFFIX = ResourceBundleUtils.getString("prompt.mrkl.suffix");
 
 }
