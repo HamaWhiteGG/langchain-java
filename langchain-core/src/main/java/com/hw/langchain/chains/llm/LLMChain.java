@@ -18,6 +18,9 @@
 
 package com.hw.langchain.chains.llm;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
@@ -33,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Chain to run queries against LLMs
@@ -93,12 +97,12 @@ public class LLMChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     @Override
     public Map<String, String> innerCall(Map<String, Object> inputs) {
-        LLMResult response = generate(List.of(inputs));
+        LLMResult response = generate(ListUtil.of(inputs));
         return createOutputs(response).get(0);
     }
 
@@ -141,15 +145,16 @@ public class LLMChain extends Chain {
      * Create outputs from response.
      */
     private List<Map<String, String>> createOutputs(LLMResult llmResult) {
-        var result = llmResult.getGenerations().stream()
-                .map(generation -> Map.of(outputKey, outputParser.parseResult(generation),
-                        "full_generation", generation.toString()))
-                .toList();
+        List<Map<String, String>> result = llmResult.getGenerations().stream()
+                .map(generation -> MapBuilder.create(new HashMap<String, String>())
+                        .put(outputKey, outputParser.parseResult(generation))
+                        .put("full_generation", generation.toString()).map())
+                .collect(Collectors.toList());
 
         if (returnFinalOnly) {
             result = result.stream()
-                    .map(r -> Map.of(outputKey, r.get(outputKey)))
-                    .toList();
+                    .map(r -> MapUtil.of(outputKey, r.get(outputKey)))
+                    .collect(Collectors.toList());
         }
         return result;
     }

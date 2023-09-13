@@ -18,9 +18,9 @@
 
 package com.hw.langchain.chains.summarize;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
-
-import java.util.List;
+import com.hw.langchain.utils.ResourceBundleUtils;
 
 /**
  * @author HamaWhite
@@ -32,11 +32,5 @@ public class MapReducePrompt {
     }
 
     public static final PromptTemplate PROMPT = new PromptTemplate(
-            List.of("text"),
-            """
-                    Write a concise summary of the following:
-
-                    "{text}"
-
-                    CONCISE SUMMARY:""");
+            ListUtil.of("text"), ResourceBundleUtils.getString("prompt.chain.summary.mapreduce.template"));
 }

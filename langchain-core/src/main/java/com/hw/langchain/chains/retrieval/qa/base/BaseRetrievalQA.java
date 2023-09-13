@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.retrieval.qa.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
@@ -53,7 +54,7 @@ public abstract class BaseRetrievalQA extends Chain {
 
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     @Override
@@ -75,7 +76,7 @@ public abstract class BaseRetrievalQA extends Chain {
      */
     @Override
     public Map<String, String> innerCall(Map<String, Object> inputs) {
-        var question = inputs.get(inputKey).toString();
+        String question = inputs.get(inputKey).toString();
 
         List<Document> docs = getDocs(question);
         inputs.put("input_documents", docs);
