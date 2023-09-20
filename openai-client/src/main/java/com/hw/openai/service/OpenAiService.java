@@ -28,10 +28,13 @@ import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
 import io.reactivex.Single;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.*;
 
 /**
  * Service interface for interacting with the OpenAI API.
+ *
  * @author HamaWhite
  */
 public interface OpenAiService {
@@ -61,42 +64,61 @@ public interface OpenAiService {
      * @return a Single emitting the response containing the completion result
      */
     @POST("completions")
-    Single<CompletionResp> completion(@Body Completion completion);
+    Single<CompletionResp> createCompletion(@Body Completion completion);
 
     /**
      * Creates a completion for the provided prompt and parameters, using azure openai.
      *
      * @param deploymentId The deploymentId for azure openai url.
-     * @param apiVersion The apiVersion for azure openai url parameter 'api-version'.
-     * @param completion the completion request object containing the prompt and parameters
+     * @param apiVersion   The apiVersion for azure openai url parameter 'api-version'.
+     * @param completion   the completion request object containing the prompt and parameters
      * @return a Single emitting the response containing the completion result
      */
     @POST("{deploymentId}/completions")
-    Single<CompletionResp> completion(@Path("deploymentId") String deploymentId,
-            @Query("api-version") String apiVersion, @Body Completion completion);
+    Single<CompletionResp> createCompletion(@Path("deploymentId") String deploymentId,
+            @Query("api-version") String apiVersion,
+            @Body Completion completion);
 
     /**
-     * Creates a model response for the given chat conversation.
+     * Creates a stream completion for the provided prompt and parameters.
+     *
+     * @param completion the completion request object containing the prompt and parameters
+     * @return a Single emitting the response containing the completion result
+     */
+    @Streaming
+    @POST("completions")
+    Call<ResponseBody> streamCompletion(@Body Completion completion);
+
+    /**
+     * Creates a response for the given chat conversation.
      *
      * @param chatCompletion the chat completion request object containing the chat conversation
      * @return a Single emitting the response containing the chat completion result
-    
      */
     @POST("chat/completions")
-    Single<ChatCompletionResp> chatCompletion(@Body ChatCompletion chatCompletion);
+    Single<ChatCompletionResp> createChatCompletion(@Body ChatCompletion chatCompletion);
 
     /**
      * Creates a model response for the given chat conversation, using azure openai.
      *
-     * @param deploymentId The deploymentId for azure openai url.
-     * @param apiVersion The apiVersion for azure openai url parameter 'api-version'.
+     * @param deploymentId   The deploymentId for azure openai url.
+     * @param apiVersion     The apiVersion for azure openai url parameter 'api-version'.
      * @param chatCompletion the chat completion request object containing the chat conversation
      * @return a Single emitting the response containing the chat completion result
-    
      */
     @POST("{deploymentId}/chat/completions")
-    Single<ChatCompletionResp> chatCompletion(@Path("deploymentId") String deploymentId,
+    Single<ChatCompletionResp> createChatCompletion(@Path("deploymentId") String deploymentId,
             @Query("api-version") String apiVersion, @Body ChatCompletion chatCompletion);
+
+    /**
+     * Creates a stream response for the given chat conversation.
+     *
+     * @param chatCompletion the chat completion request object
+     * @return a {@link Call} representing the streaming response
+     */
+    @Streaming
+    @POST("chat/completions")
+    Call<ResponseBody> streamChatCompletion(@Body ChatCompletion chatCompletion);
 
     /**
      * Creates an embedding vector representing the input text.
@@ -105,18 +127,19 @@ public interface OpenAiService {
      * @return A Single object that emits an EmbeddingResp, representing the response containing the embedding vector.
      */
     @POST("embeddings")
-    Single<EmbeddingResp> embedding(@Body Embedding embedding);
+    Single<EmbeddingResp> createEmbedding(@Body Embedding embedding);
 
     /**
      * Creates an embedding vector representing the input text, using azure openai.
      *
      * @param deploymentId The deploymentId for azure openai url.
-     * @param apiVersion The apiVersion for azure openai url parameter 'api-version'.
-     * @param embedding The Embedding object containing the input text.
+     * @param apiVersion   The apiVersion for azure openai url parameter 'api-version'.
+     * @param embedding    The Embedding object containing the input text.
      * @return A Single object that emits an EmbeddingResp, representing the response containing the embedding vector.
      */
     @POST("{deploymentId}/embeddings")
-    Single<EmbeddingResp> embedding(@Path("deploymentId") String deploymentId, @Query("api-version") String apiVersion,
+    Single<EmbeddingResp> createEmbedding(@Path("deploymentId") String deploymentId,
+            @Query("api-version") String apiVersion,
             @Body Embedding embedding);
 
 }

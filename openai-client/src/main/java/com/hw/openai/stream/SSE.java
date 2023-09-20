@@ -16,25 +16,17 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.chat;
+package com.hw.openai.stream;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 
 /**
- * ChatChoice
  * @author HamaWhite
  */
-@Data
-public class ChatChoice {
+public record SSE(String data) {
 
-    private Integer index;
+    private static final String DONE_DATA = "[DONE]";
 
-    @JsonAlias("delta")
-    private Message message;
-
-    @JsonProperty("finish_reason")
-    private String finishReason;
+    public boolean isDone() {
+        return DONE_DATA.equalsIgnoreCase(this.data);
+    }
 }

@@ -181,7 +181,7 @@ public class ChatOpenAI extends BaseChatModel {
                 .stop(stop)
                 .build();
 
-        var response = retryWithExponentialBackoff(maxRetries, () -> client.create(chatCompletion));
+        var response = retryWithExponentialBackoff(maxRetries, () -> client.createChatCompletion(chatCompletion));
         return createChatResult(response);
     }
 

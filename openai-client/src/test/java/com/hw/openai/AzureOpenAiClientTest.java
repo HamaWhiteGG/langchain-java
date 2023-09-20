@@ -89,7 +89,7 @@ class AzureOpenAiClientTest {
                 .input(List.of("The food was delicious and the waiter..."))
                 .build();
 
-        var response = client.embedding(embedding);
+        var response = client.createEmbedding(embedding);
 
         assertThat(response).as("Response should not be null").isNotNull();
         assertThat(response.getData()).as("Data list should have size 1").hasSize(1);

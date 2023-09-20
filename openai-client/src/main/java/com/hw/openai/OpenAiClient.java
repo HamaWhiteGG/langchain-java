@@ -20,36 +20,51 @@ package com.hw.openai;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hw.openai.common.OpenAiError;
 import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
+import com.hw.openai.entity.chat.ChatCompletionChunk;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.completions.Completion;
+import com.hw.openai.entity.completions.CompletionChunk;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
+import com.hw.openai.exception.OpenAiException;
 import com.hw.openai.service.OpenAiService;
+import com.hw.openai.stream.ResponseBodyCallback;
+import com.hw.openai.stream.SSE;
 import com.hw.openai.utils.ProxyUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
 import lombok.Builder;
 import lombok.Data;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a client for interacting with the OpenAI API.
@@ -97,6 +112,8 @@ public class OpenAiClient implements Closeable {
 
     private OkHttpClient httpClient;
 
+    private ObjectMapper objectMapper;
+
     /**
      * Initializes the OpenAiClient instance.
      *
@@ -131,7 +148,10 @@ public class OpenAiClient implements Closeable {
 
         // Add HttpLogging interceptor
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        if (LOG.isDebugEnabled()) {
+            // Note that setting it to Level.BODY will block the OpenAI stream output.
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }
         httpClientBuilder.addInterceptor(loggingInterceptor);
         if (this.interceptorList != null) {
             this.interceptorList.forEach(httpClientBuilder::addInterceptor);
@@ -142,12 +162,9 @@ public class OpenAiClient implements Closeable {
         }
         httpClient = httpClientBuilder.build();
 
-        // Used for automatic discovery and registration of Jackson modules
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        // Ignore unknown fields
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+        if (objectMapper == null) {
+            objectMapper = defaultObjectMapper();
+        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(openaiApiBase)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -172,6 +189,15 @@ public class OpenAiClient implements Closeable {
         }
     }
 
+    public static ObjectMapper defaultObjectMapper() {
+        // Used for automatic discovery and registration of Jackson modules
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        // Ignore unknown fields
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
     private String getOrEnvOrDefault(String originalValue, String envKey, String... defaultValue) {
         if (StringUtils.isNotEmpty(originalValue)) {
             return originalValue;
@@ -193,7 +219,7 @@ public class OpenAiClient implements Closeable {
      * @return the response containing the list of available models
      */
     public ModelResp listModels() {
-        return service.listModels().blockingGet();
+        return execute(service.listModels());
     }
 
     /**
@@ -203,7 +229,7 @@ public class OpenAiClient implements Closeable {
      * @return the retrieved model
      */
     public Model retrieveModel(String model) {
-        return service.retrieveModel(model).blockingGet();
+        return execute(service.retrieveModel(model));
     }
 
     /**
@@ -213,7 +239,7 @@ public class OpenAiClient implements Closeable {
      * @return the generated completion text
      */
     public String completion(Completion completion) {
-        CompletionResp response = create(completion);
+        CompletionResp response = createCompletion(completion);
         String text = response.getChoices().get(0).getText();
         return StringUtils.trim(text);
     }
@@ -224,10 +250,21 @@ public class OpenAiClient implements Closeable {
      * @param completion the completion object containing the prompt and parameters
      * @return the completion response
      */
-    public CompletionResp create(Completion completion) {
+    public CompletionResp createCompletion(Completion completion) {
         return isAzureApiType()
-                ? service.completion(completion.getModel(), openaiApiVersion, completion).blockingGet()
-                : service.completion(completion).blockingGet();
+                ? execute(service.createCompletion(completion.getModel(), openaiApiVersion, completion))
+                : execute(service.createCompletion(completion));
+    }
+
+    /**
+     * Creates a stream completion for the provided prompt and parameters.
+     *
+     * @param completion the completion request object containing the prompt and parameters
+     * @return a stream of generated completions
+     */
+    public Flowable<CompletionChunk> streamCompletion(Completion completion) {
+        completion.setStream(true);
+        return stream(service.streamCompletion(completion), CompletionChunk.class);
     }
 
     /**
@@ -237,7 +274,7 @@ public class OpenAiClient implements Closeable {
      * @return the generated model response text
      */
     public String chatCompletion(ChatCompletion chatCompletion) {
-        ChatCompletionResp response = create(chatCompletion);
+        ChatCompletionResp response = createChatCompletion(chatCompletion);
         String content = response.getChoices().get(0).getMessage().getContent();
         return StringUtils.trim(content);
     }
@@ -248,10 +285,21 @@ public class OpenAiClient implements Closeable {
      * @param chatCompletion the chat completion object containing the conversation
      * @return the chat completion response
      */
-    public ChatCompletionResp create(ChatCompletion chatCompletion) {
+    public ChatCompletionResp createChatCompletion(ChatCompletion chatCompletion) {
         return isAzureApiType()
-                ? service.chatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion).blockingGet()
-                : service.chatCompletion(chatCompletion).blockingGet();
+                ? execute(service.createChatCompletion(chatCompletion.getModel(), openaiApiVersion, chatCompletion))
+                : execute(service.createChatCompletion(chatCompletion));
+    }
+
+    /**
+     * Creates a stream response for the given chat conversation.
+     *
+     * @param chatCompletion the chat completion request object
+     * @return a stream of generated chat completions
+     */
+    public Flowable<ChatCompletionChunk> streamChatCompletion(ChatCompletion chatCompletion) {
+        chatCompletion.setStream(true);
+        return stream(service.streamChatCompletion(chatCompletion), ChatCompletionChunk.class);
     }
 
     /**
@@ -260,10 +308,10 @@ public class OpenAiClient implements Closeable {
      * @param embedding The Embedding object containing the input text.
      * @return The embedding vector response.
      */
-    public EmbeddingResp embedding(Embedding embedding) {
+    public EmbeddingResp createEmbedding(Embedding embedding) {
         return isAzureApiType()
-                ? service.embedding(embedding.getModel(), openaiApiVersion, embedding).blockingGet()
-                : service.embedding(embedding).blockingGet();
+                ? execute(service.createEmbedding(embedding.getModel(), openaiApiVersion, embedding))
+                : execute(service.createEmbedding(embedding));
     }
 
     /**
@@ -273,6 +321,62 @@ public class OpenAiClient implements Closeable {
      */
     private boolean isAzureApiType() {
         return EnumSet.of(OpenaiApiType.AZURE, OpenaiApiType.AZURE_AD).contains(openaiApiType);
+    }
+
+    /**
+     * Calls the Open AI api and returns a Flowable of SSE for streaming omitting the last message.
+     *
+     * @param apiCall The api call
+     */
+    private Flowable<SSE> stream(Call<ResponseBody> apiCall) {
+        return stream(apiCall, false);
+    }
+
+    /**
+     * Calls the Open AI api and returns a Flowable of SSE for streaming.
+     *
+     * @param apiCall  The api call
+     * @param emitDone If true the last message ([DONE]) is emitted
+     */
+    public Flowable<SSE> stream(Call<ResponseBody> apiCall, boolean emitDone) {
+        return Flowable.create(emitter -> apiCall.enqueue(new ResponseBodyCallback(emitter, emitDone, objectMapper)),
+                BackpressureStrategy.BUFFER);
+    }
+
+    /**
+     * Calls the Open AI api and returns a Flowable of type T for streaming
+     * omitting the last message.
+     *
+     * @param apiCall The api call
+     * @param clazz   Class of type T to return
+     */
+    private <T> Flowable<T> stream(Call<ResponseBody> apiCall, Class<T> clazz) {
+        return stream(apiCall).map(sse -> objectMapper.readValue(sse.data(), clazz));
+    }
+
+    /**
+     * Calls the Open AI api, returns the response, and parses error messages if the request fails
+     */
+    public <T> T execute(Single<T> apiCall) {
+        try {
+            return apiCall.blockingGet();
+        } catch (HttpException e) {
+            try {
+                if (e.response() != null) {
+                    try (ResponseBody responseBody = requireNonNull(e.response()).errorBody()) {
+                        if (responseBody != null) {
+                            String errorBody = responseBody.string();
+                            OpenAiError error = objectMapper.readValue(errorBody, OpenAiError.class);
+                            throw new OpenAiException(error, e, e.code());
+                        }
+                    }
+                }
+                throw e;
+            } catch (IOException ex) {
+                // couldn't parse OpenAI error
+                throw e;
+            }
+        }
     }
 
     /**

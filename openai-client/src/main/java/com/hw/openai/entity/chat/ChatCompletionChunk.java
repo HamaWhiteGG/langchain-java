@@ -16,31 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.openai;
+package com.hw.openai.entity.chat;
 
-import com.hw.openai.entity.completions.Completion;
+import lombok.Data;
 
 import java.util.List;
 
 /**
  * @author HamaWhite
  */
-public class QuickStart {
+@Data
+public class ChatCompletionChunk {
 
-    public static void main(String[] args) {
-        OpenAiClient client = OpenAiClient.builder()
-                .build()
-                .init();
+    private String id;
 
-        Completion completion = Completion.builder()
-                .model("text-davinci-003")
-                .prompt(List.of("Say this is a test"))
-                .maxTokens(700)
-                .temperature(0)
-                .build();
+    private String object;
 
-        System.out.println(client.completion(completion));
+    private Long created;
 
-        client.close();
-    }
+    private String model;
+
+    private List<ChatChoice> choices;
 }

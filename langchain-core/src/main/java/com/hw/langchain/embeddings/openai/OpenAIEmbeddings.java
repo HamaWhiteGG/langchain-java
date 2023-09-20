@@ -220,6 +220,6 @@ public class OpenAIEmbeddings implements Embeddings {
                 .model(model)
                 .input(input)
                 .build();
-        return client.embedding(embedding);
+        return client.createEmbedding(embedding);
     }
 }

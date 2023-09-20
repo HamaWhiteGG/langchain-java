@@ -188,7 +188,7 @@ public class OpenAIChat extends BaseLLM {
                 .stop(stop)
                 .build();
 
-        ChatCompletionResp response = client.create(chatCompletion);
+        ChatCompletionResp response = client.createChatCompletion(chatCompletion);
 
         List<List<Generation>> generations = new ArrayList<>();
         Generation generation = Generation.builder()

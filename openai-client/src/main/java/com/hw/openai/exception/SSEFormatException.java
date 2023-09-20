@@ -16,25 +16,14 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.chat;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
+package com.hw.openai.exception;
 
 /**
- * ChatChoice
  * @author HamaWhite
  */
-@Data
-public class ChatChoice {
+public class SSEFormatException extends Throwable {
 
-    private Integer index;
-
-    @JsonAlias("delta")
-    private Message message;
-
-    @JsonProperty("finish_reason")
-    private String finishReason;
+    public SSEFormatException(String message) {
+        super(message);
+    }
 }

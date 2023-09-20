@@ -209,7 +209,8 @@ public class BaseOpenAI extends BaseLLM {
 
         for (var prompt : subPrompts) {
             completion.setPrompt(prompt);
-            CompletionResp response = retryWithExponentialBackoff(maxRetries, () -> client.create(completion));
+            CompletionResp response =
+                    retryWithExponentialBackoff(maxRetries, () -> client.createCompletion(completion));
             choices.addAll(response.getChoices());
         }
 

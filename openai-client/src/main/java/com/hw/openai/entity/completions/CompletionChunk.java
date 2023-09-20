@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.chat;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.hw.openai.entity.completions;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * ChatChoice
  * @author HamaWhite
  */
 @Data
-public class ChatChoice {
+public class CompletionChunk {
 
-    private Integer index;
+    private String id;
 
-    @JsonAlias("delta")
-    private Message message;
+    private String object;
 
-    @JsonProperty("finish_reason")
-    private String finishReason;
+    private Long created;
+
+    private String model;
+
+    private List<Choice> choices;
 }

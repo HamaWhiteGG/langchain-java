@@ -16,25 +16,45 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.chat;
+package com.hw.openai.common;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * ChatChoice
+ * Represents the error body when an OpenAI request fails
+ *
  * @author HamaWhite
  */
 @Data
-public class ChatChoice {
+@NoArgsConstructor
+@AllArgsConstructor
+public class OpenAiError {
 
-    private Integer index;
+    private OpenAiErrorDetails error;
 
-    @JsonAlias("delta")
-    private Message message;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OpenAiErrorDetails {
 
-    @JsonProperty("finish_reason")
-    private String finishReason;
+        /**
+         * Human-readable error message
+         */
+        String message;
+
+        /**
+         * OpenAI error type, for example "invalid_request_error"
+         * <a href="https://platform.openai.com/docs/guides/error-codes/api-errors">Error codes</a>
+         */
+        String type;
+
+        String param;
+
+        /**
+         * OpenAI error code, for example "invalid_api_key"
+         */
+        String code;
+    }
 }
