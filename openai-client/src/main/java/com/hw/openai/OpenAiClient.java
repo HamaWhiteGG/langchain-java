@@ -151,6 +151,8 @@ public class OpenAiClient implements Closeable {
         if (LOG.isDebugEnabled()) {
             // Note that setting it to Level.BODY will block the OpenAI stream output.
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         }
         httpClientBuilder.addInterceptor(loggingInterceptor);
         if (this.interceptorList != null) {
