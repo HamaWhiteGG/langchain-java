@@ -27,6 +27,7 @@
         <milvus.version>2.2.9</milvus.version>
         <jython.version>2.7.3</jython.version>
         <jsoup.version>1.16.1</jsoup.version>
+        <rxjava.version>2.2.21</rxjava.version>
         <nd4j.version>1.0.0-M2.1</nd4j.version>
         <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
@@ -47,7 +48,8 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
-        <reactor.version>3.5.8</reactor.version>
+        <reactor-core.version>3.5.8</reactor-core.version>
+        <reactor-adapter.version>3.5.1</reactor-adapter.version>
         <mockito-core.version>3.12.4</mockito-core.version>
 
         <scala.binary.version>2.12</scala.binary.version>
@@ -265,7 +267,19 @@
             <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-core</artifactId>
-                <version>${reactor.version}</version>
+                <version>${reactor-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor.addons</groupId>
+                <artifactId>reactor-adapter</artifactId>
+                <version>${reactor-adapter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>${rxjava.version}</version>
             </dependency>
 
             <dependency>

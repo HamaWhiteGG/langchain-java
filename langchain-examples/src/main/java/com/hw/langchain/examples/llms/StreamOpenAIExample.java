@@ -21,21 +21,22 @@ package com.hw.langchain.examples.llms;
 import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.langchain.llms.openai.OpenAI;
 
-import static com.hw.langchain.examples.utils.PrintUtils.println;
-
 /**
  * @author HamaWhite
  */
 @RunnableExample
-public class OpenAIExample {
+public class StreamOpenAIExample {
 
     public static void main(String[] args) {
+
         var llm = OpenAI.builder()
-                .temperature(0.9f)
+                .maxTokens(1000)
+                .temperature(0)
+                .requestTimeout(120)
                 .build()
                 .init();
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+        var result = llm.asyncPredict("Introduce West Lake in Hangzhou, China.");
+        result.doOnNext(System.out::print).blockLast();
     }
 }

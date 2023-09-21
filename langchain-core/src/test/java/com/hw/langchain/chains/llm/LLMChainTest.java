@@ -31,11 +31,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import reactor.core.publisher.Flux;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * LLMChainTest
@@ -72,6 +75,19 @@ class LLMChainTest {
 
         String expected = "\n\nSocktastic!";
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testAsyncRun() {
+        PromptTemplate prompt = new PromptTemplate(List.of("product"),
+                "What is a good name for a company that makes {product}?");
+
+        Chain chain = new LLMChain(llm, prompt);
+        Flux<String> actual = chain.asyncRun("colorful socks");
+
+        List<String> resultList = actual.collectList().block();
+        assertThat(resultList).isNotNull();
+        assertThat(String.join("", resultList)).isEqualTo("\n\nSocktastic!");
     }
 
     @Test

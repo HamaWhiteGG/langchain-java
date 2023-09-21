@@ -21,26 +21,45 @@ package com.hw.langchain.llms.openai;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * OpenAITest
+ *
  * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
 class OpenAITest {
 
-    /**
-     * Test valid call to openai
-     */
     @Test
-    void testOpenAICall() {
-        OpenAI llm = OpenAI.builder()
+    void testPredict() {
+        var llm = OpenAI.builder()
+                .temperature(0)
                 .maxTokens(16)
                 .requestTimeout(16)
                 .build()
                 .init();
 
-        assertThat(llm.call("Say foo:")).isEqualTo("\n\nFoo!");
+        var result = llm.predict("Say this is a test");
+        assertThat(result).isEqualTo("\n\nThis is indeed a test.");
+    }
+
+    @Test
+    void testAsyncPredict() {
+        var llm = OpenAI.builder()
+                .temperature(0)
+                .maxTokens(1600)
+                .requestTimeout(120)
+                .build()
+                .init();
+
+        Flux<String> result = llm.asyncPredict("Say this is a test");
+
+        List<String> resultList = result.collectList().block();
+        assertThat(resultList).isEqualTo(List.of("\n", "\n", "This", " is", " indeed", " a", " test", ".", ""));
     }
 }

@@ -101,15 +101,15 @@ class OpenAiClientTest {
                 .build();
 
         // Call client.streamCompletion(completion) and verify the results
-        List<String> outputList = client.streamCompletion(completion)
+        List<String> resultList = client.streamCompletion(completion)
                 .doOnError(Throwable::printStackTrace)
                 .map(e -> e.getChoices().get(0).getText())
                 .toList()
                 .blockingGet();
 
-        assertThat(outputList).isNotNull();
-        assertThat(outputList).isNotEmpty();
-        assertThat(outputList).isEqualTo(List.of("\n\n", "This", " is", " a", " test", ".", ""));
+        assertThat(resultList).isNotNull();
+        assertThat(resultList).isNotEmpty();
+        assertThat(resultList).isEqualTo(List.of("\n\n", "This", " is", " a", " test", ".", ""));
     }
 
     @Test
@@ -136,7 +136,7 @@ class OpenAiClientTest {
                 .stream(true)
                 .build();
 
-        List<String> outputList = client.streamChatCompletion(chatCompletion)
+        List<String> resultList = client.streamChatCompletion(chatCompletion)
                 .doOnError(Throwable::printStackTrace)
                 .map(e -> {
                     String content = e.getChoices().get(0).getMessage().getContent();
@@ -145,9 +145,9 @@ class OpenAiClientTest {
                 .toList()
                 .blockingGet();
 
-        assertThat(outputList).isNotNull();
-        assertThat(outputList).isNotEmpty();
-        assertThat(outputList)
+        assertThat(resultList).isNotNull();
+        assertThat(resultList).isNotEmpty();
+        assertThat(resultList)
                 .isEqualTo(List.of("", "Hello", "!", " How", " can", " I", " assist", " you", " today", "?", ""));
     }
 
