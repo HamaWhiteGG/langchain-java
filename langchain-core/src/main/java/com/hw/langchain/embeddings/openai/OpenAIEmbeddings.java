@@ -23,6 +23,7 @@ import com.google.common.primitives.Floats;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.exception.LangChainException;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
 import com.knuddels.jtokkit.Encodings;
@@ -68,7 +69,8 @@ public class OpenAIEmbeddings implements Embeddings {
 
     private String openaiApiKey;
 
-    private String openaiApiType;
+    @Builder.Default
+    private OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     private String openaiApiVersion;
 
@@ -100,7 +102,6 @@ public class OpenAIEmbeddings implements Embeddings {
         openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
         openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
-        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "");
         openaiApiVersion = getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION", "");
 
         this.client = OpenAiClient.builder()
@@ -117,7 +118,7 @@ public class OpenAIEmbeddings implements Embeddings {
     }
 
     /**
-     * please refer to https://github.com/openai/openai-cookbook/blob/main/examples/Embedding_long_inputs.ipynb
+     * <a href="https://github.com/openai/openai-cookbook/blob/main/examples/Embedding_long_inputs.ipynb">Embedding texts that are longer than the model's maximum context length</a>
      */
     private List<List<Float>> getLenSafeEmbeddings(List<String> texts) {
         List<List<Float>> embeddings = new ArrayList<>(texts.size());
@@ -219,6 +220,6 @@ public class OpenAIEmbeddings implements Embeddings {
                 .model(model)
                 .input(input)
                 .build();
-        return client.embedding(embedding);
+        return client.createEmbedding(embedding);
     }
 }

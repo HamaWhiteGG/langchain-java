@@ -16,10 +16,14 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
+package com.hw.openai.example.completions;
 
 import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.openai.OpenAiClient;
+import com.hw.openai.entity.completions.Completion;
+import com.hw.openai.entity.completions.CompletionResp;
+
+import java.util.List;
 
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
@@ -27,15 +31,24 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
  * @author HamaWhite
  */
 @RunnableExample
-public class OpenAIExample {
+public class CompletionExample {
 
     public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
+        OpenAiClient client = OpenAiClient.builder()
+                .requestTimeout(120)
                 .build()
                 .init();
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+        Completion completion = Completion.builder()
+                .model("gpt-3.5-turbo-instruct")
+                .prompt(List.of("Introduce West Lake in Hangzhou, China."))
+                .maxTokens(1000)
+                .temperature(0)
+                .build();
+
+        CompletionResp response = client.createCompletion(completion);
+        println(response.getChoices().get(0).getText());
+
+        client.close();
     }
 }

@@ -16,26 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
-
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
-
-import static com.hw.langchain.examples.utils.PrintUtils.println;
+package com.hw.openai.common;
 
 /**
- * @author HamaWhite
+ * @author Tingliang Wang
  */
-@RunnableExample
-public class OpenAIExample {
+public enum OpenaiApiType {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
+    /**
+     * azure.
+     */
+    AZURE,
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
-    }
+    /**
+     * azure_ad.
+     */
+    AZURE_AD,
+
+    /**
+     * openai.
+     */
+    OPENAI
 }

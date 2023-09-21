@@ -16,26 +16,17 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
+package com.hw.openai.stream;
 
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
-
-import static com.hw.langchain.examples.utils.PrintUtils.println;
 
 /**
  * @author HamaWhite
  */
-@RunnableExample
-public class OpenAIExample {
+public record SSE(String data) {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
+    private static final String DONE_DATA = "[DONE]";
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+    public boolean isDone() {
+        return DONE_DATA.equalsIgnoreCase(this.data);
     }
 }

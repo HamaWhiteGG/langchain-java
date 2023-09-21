@@ -27,6 +27,7 @@
         <milvus.version>2.2.9</milvus.version>
         <jython.version>2.7.3</jython.version>
         <jsoup.version>1.16.1</jsoup.version>
+        <rxjava.version>2.2.21</rxjava.version>
         <nd4j.version>1.0.0-M2.1</nd4j.version>
         <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
@@ -47,6 +48,8 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
+        <reactor-core.version>3.5.8</reactor-core.version>
+        <reactor-adapter.version>3.5.1</reactor-adapter.version>
         <mockito-core.version>3.12.4</mockito-core.version>
 
         <scala.binary.version>2.12</scala.binary.version>
@@ -60,6 +63,7 @@
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+        <nexus-staging-maven-plugin.executions>true</nexus-staging-maven-plugin.executions>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -83,6 +87,13 @@
                 <groupId>com.squareup.retrofit2</groupId>
                 <artifactId>converter-jackson</artifactId>
                 <version>${retrofit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>retrofit-mock</artifactId>
+                <version>${retrofit.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -252,6 +263,25 @@
                 <artifactId>netty-resolver-dns</artifactId>
                 <version>${netty-resolver.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor.addons</groupId>
+                <artifactId>reactor-adapter</artifactId>
+                <version>${reactor-adapter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>${rxjava.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
@@ -328,7 +358,7 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>${nexus-staging-maven-plugin.version}</version>
-                    <extensions>true</extensions>
+                    <extensions>${nexus-staging-maven-plugin.executions}</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>
                         <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>

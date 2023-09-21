@@ -19,16 +19,22 @@
 package com.hw.langchain.llms.openai;
 
 import com.hw.langchain.llms.base.BaseLLM;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.completions.Choice;
 import com.hw.openai.entity.completions.Completion;
+import com.hw.openai.entity.completions.CompletionChunk;
 import com.hw.openai.entity.completions.CompletionResp;
 
+import io.reactivex.Flowable;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import okhttp3.Interceptor;
+import reactor.adapter.rxjava.RxJava2Adapter;
+import reactor.core.publisher.Flux;
 
 import java.util.*;
 
@@ -105,7 +111,8 @@ public class BaseOpenAI extends BaseLLM {
     /**
      * Api type for Azure OpenAI API.
      */
-    protected String openaiApiType;
+    @Builder.Default
+    protected OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     /**
      * Api version for Azure OpenAI API.
@@ -191,7 +198,35 @@ public class BaseOpenAI extends BaseLLM {
     protected LLMResult innerGenerate(List<String> prompts, List<String> stop) {
         List<Choice> choices = new ArrayList<>();
         List<List<String>> subPrompts = getSubPrompts(prompts);
-        Completion completion = Completion.builder()
+        Completion completion = buildCompletion(stop);
+
+        for (var prompt : subPrompts) {
+            completion.setPrompt(prompt);
+            CompletionResp response =
+                    retryWithExponentialBackoff(maxRetries, () -> client.createCompletion(completion));
+            choices.addAll(response.getChoices());
+        }
+
+        return createLlmResult(choices, prompts, Map.of());
+    }
+
+    @Override
+    protected Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop) {
+        Completion completion = buildCompletion(stop);
+
+        completion.setPrompt(prompts);
+        completion.setStream(true);
+        Flowable<CompletionChunk> response = retryWithExponentialBackoff(maxRetries,
+                () -> client.streamCompletion(completion));
+
+        return RxJava2Adapter.flowableToFlux(response).map(e -> {
+            Generation generation = new Generation(e.getChoices().get(0).getText());
+            return new AsyncLLMResult(List.of(generation), null);
+        });
+    }
+
+    private Completion buildCompletion(List<String> stop) {
+        return Completion.builder()
                 .model(model)
                 .temperature(temperature)
                 .maxTokens(maxTokens)
@@ -202,20 +237,12 @@ public class BaseOpenAI extends BaseLLM {
                 .logitBias(logitBias)
                 .stop(stop)
                 .build();
-
-        for (var prompt : subPrompts) {
-            completion.setPrompt(prompt);
-            CompletionResp response = retryWithExponentialBackoff(maxRetries, () -> client.create(completion));
-            choices.addAll(response.getChoices());
-        }
-
-        return createLLMResult(choices, prompts, Map.of());
     }
 
     /**
      * Create the LLMResult from the choices and prompts.
      */
-    private LLMResult createLLMResult(List<Choice> choices, List<String> prompts, Map<String, Integer> tokenUsage) {
+    private LLMResult createLlmResult(List<Choice> choices, List<String> prompts, Map<String, Integer> tokenUsage) {
         List<List<Generation>> generations = new ArrayList<>();
         for (int i = 0; i < prompts.size(); i++) {
             List<Choice> subChoices = choices.subList(i * n, (i + 1) * n);

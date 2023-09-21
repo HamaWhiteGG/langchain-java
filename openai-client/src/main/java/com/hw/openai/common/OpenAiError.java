@@ -16,26 +16,45 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
+package com.hw.openai.common;
 
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
-
-import static com.hw.langchain.examples.utils.PrintUtils.println;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
+ * Represents the error body when an OpenAI request fails
+ *
  * @author HamaWhite
  */
-@RunnableExample
-public class OpenAIExample {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class OpenAiError {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
+    private OpenAiErrorDetails error;
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OpenAiErrorDetails {
+
+        /**
+         * Human-readable error message
+         */
+        String message;
+
+        /**
+         * OpenAI error type, for example "invalid_request_error"
+         * <a href="https://platform.openai.com/docs/guides/error-codes/api-errors">Error codes</a>
+         */
+        String type;
+
+        String param;
+
+        /**
+         * OpenAI error code, for example "invalid_api_key"
+         */
+        String code;
     }
 }

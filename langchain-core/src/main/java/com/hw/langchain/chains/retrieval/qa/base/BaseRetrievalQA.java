@@ -25,6 +25,8 @@ import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.schema.Document;
 
+import reactor.core.publisher.Flux;
+
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +76,7 @@ public abstract class BaseRetrievalQA extends Chain {
      * Run getRelevantText and llm on input query.
      */
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         var question = inputs.get(inputKey).toString();
 
         List<Document> docs = getDocs(question);
@@ -92,4 +94,16 @@ public abstract class BaseRetrievalQA extends Chain {
         return result;
     }
 
+    @Override
+    protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
+        var question = inputs.get(inputKey).toString();
+
+        List<Document> docs = getDocs(question);
+        inputs.put("input_documents", docs);
+        if (!inputs.containsKey("question")) {
+            inputs.put("question", question);
+        }
+        Flux<String> answer = combineDocumentsChain.asyncRun(inputs);
+        return answer.map(s -> Map.of(outputKey, s));
+    }
 }

@@ -29,7 +29,7 @@ The following example can view in the [langchain-example](langchain-examples/src
 
 ## 3. Integrations
 ### 3.1 LLMs
-- [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java)
+- [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java), (support [stream](langchain-examples/src/main/java/com/hw/langchain/examples/llms/StreamOpenAIExample.java))
 - [Azure OpenAI](openai-client/src/test/java/com/hw/openai/AzureOpenAiClientTest.java)
 - [ChatGLM2](langchain-examples/src/main/java/com/hw/langchain/examples/llms/ChatGLMExample.java)
 - [Ollama](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OllamaExample.java)

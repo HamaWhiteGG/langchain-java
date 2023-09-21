@@ -23,6 +23,7 @@ import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.ChatGeneration;
 import com.hw.langchain.schema.ChatResult;
 import com.hw.openai.OpenAiClient;
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.chat.Message;
@@ -76,7 +77,8 @@ public class ChatOpenAI extends BaseChatModel {
 
     protected String openaiApiBase;
 
-    protected String openaiApiType;
+    @Builder.Default
+    protected OpenaiApiType openaiApiType = OpenaiApiType.OPENAI;
 
     protected String openaiApiVersion;
 
@@ -128,7 +130,6 @@ public class ChatOpenAI extends BaseChatModel {
         openaiOrganization = getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
         openaiApiBase = getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiProxy = getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
-        openaiApiType = getOrEnvOrDefault(openaiApiType, "OPENAI_API_TYPE", "");
         openaiApiVersion = getOrEnvOrDefault(openaiApiVersion, "OPENAI_API_VERSION", "");
 
         this.client = OpenAiClient.builder()
@@ -180,7 +181,7 @@ public class ChatOpenAI extends BaseChatModel {
                 .stop(stop)
                 .build();
 
-        var response = retryWithExponentialBackoff(maxRetries, () -> client.create(chatCompletion));
+        var response = retryWithExponentialBackoff(maxRetries, () -> client.createChatCompletion(chatCompletion));
         return createChatResult(response);
     }
 

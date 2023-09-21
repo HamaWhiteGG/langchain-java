@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.requests.TextRequestsWrapper;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.GenerationChunk;
 import com.hw.langchain.schema.LLMResult;
 
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,6 +206,11 @@ public class Ollama extends BaseLLM {
             generations.add(List.of(requireNonNull(finalChunk)));
         }
         return new LLMResult(generations);
+    }
+
+    @Override
+    protected Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
     }
 
     /**

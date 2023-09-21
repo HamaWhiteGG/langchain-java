@@ -19,10 +19,12 @@
 package com.hw.langchain.chat.models.base;
 
 import com.hw.langchain.llms.base.BaseLLM;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
 
 import lombok.experimental.SuperBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -53,5 +55,10 @@ public abstract class LLM extends BaseLLM {
         }).toList();
 
         return new LLMResult(generations);
+    }
+
+    @Override
+    protected Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
     }
 }

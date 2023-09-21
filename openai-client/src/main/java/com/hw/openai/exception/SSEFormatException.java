@@ -16,26 +16,14 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
-
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
-
-import static com.hw.langchain.examples.utils.PrintUtils.println;
+package com.hw.openai.exception;
 
 /**
  * @author HamaWhite
  */
-@RunnableExample
-public class OpenAIExample {
+public class SSEFormatException extends Throwable {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
-
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+    public SSEFormatException(String message) {
+        super(message);
     }
 }

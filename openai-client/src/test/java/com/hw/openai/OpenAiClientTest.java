@@ -85,11 +85,31 @@ class OpenAiClientTest {
         Completion completion = Completion.builder()
                 .model("text-davinci-003")
                 .prompt(List.of("Say this is a test"))
-                .maxTokens(700)
                 .temperature(0)
                 .build();
 
         assertThat(client.completion(completion)).isEqualTo("This is indeed a test.");
+    }
+
+    @Test
+    void testStreamCompletion() {
+        Completion completion = Completion.builder()
+                .model("gpt-3.5-turbo-instruct")
+                .prompt(List.of("Say this is a test"))
+                .temperature(0)
+                .stream(true)
+                .build();
+
+        // Call client.streamCompletion(completion) and verify the results
+        List<String> resultList = client.streamCompletion(completion)
+                .doOnError(Throwable::printStackTrace)
+                .map(e -> e.getChoices().get(0).getText())
+                .toList()
+                .blockingGet();
+
+        assertThat(resultList).isNotNull();
+        assertThat(resultList).isNotEmpty();
+        assertThat(resultList).isEqualTo(List.of("\n\n", "This", " is", " a", " test", ".", ""));
     }
 
     @Test
@@ -106,13 +126,39 @@ class OpenAiClientTest {
     }
 
     @Test
+    void testStreamChatCompletion() {
+        Message message = Message.of("Hello!");
+
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model("gpt-3.5-turbo")
+                .temperature(0)
+                .messages(List.of(message))
+                .stream(true)
+                .build();
+
+        List<String> resultList = client.streamChatCompletion(chatCompletion)
+                .doOnError(Throwable::printStackTrace)
+                .map(e -> {
+                    String content = e.getChoices().get(0).getMessage().getContent();
+                    return content != null ? content : "";
+                })
+                .toList()
+                .blockingGet();
+
+        assertThat(resultList).isNotNull();
+        assertThat(resultList).isNotEmpty();
+        assertThat(resultList)
+                .isEqualTo(List.of("", "Hello", "!", " How", " can", " I", " assist", " you", " today", "?", ""));
+    }
+
+    @Test
     void testEmbeddings() {
         var embedding = Embedding.builder()
                 .model("text-embedding-ada-002")
                 .input(List.of("The food was delicious and the waiter..."))
                 .build();
 
-        var response = client.embedding(embedding);
+        var response = client.createEmbedding(embedding);
 
         assertThat(response).as("Response should not be null").isNotNull();
         assertThat(response.getData()).as("Data list should have size 1").hasSize(1);

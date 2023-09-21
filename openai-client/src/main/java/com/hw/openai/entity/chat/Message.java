@@ -20,9 +20,11 @@ package com.hw.openai.entity.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -46,8 +48,9 @@ public class Message implements Serializable {
 
     /**
      * The contents of the message.
+     * content should always exist in the call, even if it is null
      */
-    @NotBlank
+    @JsonInclude()
     private String content;
 
     /**

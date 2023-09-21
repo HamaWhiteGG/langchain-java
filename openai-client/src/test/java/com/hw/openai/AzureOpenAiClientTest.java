@@ -18,6 +18,7 @@
 
 package com.hw.openai;
 
+import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
@@ -33,8 +34,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * <a href="https://platform.openai.com/docs/api-reference/completions">OpenAI API reference</a>
- *
  * @author Tingliang Wang
  */
 @Disabled("Test requires costly Azure OpenAI calls, can be run manually.")
@@ -46,7 +45,7 @@ class AzureOpenAiClientTest {
     static void setup() {
         client = OpenAiClient.builder()
                 .openaiApiKey("xxx")
-                .openaiApiType("azure")
+                .openaiApiType(OpenaiApiType.AZURE)
                 .openaiApiBase("https://xxx.openai.azure.com/")
                 .openaiApiVersion("2023-05-15")
                 .build()
@@ -90,7 +89,7 @@ class AzureOpenAiClientTest {
                 .input(List.of("The food was delicious and the waiter..."))
                 .build();
 
-        var response = client.embedding(embedding);
+        var response = client.createEmbedding(embedding);
 
         assertThat(response).as("Response should not be null").isNotNull();
         assertThat(response.getData()).as("Data list should have size 1").hasSize(1);

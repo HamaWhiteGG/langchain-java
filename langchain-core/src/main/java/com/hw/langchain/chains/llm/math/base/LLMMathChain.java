@@ -48,9 +48,9 @@ public class LLMMathChain extends Chain {
 
     private LLMChain llmChain;
 
-    private String inputKey = "question";
+    private final String inputKey = "question";
 
-    private String outputKey = "answer";
+    private final String outputKey = "answer";
 
     public LLMMathChain() {
         super();
@@ -99,7 +99,7 @@ public class LLMMathChain extends Chain {
             var localDict = Map.of("pi", Math.PI, "e", Math.E);
             // Set local variables in the interpreter
             localDict.forEach(interpreter::set);
-            // Evaluate the expression using jython
+            // Evaluate the expression
             result = interpreter.eval(expression.strip());
         }
         // Convert the result to a string
@@ -127,7 +127,7 @@ public class LLMMathChain extends Chain {
     }
 
     @Override
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         var kwargs = Map.of("question", inputs.get(inputKey), "stop", List.of("```output"));
         String llmOutput = llmChain.predict(kwargs);
         return processLLMResult(llmOutput);

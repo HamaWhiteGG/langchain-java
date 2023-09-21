@@ -37,6 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Data
 @Builder
-public class PineconeClient {
+public class PineconeClient implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PineconeClient.class);
 
@@ -139,6 +140,7 @@ public class PineconeClient {
     /**
      * Closes the HttpClient connection pool.
      */
+    @Override
     public void close() {
         // Cancel all ongoing requests
         httpClient.dispatcher().cancelAll();

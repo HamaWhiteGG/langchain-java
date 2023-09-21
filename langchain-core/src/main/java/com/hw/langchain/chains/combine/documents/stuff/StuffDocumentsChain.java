@@ -26,6 +26,8 @@ import com.hw.langchain.schema.Document;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import reactor.core.publisher.Flux;
+
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +116,12 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
         var inputs = getInputs(docs, kwargs);
         // Call predict on the LLM.
         return Pair.of(llmChain.predict(inputs), Map.of());
+    }
+
+    @Override
+    public Flux<Pair<String, Map<String, String>>> asyncCombineDocs(List<Document> docs, Map<String, Object> kwargs) {
+        var inputs = getInputs(docs, kwargs);
+        return llmChain.asyncPredict(inputs).map(s -> Pair.of(s, Map.of()));
     }
 
     @Override

@@ -18,9 +18,12 @@
 
 package com.hw.langchain.base.language;
 
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
+
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -39,7 +42,9 @@ public interface BaseLanguageModel {
     /**
      * Predict text from text.
      */
-    String predict(String text);
+    default String predict(String text) {
+        return predict(text, null);
+    }
 
     /**
      * Predict text from text.
@@ -49,10 +54,48 @@ public interface BaseLanguageModel {
     /**
      * Predict message from messages.
      */
-    BaseMessage predictMessages(List<BaseMessage> messages);
+    default BaseMessage predictMessages(List<BaseMessage> messages) {
+        return predictMessages(messages, null);
+    }
 
     /**
      * Predict message from messages.
      */
     BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop);
+
+    /**
+     * Take in a list of prompt values and return an Flux<AsyncLLMResult> for every PromptValue.
+     */
+    default List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts) {
+        return asyncGeneratePrompt(prompts, null);
+    }
+
+    /**
+     * Take in a list of prompt values and return an Flux<AsyncLLMResult> for every PromptValue.
+     */
+    default List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
+    }
+
+    /**
+     * Predict text from text async.
+     */
+    default Flux<String> asyncPredict(String text) {
+        return asyncPredict(text, null);
+    }
+
+    /**
+     * Predict text from text async.
+     */
+    default Flux<String> asyncPredict(String text, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
+    }
+
+    /**
+     * Predict message from messages async.
+     */
+    default Flux<BaseMessage> asyncPredictMessages(List<BaseMessage> messages, List<String> stop) {
+        throw new UnsupportedOperationException("not supported yet.");
+    }
+
 }

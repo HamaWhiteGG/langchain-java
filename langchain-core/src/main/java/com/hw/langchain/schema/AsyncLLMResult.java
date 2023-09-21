@@ -16,26 +16,33 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
+package com.hw.langchain.schema;
 
-import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
+import lombok.Data;
 
-import static com.hw.langchain.examples.utils.PrintUtils.println;
+import java.util.List;
+import java.util.Map;
 
 /**
- * @author HamaWhite
+ * @author lingjue@ubuntu
+ * @since 8/1/23 7:01 PM
  */
-@RunnableExample
-public class OpenAIExample {
+@Data
+public class AsyncLLMResult {
 
-    public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
-                .build()
-                .init();
+    /**
+     * List of the things generated.
+     */
+    private List<? extends Generation> generations;
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+    /**
+     * For arbitrary LLM provider specific output.
+     */
+    private Map<String, Object> llmOutput;
+
+    public AsyncLLMResult(List<? extends Generation> generations, Map<String, Object> llmOutput) {
+        this.generations = generations;
+        this.llmOutput = llmOutput;
     }
+
 }

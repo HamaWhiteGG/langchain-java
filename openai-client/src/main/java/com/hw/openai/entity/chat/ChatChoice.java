@@ -18,6 +18,7 @@
 
 package com.hw.openai.entity.chat;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -31,7 +32,7 @@ public class ChatChoice {
 
     private Integer index;
 
-    @JsonProperty("message")
+    @JsonAlias("delta")
     private Message message;
 
     @JsonProperty("finish_reason")

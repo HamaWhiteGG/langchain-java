@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Disabled("Test requires costly OpenAI and Pinecone calls, can be run manually.")
 class ExampleRunnerTest {
 
-    private static final String PACKAGE_NAME = "com.hw.langchain.examples";
+    private static final String PACKAGE_NAME = "com.hw";
 
     @Test
     void testExecuteExamples() {

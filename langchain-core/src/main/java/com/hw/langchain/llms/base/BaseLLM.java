@@ -19,11 +19,13 @@
 package com.hw.langchain.llms.base;
 
 import com.hw.langchain.base.language.BaseLanguageModel;
+import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.PromptValue;
 
 import lombok.experimental.SuperBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -43,6 +45,10 @@ public abstract class BaseLLM implements BaseLanguageModel {
      * Run the LLM on the given prompts.
      */
     protected abstract LLMResult innerGenerate(List<String> prompts, List<String> stop);
+    /**
+     * Run the LLM on the given prompts async.
+     */
+    protected abstract Flux<AsyncLLMResult> asyncInnerGenerate(List<String> prompts, List<String> stop);
 
     /**
      * Check Cache and run the LLM on the given prompt and input.
@@ -71,8 +77,11 @@ public abstract class BaseLLM implements BaseLanguageModel {
     }
 
     @Override
-    public String predict(String text) {
-        return predict(text, null);
+    public List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts, List<String> stop) {
+        List<String> promptStrings = prompts.stream()
+                .map(PromptValue::toString)
+                .toList();
+        return promptStrings.stream().map(s -> asyncInnerGenerate(List.of(s), stop)).toList();
     }
 
     @Override
@@ -81,8 +90,8 @@ public abstract class BaseLLM implements BaseLanguageModel {
     }
 
     @Override
-    public BaseMessage predictMessages(List<BaseMessage> messages) {
-        return predictMessages(messages, null);
+    public Flux<String> asyncPredict(String text, List<String> stop) {
+        return asyncInnerGenerate(List.of(text), stop).map(result -> result.getGenerations().get(0).getText());
     }
 
     @Override

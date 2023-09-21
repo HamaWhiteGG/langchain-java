@@ -24,6 +24,8 @@ import com.hw.langchain.schema.Document;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import reactor.core.publisher.Flux;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +65,14 @@ public abstract class BaseCombineDocumentsChain extends Chain {
      */
     public abstract Pair<String, Map<String, String>> combineDocs(List<Document> docs, Map<String, Object> kwargs);
 
-    @Override
+    /**
+     * Combine documents into a single string async.
+     */
+    public abstract Flux<Pair<String, Map<String, String>>> asyncCombineDocs(List<Document> docs,
+            Map<String, Object> kwargs);
 
-    public Map<String, String> innerCall(Map<String, Object> inputs) {
+    @Override
+    protected Map<String, String> innerCall(Map<String, Object> inputs) {
         @SuppressWarnings("unchecked")
         var docs = (List<Document>) inputs.get(inputKey);
 
@@ -75,5 +82,20 @@ public abstract class BaseCombineDocumentsChain extends Chain {
         var extraReturnDict = new HashMap<>(result.getRight());
         extraReturnDict.put(outputKey, result.getLeft());
         return extraReturnDict;
+    }
+
+    @Override
+    protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
+        @SuppressWarnings("unchecked")
+        var docs = (List<Document>) inputs.get(inputKey);
+
+        Map<String, Object> otherKeys = Maps.filterKeys(inputs, key -> !key.equals(inputKey));
+        var result = this.asyncCombineDocs(docs, otherKeys);
+
+        return result.map(pair -> {
+            var extraReturnDict = new HashMap<>(pair.getRight());
+            extraReturnDict.put(outputKey, pair.getLeft());
+            return extraReturnDict;
+        });
     }
 }

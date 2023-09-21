@@ -16,37 +16,25 @@
  * limitations under the License.
  */
 
-package com.hw.openai.entity.common;
+package com.hw.openai.entity.completions;
+
+import lombok.Data;
+
+import java.util.List;
 
 /**
- * OpenaiApiType
- * @author Tingliang Wang
+ * @author HamaWhite
  */
-public enum OpenaiApiType {
+@Data
+public class CompletionChunk {
 
-    /**
-     * azure.
-     */
-    AZURE("azure"),
+    private String id;
 
-    /**
-     * azure_ad.
-     */
-    AZURE_AD("azure_ad"),
+    private String object;
 
-    /**
-     * openai.
-     */
-    OPENAI("openai");
+    private Long created;
 
-    private final String value;
+    private String model;
 
-    OpenaiApiType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+    private List<Choice> choices;
 }

@@ -16,10 +16,15 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.examples.llms;
+package com.hw.openai.example.chat;
 
 import com.hw.langchain.examples.runner.RunnableExample;
-import com.hw.langchain.llms.openai.OpenAI;
+import com.hw.openai.OpenAiClient;
+import com.hw.openai.entity.chat.ChatCompletion;
+import com.hw.openai.entity.chat.ChatCompletionResp;
+import com.hw.openai.entity.chat.Message;
+
+import java.util.List;
 
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
@@ -27,15 +32,24 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
  * @author HamaWhite
  */
 @RunnableExample
-public class OpenAIExample {
+public class ChatCompletionExample {
 
     public static void main(String[] args) {
-        var llm = OpenAI.builder()
-                .temperature(0.9f)
+        OpenAiClient client = OpenAiClient.builder()
+                .requestTimeout(120)
                 .build()
                 .init();
 
-        var result = llm.predict("Introduce West Lake in Hangzhou, China.");
-        println(result);
+        Message message = Message.of("Introduce West Lake in Hangzhou, China.");
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model("gpt-4")
+                .temperature(0)
+                .messages(List.of(message))
+                .build();
+
+        ChatCompletionResp response = client.createChatCompletion(chatCompletion);
+        println(response.getChoices().get(0).getMessage().getContent());
+
+        client.close();
     }
 }
