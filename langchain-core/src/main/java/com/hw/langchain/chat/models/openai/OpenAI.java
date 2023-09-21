@@ -31,16 +31,16 @@ public class OpenAI {
     }
 
     public static Message convertLangChainToOpenAI(BaseMessage message) {
-        if (message instanceof ChatMessage chatMessage) {
-            return Message.of(chatMessage.getRole(), message.getContent());
+        if (message instanceof ChatMessage) {
+            return Message.of(((ChatMessage) message).getRole(), message.getContent());
         } else if (message instanceof HumanMessage) {
             return Message.of(message.getContent());
         } else if (message instanceof AIMessage) {
             return Message.ofAssistant(message.getContent());
         } else if (message instanceof SystemMessage) {
             return Message.ofSystem(message.getContent());
-        } else if (message instanceof FunctionMessage functionMessage) {
-            return Message.ofFunction(message.getContent(), functionMessage.getName());
+        } else if (message instanceof FunctionMessage) {
+            return Message.ofFunction(message.getContent(), ((FunctionMessage)message).getName());
         } else {
             throw new IllegalArgumentException("Got unknown type " + message.getClass().getSimpleName());
         }
@@ -50,19 +50,15 @@ public class OpenAI {
         Role role = message.getRole();
         String content = message.getContent();
         switch (role) {
-            case USER -> {
+            case USER :
                 return new HumanMessage(content);
-            }
-            case ASSISTANT -> {
+            case ASSISTANT :
                 content = content != null ? content : "";
                 return new AIMessage(content);
-            }
-            case SYSTEM -> {
+            case SYSTEM :
                 return new SystemMessage(content);
-            }
-            default -> {
+            default :
                 return new ChatMessage(content, role.getValue());
-            }
         }
     }
 }

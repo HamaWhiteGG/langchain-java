@@ -18,6 +18,7 @@
 
 package com.hw.langchain.schema;
 
+import cn.hutool.core.map.MapBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -57,22 +58,29 @@ public abstract class BaseMessage {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         objectMapper.registerModule(module);
-        Map<String, Object> map = objectMapper.convertValue(this, new TypeReference<>() {
-        });
-        return Map.of("type", type(), "data", map);
+        Map<String, Object> map = objectMapper.convertValue(this, new TypeReference<Map<String, Object>>() {});
+        return MapBuilder.create(new HashMap<String, Object>())
+                .put("type", type())
+                .put("data", map).map();
     }
 
     public static BaseMessage fromMap(Map<String, Object> message) {
         String type = (String) message.get("type");
         Object data = message.get("data");
         String jsonStr = JsonUtils.toJsonStringWithIndent(data, 0);
-        return switch (type) {
-            case "ai" -> JsonUtils.convertFromJsonStr(jsonStr, AIMessage.class);
-            case "human" -> JsonUtils.convertFromJsonStr(jsonStr, HumanMessage.class);
-            case "system" -> JsonUtils.convertFromJsonStr(jsonStr, SystemMessage.class);
-            case "chat" -> JsonUtils.convertFromJsonStr(jsonStr, ChatMessage.class);
-            case "function" -> JsonUtils.convertFromJsonStr(jsonStr, FunctionMessage.class);
-            default -> throw new LangChainException(String.format("Got unexpected message type:%s", type));
-        };
+        switch (type) {
+            case "ai":
+                return JsonUtils.convertFromJsonStr(jsonStr, AIMessage.class);
+            case "human":
+                return JsonUtils.convertFromJsonStr(jsonStr, HumanMessage.class);
+            case "system":
+                return JsonUtils.convertFromJsonStr(jsonStr, SystemMessage.class);
+            case "chat" :
+                return JsonUtils.convertFromJsonStr(jsonStr, ChatMessage.class);
+            case "function" :
+                return JsonUtils.convertFromJsonStr(jsonStr, FunctionMessage.class);
+            default :
+                throw new LangChainException(String.format("Got unexpected message type:%s", type));
+        }
     }
 }

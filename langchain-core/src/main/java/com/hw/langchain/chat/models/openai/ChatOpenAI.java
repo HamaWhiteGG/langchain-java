@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chat.models.openai;
 
+import cn.hutool.core.map.MapBuilder;
 import com.hw.langchain.chat.models.base.BaseChatModel;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.ChatGeneration;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.chat.models.openai.OpenAI.convertOpenAiToLangChain;
 import static com.hw.langchain.utils.Resilience4jRetryUtils.retryWithExponentialBackoff;
@@ -163,12 +165,13 @@ public class ChatOpenAI extends BaseChatModel {
                         a1.getTotalTokens() + a2.getTotalTokens()))
                 .orElse(new Usage());
 
-        return Map.of("token_usage", usage, "model_name", this.model);
+        return MapBuilder.create(new HashMap<String,Object>()).put("token_usage", usage)
+                .put("model_name", this.model).map();
     }
 
     @Override
     public ChatResult innerGenerate(List<BaseMessage> messages, List<String> stop) {
-        var chatMessages = convertMessages(messages);
+        List<Message> chatMessages = convertMessages(messages);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model(model)
@@ -180,14 +183,14 @@ public class ChatOpenAI extends BaseChatModel {
                 .stop(stop)
                 .build();
 
-        var response = retryWithExponentialBackoff(maxRetries, () -> client.create(chatCompletion));
+        ChatCompletionResp response = retryWithExponentialBackoff(maxRetries, () -> client.create(chatCompletion));
         return createChatResult(response);
     }
 
     public List<Message> convertMessages(List<BaseMessage> messages) {
         return messages.stream()
                 .map(OpenAI::convertLangChainToOpenAI)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ChatResult createChatResult(ChatCompletionResp response) {
@@ -195,11 +198,11 @@ public class ChatOpenAI extends BaseChatModel {
                 .stream()
                 .map(choice -> convertOpenAiToLangChain(choice.getMessage()))
                 .map(ChatGeneration::new)
-                .toList();
+                .collect(Collectors.toList());
 
-        Map<String, Object> llmOutput = Map.of(
-                "token_usage", response.getUsage(),
-                "model_name", response.getModel());
+        Map<String, Object> llmOutput = MapBuilder.create(new HashMap<String,Object>())
+                .put("token_usage", response.getUsage())
+                .put("model_name", response.getModel()).map();
         return new ChatResult(generations, llmOutput);
     }
 

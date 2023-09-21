@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -102,7 +104,7 @@ public class DirectoryLoader extends BaseLoader {
             try {
                 LOG.info("Loading file: {}", item);
                 // Create an instance of the loader class and load sub docs
-                var subDocs = loaderCls.getConstructor(String.class)
+                List<Document> subDocs = loaderCls.getConstructor(String.class)
                         .newInstance(item.toString())
                         .load();
                 docs.addAll(subDocs);
@@ -119,15 +121,15 @@ public class DirectoryLoader extends BaseLoader {
         try {
             List<Path> items;
             try (Stream<Path> stream = recursive ? Files.walk(path) : Files.list(path)) {
-                items = stream.filter(p -> !p.toFile().isDirectory()).toList();
+                items = stream.filter(p -> !p.toFile().isDirectory()).collect(Collectors.toList());
             }
             List<Document> docs = new ArrayList<>();
             if (useMultithreading) {
                 ExecutorService executor = createThreadPool(maxConcurrency);
-                var futures = items.stream()
+                List<CompletableFuture<Void>> futures = items.stream()
                         .map(item -> CompletableFuture.runAsync(() -> loadFile(item, path, docs), executor))
-                        .toList();
-                CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
+                        .collect(Collectors.toList());
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
                 executor.shutdown();
             } else {
                 items.forEach(item -> loadFile(item, path, docs));
