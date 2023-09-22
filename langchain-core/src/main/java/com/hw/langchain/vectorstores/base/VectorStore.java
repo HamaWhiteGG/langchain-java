@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.vectorstores.base.SearchType.SIMILARITY;
 
@@ -61,8 +62,8 @@ public abstract class VectorStore {
      * @return List of IDs of the added texts.
      */
     public List<String> addDocuments(List<Document> documents, Map<String, Object> kwargs) {
-        var texts = documents.stream().map(Document::getPageContent).toList();
-        var metadatas = documents.stream().map(Document::getMetadata).toList();
+        var texts = documents.stream().map(Document::getPageContent).collect(Collectors.toList());
+        var metadatas = documents.stream().map(Document::getMetadata).collect(Collectors.toList());
         return addTexts(texts, metadatas);
     }
 
@@ -189,8 +190,8 @@ public abstract class VectorStore {
      * Return VectorStore initialized from documents and embeddings.
      */
     public int fromDocuments(List<Document> documents, Embeddings embedding) {
-        List<String> texts = documents.stream().map(Document::getPageContent).toList();
-        List<Map<String, Object>> metadatas = documents.stream().map(Document::getMetadata).toList();
+        List<String> texts = documents.stream().map(Document::getPageContent).collect(Collectors.toList());
+        List<Map<String, Object>> metadatas = documents.stream().map(Document::getMetadata).collect(Collectors.toList());
         return fromTexts(texts, embedding, metadatas);
     }
 

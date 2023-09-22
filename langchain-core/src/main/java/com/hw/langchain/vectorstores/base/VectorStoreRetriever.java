@@ -18,6 +18,7 @@
 
 package com.hw.langchain.vectorstores.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.schema.BaseRetriever;
 import com.hw.langchain.schema.Document;
 
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.vectorstores.base.SearchType.SIMILARITY_SCORE_THRESHOLD;
 
@@ -64,11 +66,11 @@ public class VectorStoreRetriever implements BaseRetriever {
     @Override
     public List<Document> getRelevantDocuments(String query) {
         return switch (searchType) {
-            case SIMILARITY -> vectorstore.similaritySearch(query, Map.of());
+            case SIMILARITY -> vectorstore.similaritySearch(query, MapUtil.empty());
             case SIMILARITY_SCORE_THRESHOLD -> vectorstore.similaritySearchWithRelevanceScores(query)
                     .stream()
                     .map(Pair::getLeft)
-                    .toList();
+                    .collect(Collectors.toList());
             case MMR -> vectorstore.maxMarginalRelevanceSearch(query);
         };
     }

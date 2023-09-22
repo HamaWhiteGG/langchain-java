@@ -18,6 +18,7 @@
 
 package com.hw.langchain.text.splitter;
 
+import cn.hutool.core.util.StrUtil;
 import com.hw.langchain.schema.BaseDocumentTransformer;
 import com.hw.langchain.schema.Document;
 
@@ -111,7 +112,7 @@ public abstract class TextSplitter implements BaseDocumentTransformer {
     }
 
     private String joinDocs(List<String> docs, String separator) {
-        String text = String.join(separator, docs).strip();
+        String text = StrUtil.strip(String.join(separator, docs), " ");
         return text.isEmpty() ? null : text;
     }
 

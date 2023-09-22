@@ -43,8 +43,8 @@ public class Schema {
                 role = aiPrefix;
             } else if (m instanceof SystemMessage) {
                 role = "System";
-            } else if (m instanceof ChatMessage chatMessage) {
-                role = chatMessage.getRole();
+            } else if (m instanceof ChatMessage) {
+                role = ((ChatMessage)m).getRole();
             } else {
                 throw new IllegalArgumentException("Got unsupported message type: " + m);
             }

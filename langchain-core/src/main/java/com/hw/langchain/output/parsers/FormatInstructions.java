@@ -18,30 +18,15 @@
 
 package com.hw.langchain.output.parsers;
 
+
+import com.hw.langchain.utils.ResourceBundleUtils;
+
 /**
  * @author HamaWhite
  */
 public class FormatInstructions {
 
-    public static String STRUCTURED_FORMAT_INSTRUCTIONS =
-            """
-                    The output should be a markdown code snippet formatted in the following schema, including the leading and trailing "```json" and "```":
+    public static String STRUCTURED_FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("prompt.output.parser.structured.format");
 
-                    ```json
-                    {{
-                    {format}
-                    }}
-                    ```""";
-
-    public static String PYDANTIC_FORMAT_INSTRUCTIONS =
-            """
-                    The output should be formatted as a JSON instance that conforms to the JSON schema below.
-
-                    As an example, for the schema {{"properties": {{"foo": {{"title": "Foo", "description": "a list of strings", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}}}
-                    the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of the schema. The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
-
-                    Here is the output schema:
-                    ```
-                    {schema}
-                    ```""";
+    public static String PYDANTIC_FORMAT_INSTRUCTIONS = ResourceBundleUtils.getString("prompt.output.parser.pydantic.format");
 }

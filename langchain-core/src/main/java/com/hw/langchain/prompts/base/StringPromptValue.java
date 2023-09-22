@@ -18,6 +18,7 @@
 
 package com.hw.langchain.prompts.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.HumanMessage;
 import com.hw.langchain.schema.PromptValue;
@@ -38,7 +39,7 @@ public class StringPromptValue implements PromptValue {
 
     @Override
     public List<BaseMessage> toMessages() {
-        return List.of(new HumanMessage(text));
+        return ListUtil.of(new HumanMessage(text));
     }
 
     /**

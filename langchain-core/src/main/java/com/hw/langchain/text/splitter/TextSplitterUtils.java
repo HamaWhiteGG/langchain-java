@@ -18,12 +18,14 @@
 
 package com.hw.langchain.text.splitter;
 
+import cn.hutool.core.collection.ListUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author HamaWhite
@@ -48,12 +50,12 @@ public class TextSplitterUtils {
                 }
                 splits.add(0, parts[0]);
             } else {
-                splits = List.of(text.split(separator));
+                splits = ListUtil.of(text.split(separator));
             }
         } else {
-            splits = List.of(text);
+            splits = ListUtil.of(text);
         }
-        return splits.stream().filter(StringUtils::isNotEmpty).toList();
+        return splits.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
     }
 
     /**

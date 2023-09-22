@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.LLMResult;
@@ -26,6 +27,7 @@ import com.hw.langchain.schema.PromptValue;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LLM wrapper should take in a prompt and return a string.
@@ -48,7 +50,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
      * Check Cache and run the LLM on the given prompt and input.
      */
     public String call(String prompt, List<String> stop) {
-        return generate(List.of(prompt), stop).getGenerations().get(0).get(0).getText();
+        return generate(ListUtil.of(prompt), stop).getGenerations().get(0).get(0).getText();
     }
 
     public String call(String prompt) {
@@ -66,7 +68,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
     public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
         List<String> promptStrings = prompts.stream()
                 .map(PromptValue::toString)
-                .toList();
+                .collect(Collectors.toList());
         return generate(promptStrings, stop);
     }
 

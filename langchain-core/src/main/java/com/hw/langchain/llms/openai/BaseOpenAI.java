@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.openai;
 
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.Generation;
 import com.hw.langchain.schema.LLMResult;
@@ -209,7 +210,7 @@ public class BaseOpenAI extends BaseLLM {
             choices.addAll(response.getChoices());
         }
 
-        return createLLMResult(choices, prompts, Map.of());
+        return createLLMResult(choices, prompts, MapUtil.empty());
     }
 
     /**

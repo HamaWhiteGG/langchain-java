@@ -18,6 +18,8 @@
 
 package com.hw.langchain.retrievers.self.query.pinecone;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.query.constructor.ir.*;
 
@@ -32,7 +34,7 @@ import java.util.Map;
 public class PineconeTranslator extends Visitor {
 
     public PineconeTranslator() {
-        super(null, List.of(Operator.AND, Operator.OR));
+        super(null, ListUtil.of(Operator.AND, Operator.OR));
     }
 
     private String formatFunc(StringEnum<?> func) {
@@ -41,14 +43,14 @@ public class PineconeTranslator extends Visitor {
 
     @Override
     public Map<String, Object> visitOperation(Operation operation) {
-        return Map.of();
+        return MapUtil.empty();
     }
 
     @Override
     public Map<String, Object> visitComparison(Comparison comparison) {
-        return Map.of(
+        return MapUtil.of(
                 comparison.getAttribute(),
-                Map.of(formatFunc(comparison.getComparator()), comparison.getValue()));
+                MapUtil.of(formatFunc(comparison.getComparator()), comparison.getValue()));
     }
 
     @Override

@@ -36,6 +36,7 @@ import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -147,7 +148,7 @@ public class Pinecone extends VectorStore {
     @Override
     public List<Document> similaritySearch(String query, int k, Map<String, Object> filter) {
         List<Pair<Document, Float>> docsAndScores = similaritySearchWithScore(query, k, filter);
-        return docsAndScores.stream().map(Pair::getLeft).toList();
+        return docsAndScores.stream().map(Pair::getLeft).collect(Collectors.toList());
     }
 
     @Override
@@ -180,18 +181,18 @@ public class Pinecone extends VectorStore {
 
         List<Integer> mmrSelected = maximalMarginalRelevance(
                 createFromList(embedding),
-                results.getMatches().stream().map(ScoredVector::getValues).toList(),
+                results.getMatches().stream().map(ScoredVector::getValues).collect(Collectors.toList()),
                 k,
                 lambdaMult);
 
         checkNotNull(mmrSelected, "mmrSelected must not be null");
         List<Map<String, Object>> selected = mmrSelected.stream()
                 .map(i -> results.getMatches().get(i).getMetadata())
-                .toList();
+                .collect(Collectors.toList());
 
         return selected.stream()
                 .map(metadata -> new Document(metadata.remove(textKey).toString(), metadata))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -220,7 +221,7 @@ public class Pinecone extends VectorStore {
         return Stream.generate(UUID::randomUUID)
                 .limit(batchSize)
                 .map(UUID::toString)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private List<Map<String, Object>> createMetadata(List<String> linesBatch, List<Map<String, Object>> metadatas,
@@ -243,6 +244,6 @@ public class Pinecone extends VectorStore {
             List<Map<String, Object>> metadata) {
         return IntStream.range(0, idsBatch.size())
                 .mapToObj(k -> new Vector(idsBatch.get(k), embeds.get(k), metadata.get(k)))
-                .toList();
+                .collect(Collectors.toList());
     }
 }

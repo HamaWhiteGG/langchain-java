@@ -18,6 +18,7 @@
 
 package com.hw.langchain.tools.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,7 +79,7 @@ public abstract class BaseTool {
     }
 
     public Map<String, Object> args() {
-        return Map.of();
+        return MapUtil.empty();
     }
 
     /**

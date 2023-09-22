@@ -18,6 +18,8 @@
 
 package com.hw.langchain.examples.memory;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.chains.conversation.base.ConversationChain;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.examples.runner.RunnableExample;
@@ -39,7 +41,7 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
 public class ChatMemoryExample {
 
     public static void main(String[] args) {
-        var prompt = ChatPromptTemplate.fromMessages(List.of(
+        ChatPromptTemplate prompt = ChatPromptTemplate.fromMessages(ListUtil.of(
                 SystemMessagePromptTemplate.fromTemplate(
                         "The following is a friendly conversation between a human and an AI. The AI is talkative and " +
                                 "provides lots of specific details from its context. If the AI does not know the " +
@@ -47,17 +49,17 @@ public class ChatMemoryExample {
                 new MessagesPlaceholder("history"),
                 HumanMessagePromptTemplate.fromTemplate("{input}")));
 
-        var chat = ChatOpenAI.builder().temperature(0).build().init();
-        var memory = new ConversationBufferMemory(true);
-        var conversation = new ConversationChain(chat, prompt, memory);
+        ChatOpenAI chat = ChatOpenAI.builder().temperature(0).build().init();
+        ConversationBufferMemory memory = new ConversationBufferMemory(true);
+        ConversationChain conversation = new ConversationChain(chat, prompt, memory);
 
-        var output = conversation.predict(Map.of("input", "Hi there!"));
+        String output = conversation.predict(MapUtil.of("input", "Hi there!"));
         println(output);
 
-        output = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        output = conversation.predict(MapUtil.of("input", "I'm doing well! Just having a conversation with an AI."));
         println(output);
 
-        output = conversation.predict(Map.of("input", "Tell me about yourself."));
+        output = conversation.predict(MapUtil.of("input", "Tell me about yourself."));
         println(output);
     }
 }
