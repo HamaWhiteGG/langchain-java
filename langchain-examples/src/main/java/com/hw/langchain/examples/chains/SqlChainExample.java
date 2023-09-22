@@ -27,6 +27,8 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
 /**
  * This example demonstrates the use of the SQLDatabaseChain for answering questions over a SQL database.
  * For more usage examples, please refer to SQLDatabaseChainTest in langchain-core module.
+ * <p>
+ * Note: The database script is in scripts/mysql/schema.sql and scripts/mysql/data.sql.
  *
  * @author HamaWhite
  */
