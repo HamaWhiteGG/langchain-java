@@ -29,6 +29,7 @@ import com.hw.openai.entity.completions.CompletionResp;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import lombok.var;
 import okhttp3.Interceptor;
 
 import java.util.*;

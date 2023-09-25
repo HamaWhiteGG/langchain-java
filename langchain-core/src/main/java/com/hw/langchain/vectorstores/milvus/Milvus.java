@@ -26,6 +26,7 @@ import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.base.VectorStore;
 
+import lombok.var;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;

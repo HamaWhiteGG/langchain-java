@@ -215,8 +215,7 @@ public class Ollama extends BaseLLM {
      * @return A GenerationChunk object containing the converted data.
      */
     public static GenerationChunk streamResponseToGenerationChunk(String streamResponse) {
-        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(streamResponse, new TypeReference<>() {
-        });
+        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(streamResponse, new TypeReference<Map<String, Object>>() {});
 
         Map<String, Object> generationInfo = null;
         if (parsedResponse.get("done").equals(true)) {

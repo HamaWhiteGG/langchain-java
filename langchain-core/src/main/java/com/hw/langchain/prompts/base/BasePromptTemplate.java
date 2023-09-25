@@ -23,6 +23,7 @@ import com.hw.langchain.schema.PromptValue;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.var;
 
 import java.util.HashMap;
 import java.util.List;

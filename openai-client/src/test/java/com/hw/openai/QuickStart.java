@@ -18,6 +18,7 @@
 
 package com.hw.openai;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.openai.entity.completions.Completion;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class QuickStart {
 
         Completion completion = Completion.builder()
                 .model("text-davinci-003")
-                .prompt(List.of("Say this is a test"))
+                .prompt(ListUtil.of("Say this is a test"))
                 .maxTokens(700)
                 .temperature(0)
                 .build();

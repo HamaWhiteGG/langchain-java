@@ -18,10 +18,12 @@
 
 package com.hw.langchain.agents.agent;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.agents.agent.types.AgentType;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -48,7 +50,7 @@ class AgentExecutorTest {
         var llm = OpenAI.builder().temperature(0).build().init();
 
         // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-        var tools = loadTools(List.of("serpapi", "llm-math"), llm);
+        var tools = loadTools(ListUtil.of("serpapi", "llm-math"), llm);
 
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
         var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
@@ -67,7 +69,7 @@ class AgentExecutorTest {
 
         // Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
         var llm = OpenAI.builder().temperature(0).build().init();
-        var tools = loadTools(List.of("serpapi", "llm-math"), llm);
+        var tools = loadTools(ListUtil.of("serpapi", "llm-math"), llm);
 
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
         var agent = initializeAgent(tools, chat, AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION);

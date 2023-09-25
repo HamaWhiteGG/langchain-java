@@ -21,6 +21,7 @@ package com.hw.langchain.vectorstores.base;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,12 +69,15 @@ public abstract class VectorStore {
     }
 
     public List<Document> search(String query, SearchType searchType, Map<String, Object> filter) {
-        return switch (searchType) {
-            case SIMILARITY -> similaritySearch(query, filter);
-            case MMR -> maxMarginalRelevanceSearch(query);
-            default -> throw new IllegalArgumentException(
+        switch (searchType) {
+            case SIMILARITY :
+                return similaritySearch(query, filter);
+            case MMR :
+                return maxMarginalRelevanceSearch(query);
+            default :
+                throw new IllegalArgumentException(
                     "searchType of " + searchType + " not allowed. Expected searchType to be 'similarity' or 'mmr'.");
-        };
+        }
     }
 
     /**

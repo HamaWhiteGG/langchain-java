@@ -111,8 +111,7 @@ public class ChatGLM extends LLM {
         String response = requestsWrapper.post(endpointUrl, payload);
         LOG.debug("ChatGLM response: {}", response);
 
-        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<>() {
-        });
+        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<Map<String, Object>>() {});
         String text = parsedResponse.get("response").toString();
 
         if (CollectionUtils.isNotEmpty(stop)) {

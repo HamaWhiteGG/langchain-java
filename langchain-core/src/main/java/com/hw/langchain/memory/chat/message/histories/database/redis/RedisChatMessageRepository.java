@@ -75,8 +75,7 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
         List<String> messageJSonStrList = messageQueue.readAll();
         return messageJSonStrList.stream().map(x -> {
             Map<String, Object> data =
-                    JsonUtils.convertFromJsonStr(x, new TypeReference<>() {
-                    });
+                    JsonUtils.convertFromJsonStr(x, new TypeReference<Map<String, Object>>() {});
             return BaseMessage.fromMap(data);
         }).collect(Collectors.toList());
     }

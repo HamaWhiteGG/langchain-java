@@ -20,6 +20,7 @@ package com.hw.langchain.prompts.chat;
 
 import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.schema.BaseMessage;
+import lombok.var;
 
 import java.util.*;
 

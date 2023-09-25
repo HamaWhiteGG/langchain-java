@@ -80,7 +80,6 @@ public class Json {
                         "Got invalid return object. Expected key `%s` to be present, but got %s", key, jsonNode));
             }
         }
-        return new ObjectMapper().convertValue(jsonNode, new TypeReference<>() {
-        });
+        return new ObjectMapper().convertValue(jsonNode, new TypeReference<Map<String, Object>>() {});
     }
 }

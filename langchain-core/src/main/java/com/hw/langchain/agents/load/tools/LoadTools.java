@@ -19,19 +19,17 @@
 package com.hw.langchain.agents.load.tools;
 
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
-import com.google.common.collect.Lists;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.math.base.LLMMathChain;
 import com.hw.langchain.tools.base.BaseTool;
 import com.hw.langchain.tools.base.Tool;
 import com.hw.langchain.utilities.serpapi.SerpAPIWrapper;
-
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

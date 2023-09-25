@@ -23,12 +23,12 @@ import com.hw.langchain.chat.models.base.BaseChatModel;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.ChatGeneration;
 import com.hw.langchain.schema.ChatResult;
+
 import com.hw.openai.OpenAiClient;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Usage;
-
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import okhttp3.Interceptor;

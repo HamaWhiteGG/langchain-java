@@ -21,6 +21,7 @@ package com.hw.langchain.output.parsers.structured;
 import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.schema.BaseOutputParser;
+import lombok.var;
 
 import java.util.HashMap;
 import java.util.List;

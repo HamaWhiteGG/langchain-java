@@ -29,6 +29,7 @@ import com.hw.langchain.schema.LLMResult;
 import com.hw.langchain.schema.NoOpOutputParser;
 import com.hw.langchain.schema.PromptValue;
 
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +146,7 @@ public class LLMChain extends Chain {
      * Create outputs from response.
      */
     private List<Map<String, String>> createOutputs(LLMResult llmResult) {
-        List<Map<String, String>> result = llmResult.getGenerations().stream()
+        var result = llmResult.getGenerations().stream()
                 .map(generation -> MapBuilder.create(new HashMap<String, String>())
                         .put(outputKey, outputParser.parseResult(generation))
                         .put("full_generation", generation.toString()).map())

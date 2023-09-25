@@ -18,6 +18,8 @@
 
 package com.hw.langchain.schema;
 
+import lombok.var;
+
 import java.util.ArrayList;
 import java.util.List;
 

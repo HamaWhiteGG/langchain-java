@@ -21,6 +21,7 @@ package com.hw.langchain.tools.base;
 import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.EqualsAndHashCode;

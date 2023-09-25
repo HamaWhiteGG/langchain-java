@@ -102,7 +102,8 @@ public class LLMMathChain extends Chain {
         try (PythonInterpreter interpreter = new PythonInterpreter()) {
             // Define local variables
             Map<String,Object> localDict = MapBuilder.create(new HashMap<String, Object>())
-                    .put("pi", Math.PI).put( "e", Math.E).map();
+                    .put("pi", Math.PI)
+                    .put( "e", Math.E).map();
             // Set local variables in the interpreter
             localDict.forEach(interpreter::set);
             // Evaluate the expression using jython

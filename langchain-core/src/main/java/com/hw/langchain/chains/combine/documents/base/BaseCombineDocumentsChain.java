@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -68,10 +69,10 @@ public abstract class BaseCombineDocumentsChain extends Chain {
 
     public Map<String, String> innerCall(Map<String, Object> inputs) {
         @SuppressWarnings("unchecked")
-        List<Document> docs = (List<Document>) inputs.get(inputKey);
+        var docs = (List<Document>) inputs.get(inputKey);
 
         Map<String, Object> otherKeys = Maps.filterKeys(inputs, key -> !key.equals(inputKey));
-        Pair<String, Map<String, String>> result = this.combineDocs(docs, otherKeys);
+        var result = this.combineDocs(docs, otherKeys);
 
         HashMap<String, String> extraReturnDict = new HashMap<>(result.getRight());
         extraReturnDict.put(outputKey, result.getLeft());

@@ -22,6 +22,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -122,7 +123,7 @@ public class MarkdownHeaderTextSplitter {
 
     private boolean processLine(String strippedLine, List<LineType> linesWithMetadata, List<String> currentContent,
             Map<String, Object> currentMetadata, List<HeaderType> headerStack, Map<String, String> initialMetadata) {
-        for (Pair<String, String> pair : headersToSplitOn) {
+        for (var pair : headersToSplitOn) {
             String sep = pair.getLeft();
             String name = pair.getValue();
             if (isHeaderToSplitOn(strippedLine, sep)) {
