@@ -21,8 +21,6 @@ package io.github.resilience4j.retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.resilience4j.core.IntervalFunction;
-
 import java.time.Duration;
 import java.util.function.Supplier;
 
@@ -52,7 +50,7 @@ public class Resilience4jRetryExample {
         RetryConfig retryConfig = RetryConfig.custom()
                 .maxAttempts(maxRetries)
                 .intervalFunction(
-                        IntervalFunction.ofExponentialBackoff(Duration.ofSeconds(4), 2, Duration.ofSeconds(16)))
+                        IntervalFunction.ofExponentialBackoff(Duration.ofSeconds(4), 2))
                 .build();
         Retry retry = Retry.of("retryWithExponential", retryConfig);
 

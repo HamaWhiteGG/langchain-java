@@ -18,8 +18,11 @@
 
 package com.hw.langchain.prompts.utils;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +38,7 @@ class FormatUtilsTest {
     @Test
     void testFormatTemplate() {
         String template = "{{\n{format}\n}}";
-        Map<String, Object> kwargs = Map.of("format", "value");
+        Map<String, Object> kwargs = MapUtil.of("format", "value");
 
         String expected = "{\nvalue\n}";
         String actual = formatTemplate(template, kwargs);
@@ -46,9 +49,9 @@ class FormatUtilsTest {
     @Test
     void testFormatTemplateWithValidTemplate() {
         String template = "Hello, {name}! Today is {day}.";
-        Map<String, Object> kwargs = Map.of(
-                "name", "John",
-                "day", "Monday");
+        Map<String, Object> kwargs = MapBuilder.create(new HashMap<String, Object>())
+                .put("name", "John")
+                .put("day", "Monday").map();
 
         String expected = "Hello, John! Today is Monday.";
         String actual = formatTemplate(template, kwargs);
@@ -59,7 +62,7 @@ class FormatUtilsTest {
     @Test
     void testFormatTemplateWithInvalidTemplate() {
         String template = "Hello, {name}! Today is {day}.";
-        Map<String, Object> kwargs = Map.of("name", "John");
+        Map<String, Object> kwargs = MapUtil.of("name", "John");
 
         String expected = "Hello, John! Today is {day}.";
         String actual = formatTemplate(template, kwargs);
@@ -70,7 +73,7 @@ class FormatUtilsTest {
     @Test
     void testFormatTemplateWithDoubleCurlyBraces() {
         String template = "Hello, {{{name}}}!";
-        Map<String, Object> kwargs = Map.of("name", "John");
+        Map<String, Object> kwargs = MapUtil.of("name", "John");
 
         // but python is 'Hello, {John}!'
         String expected = "Hello, {John}!";
@@ -81,7 +84,7 @@ class FormatUtilsTest {
     @Test
     void testFormatTemplateWithQuadrupleCurlyBraces() {
         String template = "Hello, {{{{name}}}}!";
-        Map<String, Object> kwargs = Map.of("name", "John");
+        Map<String, Object> kwargs = MapUtil.of("name", "John");
 
         // python is 'Hello, {{name}}!'
         String expected = "Hello, {John}!";
@@ -91,11 +94,12 @@ class FormatUtilsTest {
 
     @Test
     void testFindVariables() {
-        String input = """
-                {{
-                  "action": $TOOL_NAME,
-                  "action_input": $INPUT
-                }}""";
+        String input = "" +
+                "{{\n" +
+                "                  \"action\": $TOOL_NAME,\n" +
+                "                  \"action_input\": $INPUT\n" +
+                "                }}" +
+                "";
 
         List<String> actualVariables = findVariables(input);
         assertEquals(0, actualVariables.size());

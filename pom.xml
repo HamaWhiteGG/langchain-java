@@ -15,6 +15,7 @@
         <module>langchain-core</module>
         <module>serpapi-client</module>
         <module>pinecone-client</module>
+        <module>restapi-client</module>
 <!--        <module>langchain-examples</module>-->
 <!--        <module>langchain-bigdata</module>-->
     </modules>
@@ -83,6 +84,12 @@
             <dependency>
                 <groupId>io.github.hamawhitegg</groupId>
                 <artifactId>pinecone-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hamawhitegg</groupId>
+                <artifactId>restapi-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

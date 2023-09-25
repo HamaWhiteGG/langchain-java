@@ -18,12 +18,14 @@
 
 package com.hw.langchain.prompts.prompt;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <a href="https://python.langchain.com/en/latest/modules/prompts/prompt_templates/getting_started.html">Prompt Templates Started </a>
@@ -35,18 +37,18 @@ class PromptTemplateTest {
 
     @Test
     void testPromptTemplate() {
-        String template = """
-                I want you to act as a naming consultant for new companies.
-                What is a good name for a company that makes {product}?
-                """;
+        String template = "" +
+                "I want you to act as a naming consultant for new companies.\n" +
+                "                What is a good name for a company that makes {product}?" +
+                "";
 
-        PromptTemplate prompt = new PromptTemplate(List.of("product"), template);
-        String actual = prompt.format(Map.of("product", "colorful socks"));
+        PromptTemplate prompt = new PromptTemplate(ListUtil.of("product"), template);
+        String actual = prompt.format(MapUtil.of("product", "colorful socks"));
 
-        String expected = """
-                I want you to act as a naming consultant for new companies.
-                What is a good name for a company that makes colorful socks?
-                """;
+        String expected = "" +
+                " I want you to act as a naming consultant for new companies.\n" +
+                "                What is a good name for a company that makes colorful socks?" +
+                "";
         assertEquals(expected, actual);
     }
 
@@ -55,9 +57,9 @@ class PromptTemplateTest {
      */
     @Test
     void testPromptWithNoInputVariables() {
-        PromptTemplate noInputPrompt = new PromptTemplate(List.of(), "Tell me a joke.");
+        PromptTemplate noInputPrompt = new PromptTemplate(ListUtil.of(), "Tell me a joke.");
 
-        String actual = noInputPrompt.format(Map.of());
+        String actual = noInputPrompt.format(MapUtil.empty());
         String expected = "Tell me a joke.";
         assertEquals(expected, actual);
     }
@@ -67,10 +69,10 @@ class PromptTemplateTest {
      */
     @Test
     void testPromptWithOneInputVariables() {
-        PromptTemplate oneInputPrompt = new PromptTemplate(List.of("adjective"),
+        PromptTemplate oneInputPrompt = new PromptTemplate(ListUtil.of("adjective"),
                 "Tell me a {adjective} joke.");
 
-        String actual = oneInputPrompt.format(Map.of("adjective", "funny"));
+        String actual = oneInputPrompt.format(MapUtil.of("adjective", "funny"));
         String expected = "Tell me a funny joke.";
         assertEquals(expected, actual);
     }
@@ -81,10 +83,12 @@ class PromptTemplateTest {
     @Test
     void testPromptWithMultipleInputVariables() {
         PromptTemplate oneInputPrompt =
-                new PromptTemplate(List.of("adjective", "content"),
+                new PromptTemplate(ListUtil.of("adjective", "content"),
                         "Tell me a {adjective} joke about {content}.");
 
-        String actual = oneInputPrompt.format(Map.of("adjective", "funny", "content", "chickens"));
+        String actual = oneInputPrompt.format(MapBuilder.create(new HashMap<String, Object>())
+                .put("adjective", "funny")
+                .put("content", "chickens").map());
         String expected = "Tell me a funny joke about chickens.";
         assertEquals(expected, actual);
     }
@@ -94,9 +98,11 @@ class PromptTemplateTest {
         String template = "Tell me a {adjective} joke about {content}.";
 
         PromptTemplate promptTemplate = PromptTemplate.fromTemplate(template);
-        assertEquals(List.of("adjective", "content"), promptTemplate.getInputVariables());
+        assertEquals(ListUtil.of("adjective", "content"), promptTemplate.getInputVariables());
 
-        String actual = promptTemplate.format(Map.of("adjective", "funny", "content", "chickens"));
+        String actual = promptTemplate.format(MapBuilder.create(new HashMap<String, Object>())
+                .put("adjective", "funny")
+                .put("content", "chickens").map());
         String expected = "Tell me a funny joke about chickens.";
         assertEquals(expected, actual);
     }

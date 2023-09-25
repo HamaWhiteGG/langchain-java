@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.chatglm;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

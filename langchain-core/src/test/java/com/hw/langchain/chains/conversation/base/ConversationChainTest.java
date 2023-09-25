@@ -28,6 +28,7 @@ import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.MessagesPlaceholder;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

@@ -17,7 +17,7 @@ package com.hw.restapi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;

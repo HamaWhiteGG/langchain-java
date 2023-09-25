@@ -24,6 +24,7 @@ import com.hw.langchain.vectorstores.pinecone.Pinecone;
 import com.hw.langchain.vectorstores.pinecone.PineconeTest;
 import com.hw.pinecone.PineconeClient;
 
+import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

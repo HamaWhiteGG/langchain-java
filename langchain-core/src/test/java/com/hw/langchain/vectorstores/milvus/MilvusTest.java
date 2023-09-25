@@ -18,6 +18,8 @@
 
 package com.hw.langchain.vectorstores.milvus;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.fake.embeddings.FakeEmbeddings;
@@ -67,8 +69,8 @@ class MilvusTest {
      */
     @Test
     void testMilvus() {
-        Milvus docSearch = milvusFromTexts(List.of(), true);
-        List<Document> output = docSearch.similaritySearch("foo", 1, Map.of());
-        assertEquals(List.of(new Document("foo")), output);
+        Milvus docSearch = milvusFromTexts(ListUtil.of(), true);
+        List<Document> output = docSearch.similaritySearch("foo", 1, MapUtil.empty());
+        assertEquals(ListUtil.of(new Document("foo")), output);
     }
 }

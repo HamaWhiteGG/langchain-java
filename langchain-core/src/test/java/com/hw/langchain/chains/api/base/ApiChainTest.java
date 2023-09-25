@@ -20,6 +20,7 @@ package com.hw.langchain.chains.api.base;
 
 import com.hw.langchain.llms.openai.OpenAI;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

@@ -18,11 +18,14 @@
 
 package com.hw.langchain.text.splitter;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
 import com.hw.langchain.schema.Document;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,34 +41,38 @@ class MarkdownHeaderTextSplitterTest {
      */
     @Test
     void testMdHeaderTextSplitter1() {
-        String markdownDocument = """
-                # Foo
+        String markdownDocument = "" +
+                "# Foo\n" +
+                "\n" +
+                "                    ## Bar\n" +
+                "\n" +
+                "                Hi this is Jim\n" +
+                "\n" +
+                "                Hi this is Joe\n" +
+                "\n" +
+                "                 ## Baz\n" +
+                "\n" +
+                "                 Hi this is Molly" +
+                "";
 
-                    ## Bar
-
-                Hi this is Jim
-
-                Hi this is Joe
-
-                 ## Baz
-
-                 Hi this is Molly
-                """;
-
-        List<Pair<String, String>> headersToSplitOn = List.of(
+        List<Pair<String, String>> headersToSplitOn = ListUtil.of(
                 Pair.of("#", "Header 1"),
                 Pair.of("##", "Header 2"));
 
         MarkdownHeaderTextSplitter markdownSplitter = new MarkdownHeaderTextSplitter(headersToSplitOn);
         List<Document> output = markdownSplitter.splitText(markdownDocument);
 
-        List<Document> expectedOutput = List.of(
+        List<Document> expectedOutput = ListUtil.of(
                 new Document(
                         "Hi this is Jim  \nHi this is Joe",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar").map()),
                 new Document(
                         "Hi this is Molly",
-                        Map.of("Header 1", "Foo", "Header 2", "Baz")));
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Baz").map()));
         assertEquals(expectedOutput, output);
     }
 
@@ -74,25 +81,25 @@ class MarkdownHeaderTextSplitterTest {
      */
     @Test
     void testMdHeaderTextSplitter2() {
-        String markdownDocument = """
-                # Foo
+        String markdownDocument = "" +
+                "# Foo\n" +
+                "\n" +
+                "                    ## Bar\n" +
+                "\n" +
+                "                Hi this is Jim\n" +
+                "\n" +
+                "                Hi this is Joe\n" +
+                "\n" +
+                "                 ### Boo\n" +
+                "\n" +
+                "                 Hi this is Lance\n" +
+                "\n" +
+                "                 ## Baz\n" +
+                "\n" +
+                "                 Hi this is Molly" +
+                "";
 
-                    ## Bar
-
-                Hi this is Jim
-
-                Hi this is Joe
-
-                 ### Boo
-
-                 Hi this is Lance
-
-                 ## Baz
-
-                 Hi this is Molly
-                """;
-
-        List<Pair<String, String>> headersToSplitOn = List.of(
+        List<Pair<String, String>> headersToSplitOn = ListUtil.of(
                 Pair.of("#", "Header 1"),
                 Pair.of("##", "Header 2"),
                 Pair.of("###", "Header 3"));
@@ -100,16 +107,23 @@ class MarkdownHeaderTextSplitterTest {
         MarkdownHeaderTextSplitter markdownSplitter = new MarkdownHeaderTextSplitter(headersToSplitOn);
         List<Document> output = markdownSplitter.splitText(markdownDocument);
 
-        List<Document> expectedOutput = List.of(
+        List<Document> expectedOutput = ListUtil.of(
                 new Document(
                         "Hi this is Jim  \nHi this is Joe",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar").map()),
                 new Document(
                         "Hi this is Lance",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar", "Header 3", "Boo")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar")
+                                .put("Header 3", "Boo").map()),
                 new Document(
                         "Hi this is Molly",
-                        Map.of("Header 1", "Foo", "Header 2", "Baz")));
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Baz").map()));
         assertEquals(expectedOutput, output);
     }
 
@@ -118,29 +132,29 @@ class MarkdownHeaderTextSplitterTest {
      */
     @Test
     void testMdHeaderTextSplitter3() {
-        String markdownDocument = """
-                # Foo
+        String markdownDocument = "" +
+                "# Foo\n" +
+                "\n" +
+                "                    ## Bar\n" +
+                "\n" +
+                "                Hi this is Jim\n" +
+                "\n" +
+                "                Hi this is Joe\n" +
+                "\n" +
+                "                 ### Boo\n" +
+                "\n" +
+                "                 Hi this is Lance\n" +
+                "\n" +
+                "                 #### Bim\n" +
+                "\n" +
+                "                 Hi this is John\n" +
+                "\n" +
+                "                 ## Baz\n" +
+                "\n" +
+                "                 Hi this is Molly" +
+                "";
 
-                    ## Bar
-
-                Hi this is Jim
-
-                Hi this is Joe
-
-                 ### Boo
-
-                 Hi this is Lance
-
-                 #### Bim
-
-                 Hi this is John
-
-                 ## Baz
-
-                 Hi this is Molly
-                """;
-
-        List<Pair<String, String>> headersToSplitOn = List.of(
+        List<Pair<String, String>> headersToSplitOn = ListUtil.of(
                 Pair.of("#", "Header 1"),
                 Pair.of("##", "Header 2"),
                 Pair.of("###", "Header 3"),
@@ -149,19 +163,30 @@ class MarkdownHeaderTextSplitterTest {
         MarkdownHeaderTextSplitter markdownSplitter = new MarkdownHeaderTextSplitter(headersToSplitOn);
         List<Document> output = markdownSplitter.splitText(markdownDocument);
 
-        List<Document> expectedOutput = List.of(
+        List<Document> expectedOutput = ListUtil.of(
                 new Document(
                         "Hi this is Jim  \nHi this is Joe",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar").map()),
                 new Document(
                         "Hi this is Lance",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar", "Header 3", "Boo")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar")
+                                .put( "Header 3", "Boo").map()),
                 new Document(
                         "Hi this is John",
-                        Map.of("Header 1", "Foo", "Header 2", "Bar", "Header 3", "Boo", "Header 4", "Bim")),
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Bar")
+                                .put("Header 3", "Boo")
+                                .put("Header 4", "Bim").map()),
                 new Document(
                         "Hi this is Molly",
-                        Map.of("Header 1", "Foo", "Header 2", "Baz")));
+                        MapBuilder.create(new HashMap<String, Object>())
+                                .put("Header 1", "Foo")
+                                .put("Header 2", "Baz").map()));
         assertEquals(expectedOutput, output);
     }
 }

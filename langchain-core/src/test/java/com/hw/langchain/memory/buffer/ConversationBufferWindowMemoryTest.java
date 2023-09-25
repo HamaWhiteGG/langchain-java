@@ -18,6 +18,8 @@
 
 package com.hw.langchain.memory.buffer;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.memory.chat.memory.BaseChatMemory;
 import com.hw.langchain.schema.AIMessage;
 import com.hw.langchain.schema.BaseChatMessageHistory;
@@ -45,10 +47,10 @@ class ConversationBufferWindowMemoryTest {
                 new ConversationBufferWindowMemory(1, true, baseChatMessageHistory);
 
         when(baseChatMessageHistory.getMessages()).thenReturn(
-                List.of(new HumanMessage("hi"), new AIMessage("hi"),
+                ListUtil.of(new HumanMessage("hi"), new AIMessage("hi"),
                         new HumanMessage("what are you doing"), new AIMessage("I'm thinking")));
 
         assertEquals(2,
-                ((List<?>) conversationBufferWindowMemory.loadMemoryVariables(Map.of()).get("history")).size());
+                ((List<?>) conversationBufferWindowMemory.loadMemoryVariables(MapUtil.empty()).get("history")).size());
     }
 }
