@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hw.langchain.utilities.serpapi;
+package com.hw.langchain.utilities;
 
 import com.google.gson.JsonObject;
 import com.hw.langchain.utils.Utils;
@@ -29,8 +29,7 @@ import java.util.Map;
 /**
  * Wrapper around SerpAPI.
  * <p>
- * To use, you should have the google-search-results python package installed,
- * and the environment variable SERPAPI_API_KEY set with your API key, or pass
+ * Use the environment variable SERPAPI_API_KEY set with your API key, or pass
  * serpapi_api_key as a named parameter to the constructor.
  * <p>
  * <a href="https://serpapi.com/integrations/java">SerpApi in Java </a>

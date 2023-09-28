@@ -51,6 +51,8 @@
         <reactor-core.version>3.5.8</reactor-core.version>
         <reactor-adapter.version>3.5.1</reactor-adapter.version>
         <mockito-core.version>3.12.4</mockito-core.version>
+        <google-api-client.version>2.2.0</google-api-client.version>
+        <google-api-customsearch.version>v1-rev20230702-2.0.0</google-api-customsearch.version>
 
         <scala.binary.version>2.12</scala.binary.version>
         <target.java.version>17</target.java.version>
@@ -280,6 +282,18 @@
                 <groupId>io.reactivex.rxjava2</groupId>
                 <artifactId>rxjava</artifactId>
                 <version>${rxjava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>${google-api-client.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.apis</groupId>
+                <artifactId>google-api-services-customsearch</artifactId>
+                <version>${google-api-customsearch.version}</version>
             </dependency>
 
             <dependency>
