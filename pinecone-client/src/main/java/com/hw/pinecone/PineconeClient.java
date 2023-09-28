@@ -120,7 +120,8 @@ public class PineconeClient implements Closeable {
 
         // Add HttpLogging interceptor
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOG::debug);
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(
+                LOG.isDebugEnabled() ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.BASIC);
         httpClientBuilder.addInterceptor(loggingInterceptor);
 
         httpClient = httpClientBuilder.build();

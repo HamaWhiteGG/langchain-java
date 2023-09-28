@@ -22,7 +22,7 @@ import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.math.base.LLMMathChain;
 import com.hw.langchain.tools.base.BaseTool;
 import com.hw.langchain.tools.base.Tool;
-import com.hw.langchain.utilities.serpapi.SerpAPIWrapper;
+import com.hw.langchain.utilities.SerpAPIWrapper;
 
 import org.apache.commons.lang3.tuple.Pair;
 
