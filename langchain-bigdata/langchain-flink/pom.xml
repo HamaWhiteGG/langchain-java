@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.hamawhitegg</groupId>
         <artifactId>langchain-bigdata</artifactId>
-        <version>0.1.12</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>langchain-flink</artifactId>

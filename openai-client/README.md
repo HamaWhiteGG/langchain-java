@@ -10,7 +10,7 @@ Java libraries for using OpenAI's GPT APIS.
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>openai-client</artifactId>
-    <version>0.1.12</version>
+    <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ```
 * Java 17 or later
