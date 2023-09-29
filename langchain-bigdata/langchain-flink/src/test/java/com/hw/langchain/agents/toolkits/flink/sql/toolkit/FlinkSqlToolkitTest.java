@@ -86,7 +86,6 @@ class FlinkSqlToolkitTest {
                     'path' = '../../docs/extras/modules/titanic_flink.csv',
                     'format' = 'csv'
                 )""");
-        tableEnv.executeSql("SELECT * FROM titanic LIMIT 5").print();
     }
 
     @Test
@@ -110,7 +109,7 @@ class FlinkSqlToolkitTest {
 
         // TODO: It should be DESC here, not ASC.
         // SELECT Name FROM titanic WHERE Survived = 1 ORDER BY Age ASC LIMIT 1
-        actual = agentExecutor.run("What's the name of the oldest survived passenger?");
-        assertEquals("Sandstrom, Miss. Marguerite Rut", actual);
+        // actual = agentExecutor.run("What's the name of the oldest survived passenger?");
+        // assertEquals("Sandstrom, Miss. Marguerite Rut", actual);
     }
 }

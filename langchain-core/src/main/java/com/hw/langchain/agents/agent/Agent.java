@@ -107,7 +107,9 @@ public abstract class Agent extends BaseSingleActionAgent {
     public AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs) {
         var fullInputs = getFullInputs(intermediateSteps, kwargs);
         String fullOutput = llmChain.predict(fullInputs);
-        LOG.info("fullOutput: \n{}", fullOutput);
+
+        String prefix = fullOutput.startsWith("Action:") ? "" : "Thought:";
+        LOG.info("\n{}{}", prefix, fullOutput);
         return outputParser.parse(fullOutput);
     }
 
