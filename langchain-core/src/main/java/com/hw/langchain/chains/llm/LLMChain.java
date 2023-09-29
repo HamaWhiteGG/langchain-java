@@ -141,7 +141,7 @@ public class LLMChain extends Chain {
             });
 
             PromptValue promptValue = this.prompt.formatPrompt(selectedInputs);
-            LOG.info("Prompt after formatting:\n{}", promptValue);
+            LOG.debug("Prompt after formatting:\n{}", promptValue);
             prompts.add(promptValue);
         }
         return prompts;

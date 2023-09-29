@@ -110,7 +110,6 @@ public class AgentExecutor extends Chain {
             List<Pair<AgentAction, String>> intermediateSteps) {
         // Call the LLM to see what to do.
         AgentResult output = agent.plan(intermediateSteps, inputs);
-        LOG.info("Plan output: {}", output);
         if (output instanceof AgentFinish) {
             return output;
         } else if (output instanceof AgentAction agentAction) {
@@ -151,7 +150,7 @@ public class AgentExecutor extends Chain {
         // We now enter the agent loop (until it returns something).
         while (shouldContinue(iterations, timeElapsed)) {
             var nextStepOutput = takeNextStep(nameToToolMap, inputs, intermediateSteps);
-            LOG.info("NextStepOutput: {}", nextStepOutput);
+            LOG.debug("NextStepOutput: {}", nextStepOutput);
             if (nextStepOutput instanceof AgentFinish agentFinish) {
                 return processOutput(agentFinish, intermediateSteps);
             }
