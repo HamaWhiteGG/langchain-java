@@ -55,7 +55,7 @@ public abstract class BaseSingleActionAgent {
      */
     public abstract AgentResult plan(List<Pair<AgentAction, String>> intermediateSteps, Map<String, Object> kwargs);
 
-    public static BaseSingleActionAgent fromLLMAndTools(
+    public static BaseSingleActionAgent fromLlmAndTools(
             BaseLanguageModel llm,
             List<BaseTool> tools,
             Map<String, Object> kwargs) {

@@ -80,14 +80,14 @@ public class ZeroShotAgent extends Agent {
     /**
      * Construct an agent from an LLM and tools.
      */
-    public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, Map<String, Object> kwargs) {
-        return fromLLMAndTools(llm, tools, null, PREFIX, SUFFIX, FORMAT_INSTRUCTIONS, null, kwargs);
+    public static Agent fromLlmAndTools(BaseLanguageModel llm, List<BaseTool> tools, Map<String, Object> kwargs) {
+        return fromLlmAndTools(llm, tools, null, PREFIX, SUFFIX, FORMAT_INSTRUCTIONS, null, kwargs);
     }
 
     /**
      * Construct an agent from an LLM and tools.
      */
-    public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
+    public static Agent fromLlmAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
             String prefix, String suffix, String formatInstructions, List<String> inputVariables,
             Map<String, Object> kwargs) {
         validateTools(tools);

@@ -80,7 +80,7 @@ public class Initialize {
             }
             Class<? extends BaseSingleActionAgent> clazz = AGENT_TO_CLASS.get(agent);
             agentKwargs = agentKwargs != null ? agentKwargs : Map.of();
-            agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLLMAndTools",
+            agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLlmAndTools",
                     llm, tools, agentKwargs);
         } else if (agentPath != null) {
             agentObj = loadAgent(agentPath, Map.of("llm", llm, "tools", tools));
