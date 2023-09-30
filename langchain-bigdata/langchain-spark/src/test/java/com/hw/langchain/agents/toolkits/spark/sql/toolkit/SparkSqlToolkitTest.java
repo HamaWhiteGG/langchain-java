@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.toolkits.spark.sql.toolkit;
 
+import com.hw.langchain.agents.agent.AgentExecutor;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.utilities.spark.sql.SparkSql;
 
@@ -53,6 +54,8 @@ class SparkSqlToolkitTest {
 
     private static SparkSession spark;
 
+    private static AgentExecutor agentExecutor;
+
     @BeforeAll
     static void setup() {
         spark = SparkSession.builder().master("local").getOrCreate();
@@ -71,10 +74,7 @@ class SparkSqlToolkitTest {
 
         String table = "titanic";
         df.write().saveAsTable(table);
-    }
 
-    @Test
-    void testRunQuery() {
         var sparkSql = SparkSql.builder()
                 .spark(spark)
                 .schema(SCHEMA)
@@ -86,17 +86,35 @@ class SparkSqlToolkitTest {
                 .build().init();
 
         var toolkit = new SparkSqlToolkit(sparkSql, llm);
-        var agentExecutor = createSparkSqlAgent(llm, toolkit);
+        agentExecutor = createSparkSqlAgent(llm, toolkit);
+    }
 
-        // SELECT SQRT(AVG(Age)) FROM titanic
+    @Test
+    void testDescribeTable() {
+        var actual = agentExecutor.run("Describe the titanic table");
+
+        var expected = """
+                The titanic table has the following columns: PassengerId (INT), Survived (INT), Pclass (INT), Name (STRING), Sex (STRING), Age (DOUBLE), SibSp (INT), Parch (INT), Ticket (STRING), Fare (DOUBLE), Cabin (STRING), Embarked (STRING). Here are some sample rows from the table:
+                1. PassengerId: 1, Survived: 0, Pclass: 3, Name: Braund, Mr. Owen Harris, Sex: male, Age: 22.0, SibSp: 1, Parch: 0, Ticket: A/5 21171, Fare: 7.25, Cabin: null, Embarked: S
+                2. PassengerId: 2, Survived: 1, Pclass: 1, Name: Cumings, Mrs. John Bradley (Florence Briggs Thayer), Sex: female, Age: 38.0, SibSp: 1, Parch: 0, Ticket: PC 17599, Fare: 71.2833, Cabin: C85, Embarked: C
+                3. PassengerId: 3, Survived: 1, Pclass: 3, Name: Heikkinen, Miss. Laina, Sex: female, Age: 26.0, SibSp: 0, Parch: 0, Ticket: STON/O2. 3101282, Fare: 7.925, Cabin: null, Embarked: S""";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testRunFirstQuery() {
         var actual = agentExecutor.run("whats the square root of the average age?");
 
         var expected = "The square root of the average age is approximately 5.45.";
         assertEquals(expected, actual);
+    }
 
-        // SELECT Name FROM titanic WHERE Survived = 1 ORDER BY Age DESC LIMIT 1
-        // actual = agentExecutor.run("What's the name of the oldest survived passenger?");
-        // assertEquals("Barkworth, Mr. Algernon Henry Wilson", actual);
+    @Test
+    void testRunSecondQuery() {
+        var actual = agentExecutor.run("What's the name of the oldest survived passenger?");
+
+        var expected = "The name of the oldest survived passenger is Barkworth, Mr. Algernon Henry Wilson.";
+        assertEquals(expected, actual);
     }
 
     @AfterAll
