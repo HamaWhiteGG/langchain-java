@@ -125,7 +125,7 @@ public abstract class Agent extends BaseSingleActionAgent {
         return fullInputs;
     }
 
-    public static BaseSingleActionAgent fromLLMAndTools(
+    public static BaseSingleActionAgent fromLlmAndTools(
             BaseLanguageModel llm,
             List<BaseTool> tools,
             Map<String, Object> kwargs) {

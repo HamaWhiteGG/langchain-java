@@ -111,15 +111,15 @@ public class ChatAgent extends Agent {
      * Construct an agent from an LLM and tools.
      * This method will be called by the {@link Initialize#initializeAgent} using MethodUtils.invokeStaticMethod.
      */
-    public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, Map<String, Object> kwargs) {
-        return fromLLMAndTools(llm, tools, null, SYSTEM_MESSAGE_PREFIX, SYSTEM_MESSAGE_SUFFIX, HUMAN_MESSAGE,
+    public static Agent fromLlmAndTools(BaseLanguageModel llm, List<BaseTool> tools, Map<String, Object> kwargs) {
+        return fromLlmAndTools(llm, tools, null, SYSTEM_MESSAGE_PREFIX, SYSTEM_MESSAGE_SUFFIX, HUMAN_MESSAGE,
                 FORMAT_INSTRUCTIONS, null, kwargs);
     }
 
     /**
      * Construct an agent from an LLM and tools.
      */
-    public static Agent fromLLMAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
+    public static Agent fromLlmAndTools(BaseLanguageModel llm, List<BaseTool> tools, AgentOutputParser outputParser,
             String systemMessagePrefix, String systemMessageSuffix, String humanMessage, String formatInstructions,
             List<String> inputVariables, Map<String, Object> kwargs) {
         validateTools(tools);

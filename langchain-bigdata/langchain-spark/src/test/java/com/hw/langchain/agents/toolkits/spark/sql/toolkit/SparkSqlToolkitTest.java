@@ -91,12 +91,12 @@ class SparkSqlToolkitTest {
         // SELECT SQRT(AVG(Age)) FROM titanic
         var actual = agentExecutor.run("whats the square root of the average age?");
 
-        var expected="The square root of the average age is approximately 5.45.";
+        var expected = "The square root of the average age is approximately 5.45.";
         assertEquals(expected, actual);
 
         // SELECT Name FROM titanic WHERE Survived = 1 ORDER BY Age DESC LIMIT 1
-//        actual = agentExecutor.run("What's the name of the oldest survived passenger?");
-//        assertEquals("Barkworth, Mr. Algernon Henry Wilson", actual);
+        // actual = agentExecutor.run("What's the name of the oldest survived passenger?");
+        // assertEquals("Barkworth, Mr. Algernon Henry Wilson", actual);
     }
 
     @AfterAll
