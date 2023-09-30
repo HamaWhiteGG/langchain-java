@@ -96,6 +96,7 @@ class FlinkSqlToolkitTest {
                 .init();
 
         var llm = ChatOpenAI.builder()
+                .model("gpt-4")
                 .temperature(0)
                 .build().init();
 
@@ -105,7 +106,7 @@ class FlinkSqlToolkitTest {
         // SELECT SQRT(AVG(Age)) FROM titanic
         var actual = agentExecutor.run("whats the square root of the average age?");
         // sometimes it's 'The square root of the average age is approximately 5.07.'
-        assertEquals("5.07", actual);
+        assertEquals("The square root of the average age is approximately 5.07.", actual);
 
         // TODO: It should be DESC here, not ASC.
         // SELECT Name FROM titanic WHERE Survived = 1 ORDER BY Age ASC LIMIT 1
