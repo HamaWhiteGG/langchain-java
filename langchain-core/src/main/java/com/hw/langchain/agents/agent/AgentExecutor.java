@@ -118,6 +118,8 @@ public class AgentExecutor extends Chain {
                 var tool = nameToToolMap.get(agentAction.getTool());
                 boolean returnDirect = tool.isReturnDirect();
                 var toolRunKwargs = agent.toolRunLoggingKwargs();
+                // add input args for tools
+                toolRunKwargs.putAll(inputs);
                 if (returnDirect) {
                     toolRunKwargs.put("llm_prefix", "");
                 }
