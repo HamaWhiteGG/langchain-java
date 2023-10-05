@@ -111,6 +111,8 @@ public abstract class BaseTool {
         LOG.debug("kwargs: {}", kwargs);
         Pair<Object[], Map<String, Object>> pair = toArgsAndKwargs(toolInput);
         String args = pair.getKey()[0].toString();
-        return innerRun(args, pair.getValue());
+
+        kwargs.putAll(pair.getValue());
+        return innerRun(args, kwargs);
     }
 }
