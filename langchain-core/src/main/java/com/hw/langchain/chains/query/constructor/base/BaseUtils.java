@@ -77,7 +77,8 @@ public class BaseUtils {
                 Map.of("i", examples.size() + 1, "content", documentContents, "attributes", attributeStr));
 
         var outputParser = StructuredQueryOutputParser.fromComponents(allowedComparators, allowedOperators);
-        return new FewShotPromptTemplate(examples, EXAMPLE_PROMPT, prefix, suffix, List.of("query"), outputParser);
+        return new FewShotPromptTemplate(examples, EXAMPLE_PROMPT, prefix, suffix, List.of("query"), "\n\n",
+                outputParser);
     }
 
     private static Map<String, Object> createTemplateArguments(List<Comparator> allowedComparators,

@@ -136,6 +136,10 @@ public class GoogleSearchAPIWrapper {
         }).toList();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
 
         /**
@@ -163,7 +167,7 @@ public class GoogleSearchAPIWrapper {
          */
         private int readTimeout = 20 * 1000;
 
-        public Builder() {
+        private Builder() {
         }
 
         public Builder googleApiKey(String googleApiKey) {

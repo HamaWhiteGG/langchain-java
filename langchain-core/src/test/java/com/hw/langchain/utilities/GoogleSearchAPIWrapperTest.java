@@ -38,7 +38,7 @@ class GoogleSearchAPIWrapperTest {
     void testGoogleSearch() {
         String query = "2022 USA national auto sales by brand";
 
-        GoogleSearchAPIWrapper searchWrapper = new GoogleSearchAPIWrapper.Builder()
+        GoogleSearchAPIWrapper searchWrapper = GoogleSearchAPIWrapper.builder()
                 .connectTimeout(10 * 1000)
                 .build();
 

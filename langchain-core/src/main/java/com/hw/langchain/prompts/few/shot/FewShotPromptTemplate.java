@@ -63,15 +63,26 @@ public class FewShotPromptTemplate extends StringPromptTemplate {
     /**
      * String separator used to join the prefix, the examples, and suffix.
      */
-    private String exampleSeparator = "\n\n";
+    private String exampleSeparator;
 
     public FewShotPromptTemplate(List<Map<String, Object>> examples, PromptTemplate examplePrompt, String prefix,
-            String suffix, List<String> inputVariables, BaseOutputParser<?> outputParser) {
+            String suffix, List<String> inputVariables) {
+        this(examples, examplePrompt, prefix, suffix, inputVariables, "\n\n");
+    }
+
+    public FewShotPromptTemplate(List<Map<String, Object>> examples, PromptTemplate examplePrompt, String prefix,
+            String suffix, List<String> inputVariables, String exampleSeparator) {
+        this(examples, examplePrompt, prefix, suffix, inputVariables, exampleSeparator, null);
+    }
+
+    public FewShotPromptTemplate(List<Map<String, Object>> examples, PromptTemplate examplePrompt, String prefix,
+            String suffix, List<String> inputVariables, String exampleSeparator, BaseOutputParser<?> outputParser) {
         super(inputVariables, outputParser);
         this.examples = examples;
         this.examplePrompt = examplePrompt;
         this.prefix = prefix;
         this.suffix = suffix;
+        this.exampleSeparator = exampleSeparator;
     }
 
     public List<Map<String, Object>> getExamples() {
