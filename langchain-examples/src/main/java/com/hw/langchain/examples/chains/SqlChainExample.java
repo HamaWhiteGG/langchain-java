@@ -35,7 +35,7 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
 public class SqlChainExample {
 
     public static void main(String[] args) {
-        var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "123456");
+        var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "root", "root@123456");
 
         var llm = OpenAI.builder()
                 .temperature(0)
