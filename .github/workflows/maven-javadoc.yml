@@ -28,7 +28,7 @@ jobs:
           GPG_TTY: $(tty)
 
       - name: Build with Maven
-        run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSWORD  }}
 
       - name: Build and generate Javadoc
         run: mvn javadoc:javadoc
