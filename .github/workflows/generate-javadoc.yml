@@ -20,12 +20,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-          gpg_private_key: ${{ secrets.GPG_SECRET }}
-          gpg_passphrase: ${{ secrets.GPG_PASSWORD }}
-
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
-
 
       - name: Build and generate Javadoc
         run: mvn javadoc:javadoc
