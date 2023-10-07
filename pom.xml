@@ -396,6 +396,15 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <locale>en</locale>
+                        <encoding>UTF-8</encoding>
+                        <docencoding>UTF-8</docencoding>
+                        <additionalJOptions>
+                            <additionalJOption>-J-Duser.language=en</additionalJOption>
+                            <additionalJOption>-J-Duser.region=US</additionalJOption>
+                        </additionalJOptions>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>

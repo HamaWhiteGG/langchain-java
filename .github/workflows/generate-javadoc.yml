@@ -1,0 +1,36 @@
+name: Generate Javadoc and Update gh-pages
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build and generate Javadoc
+        run: mvn javadoc:javadoc
+
+      - name: Deploy to gh-pages
+        run: |
+          git config --global user.name "HamaWhiteGG"
+          git config --global user.email "baisongxx@gmail.com"
+          git checkout --orphan gh-pages
+          git reset --hard
+          git clean -df
+          mv target/site/apidocs/* .
+          git add .
+          git commit -m "Update Javadoc"
+          git push origin gh-pages --force
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
