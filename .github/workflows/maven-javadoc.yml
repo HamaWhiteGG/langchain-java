@@ -21,6 +21,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Import GPG key
+        run: echo "${{ secrets.GPG_SECRET }}" | gpg --import
+
       - name: Build with Maven
         run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
 
