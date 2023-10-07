@@ -16,7 +16,6 @@ This library is aimed at assisting in the development of those types of applicat
 The following example can view in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples)
 
 ## 2. User cases
-
 - [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
 - [API Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
 - [QA-Milvus-Text](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
@@ -28,6 +27,7 @@ The following example can view in the [langchain-example](langchain-examples/src
 - [Flink SQL AI](langchain-bigdata/langchain-flink/src/test/java/com/hw/langchain/agents/toolkits/flink/sql/toolkit/FlinkSqlToolkitTest.java)
 
 ## 3. Integrations
+
 ### 3.1 LLMs
 - [OpenAI](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java), (support [stream](langchain-examples/src/main/java/com/hw/langchain/examples/llms/StreamOpenAIExample.java))
 - [Azure OpenAI](openai-client/src/test/java/com/hw/openai/AzureOpenAiClientTest.java)
@@ -41,7 +41,8 @@ The following example can view in the [langchain-example](langchain-examples/src
 ## 4. Quickstart Guide
 This tutorial gives you a quick walkthrough about building an end-to-end language model application with LangChain.
 
-View the [Quickstart Guide](https://python.langchain.com/docs/get_started) on the LangChain official website.
+The API documentation is available at the following link:   
+[https://hamawhitegg.github.io/langchain-java](https://hamawhitegg.github.io/langchain-java)
 
 ### 4.1 Maven Repository
 Prerequisites for building:
@@ -49,11 +50,12 @@ Prerequisites for building:
 * Unix-like environment (we use Linux, Mac OS X)
 * Maven (we recommend version 3.8.6 and require at least 3.5.4)
 
+ [![Maven Central](https://img.shields.io/maven-central/v/io.github.hamawhitegg/langchain-core)](https://maven-badges.herokuapp.com/maven-central/io.github.hamawhitegg/langchain-core)
 ```xml
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-core</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 

@@ -1,0 +1,81 @@
+name: Maven Generate Javadoc
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_SECRET }}" | gpg --batch --yes --import
+        env:
+          GPG_TTY: $(tty)
+
+      - name: Install with Maven
+        run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSWORD }}
+
+      - name: Build and generate Javadoc
+        run: mvn javadoc:javadoc
+
+      - name: Deploy to gh-pages
+        run: |
+          mkdir -p /tmp/javadoc
+          # create /tmp/javadoc/index.html
+          echo "<html><head><style>body {font-family: Arial, sans-serif;}h1 {color: #373E4D;}ul {list-style-type: none;}li {margin: 5px 0px;}a {color: #9C6ADE;text-decoration: none;}a:hover {text-decoration: underline;}</style></head><body><h1>API Documentation</h1><ul>" > /tmp/javadoc/index.html
+          echo "Listing all directories containing target/site/apidocs"
+          for dir in $(find . -type d -path '*target/site/apidocs'); do
+            echo "Processing $dir"
+            parent_dir=$(echo ${dir%/target/site/apidocs} | cut -c 3-)
+            echo "Processing $parent_dir"
+            # Create corresponding directory
+            mkdir -p "/tmp/javadoc/${parent_dir}"
+            # Copy Javadoc to corresponding directory
+            cp -R "$dir/"* "/tmp/javadoc/${parent_dir}"
+            echo "<li><a href='${parent_dir}/index.html'>${parent_dir}</a></li>" >> /tmp/javadoc/index.html
+          done
+          echo "</ul></body></html>" >> /tmp/javadoc/index.html
+          git config --global user.name "HamaWhiteGG"
+          git config --global user.email "baisongxx@gmail.com"
+          git checkout --orphan gh-pages
+          git reset --hard
+          git clean -df
+          cp -R /tmp/javadoc/* .
+          git add .
+          git commit -m "Update Javadoc" || true 
+          
+          cat << EOF > README.md
+          # Langchain-Java
+      
+          Welcome to the Langchain-Java project!
+      
+          ## API Documentation
+      
+          Our comprehensive API documentation is available at the following link:
+          
+          [https://hamawhitegg.github.io/langchain-java](https://hamawhitegg.github.io/langchain-java)
+      
+          This includes detailed information about the various modules, functionalities, and more within our project.
+
+          Enjoy exploring Langchain-Java!
+          EOF
+          git add README.md
+          git commit -m "Add README"
+
+          # Make sure "Read and write permissions" are enabled in Settings -> Actions -> General -> Workflow permissions
+          git push origin gh-pages --force
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
