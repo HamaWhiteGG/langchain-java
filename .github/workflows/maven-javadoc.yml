@@ -36,6 +36,7 @@ jobs:
       - name: Deploy to gh-pages
         run: |
           echo "Listing all directories containing target/site/apidocs"
+          echo "<html><body><ul>" > /tmp/javadoc/index.html
           for dir in $(find . -type d -path '*target/site/apidocs'); do
             echo "Processing $dir"
             # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
@@ -44,7 +45,9 @@ jobs:
             mkdir -p "/tmp/javadoc/${parent_dir}"
             # Copy Javadoc to corresponding directory
             cp -R "$dir/"* "/tmp/javadoc/${parent_dir}"
+            echo "<li><a href='${parent_dir}index.html'>${parent_dir}</a></li>" >> /tmp/javadoc/index.html
           done
+          echo "</ul></body></html>" >> /tmp/javadoc/index.html
           git config --global user.name "HamaWhiteGG"
           git config --global user.email "baisongxx@gmail.com"
           git checkout --orphan gh-pages
@@ -53,6 +56,8 @@ jobs:
           cp -R /tmp/javadoc/* .
           git add .
           git commit -m "Update Javadoc" || true 
+          
+          # Make sure "Read and write permissions" are enabled in Settings -> Actions -> General -> Workflow permissions
           git push origin gh-pages --force
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
