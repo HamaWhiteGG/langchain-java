@@ -53,6 +53,6 @@ jobs:
           cp -R /tmp/javadoc/* .
           git add .
           git commit -m "Update Javadoc" || true 
-          git push https://${GH_TOKEN}@github.com/HamaWhiteGG/langchain-java.git gh-pages --force
+          git push origin gh-pages --force
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
