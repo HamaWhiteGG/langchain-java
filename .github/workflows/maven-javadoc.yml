@@ -36,17 +36,18 @@ jobs:
       - name: Deploy to gh-pages
         run: |
           mkdir -p /tmp/javadoc
-          echo "<html><body><ul>" > /tmp/javadoc/index.html
+          # create /tmp/javadoc/index.html
+          echo "<html><head><style>body {font-family: Arial, sans-serif;}h1 {color: #373E4D;}ul {list-style-type: none;}li {margin: 5px 0px;}a {color: #9C6ADE;text-decoration: none;}a:hover {text-decoration: underline;}</style></head><body><h1>API Documentation</h1><ul>" > /tmp/javadoc/index.html
           echo "Listing all directories containing target/site/apidocs"
           for dir in $(find . -type d -path '*target/site/apidocs'); do
             echo "Processing $dir"
-            # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
-            parent_dir=${dir%target/site/apidocs}
+            parent_dir=$(echo ${dir%/target/site/apidocs} | cut -c 3-)
+            echo "Processing $parent_dir"
             # Create corresponding directory
             mkdir -p "/tmp/javadoc/${parent_dir}"
             # Copy Javadoc to corresponding directory
             cp -R "$dir/"* "/tmp/javadoc/${parent_dir}"
-            echo "<li><a href='${parent_dir}index.html'>${parent_dir}</a></li>" >> /tmp/javadoc/index.html
+            echo "<li><a href='${parent_dir}/index.html'>${parent_dir}</a></li>" >> /tmp/javadoc/index.html
           done
           echo "</ul></body></html>" >> /tmp/javadoc/index.html
           git config --global user.name "HamaWhiteGG"
