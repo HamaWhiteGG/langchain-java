@@ -37,12 +37,13 @@ jobs:
         run: |
           echo "Listing all directories containing target/site/apidocs"
           for dir in $(find . -type d -path '*target/site/apidocs'); do
-              # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
-              parent_dir=${dir%target/site/apidocs}
-              # Create corresponding directory
-              mkdir -p "/tmp/javadoc/${parent_dir}"
-              # Copy Javadoc to corresponding directory
-              cp -R "$dir"*. "/tmp/javadoc/${parent_dir}"
+            echo "Processing $dir"
+            # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
+            parent_dir=${dir%target/site/apidocs}
+            # Create corresponding directory
+            mkdir -p "/tmp/javadoc/${parent_dir}"
+            # Copy Javadoc to corresponding directory
+            cp -R "$dir/"*. "/tmp/javadoc/${parent_dir}"
           done
           git config --global user.name "HamaWhiteGG"
           git config --global user.email "baisongxx@gmail.com"
@@ -51,7 +52,7 @@ jobs:
           git clean -df
           cp -R /tmp/javadoc/* .
           git add .
-          git commit -m "Update Javadoc" || true # Adding `|| true` to prevent exit on no changes
+          git commit -m "Update Javadoc" || true 
           git push origin gh-pages --force
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
