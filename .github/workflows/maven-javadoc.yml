@@ -43,7 +43,7 @@ jobs:
             # Create corresponding directory
             mkdir -p "/tmp/javadoc/${parent_dir}"
             # Copy Javadoc to corresponding directory
-            cp -R "$dir/"*. "/tmp/javadoc/${parent_dir}"
+            cp -R "$dir/"* "/tmp/javadoc/${parent_dir}"
           done
           git config --global user.name "HamaWhiteGG"
           git config --global user.email "baisongxx@gmail.com"
