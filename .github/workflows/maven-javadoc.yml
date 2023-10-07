@@ -1,8 +1,6 @@
 name: Maven Generate Javadoc
 
 on:
-  push:
-    branches: [ "dev" ]
   pull_request:
     branches: [ "main" ]
 
