@@ -20,7 +20,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests
 
       - name: Build and generate Javadoc
         run: mvn javadoc:javadoc
@@ -32,7 +32,15 @@ jobs:
           git checkout --orphan gh-pages
           git reset --hard
           git clean -df
-          mv target/site/apidocs/* .
+          # Find all modules containing the target/site/apidocs directory
+          for dir in $(find . -type d -name target/site/apidocs); do
+            # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
+            module_dir=${dir:2:-19}
+            # Create corresponding directory
+            mkdir -p "$module_dir"
+            # Copy Javadoc to corresponding directory
+            cp -R "$dir" "$module_dir"
+          done
           git add .
           git commit -m "Update Javadoc"
           git push origin gh-pages --force
