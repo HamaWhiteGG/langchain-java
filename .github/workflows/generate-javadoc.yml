@@ -1,4 +1,4 @@
-name: Generate Javadoc and Update gh-pages
+name: Generate Javadoc
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: mvn -B test --file pom.xml
 
       - name: Build and generate Javadoc
         run: mvn javadoc:javadoc
