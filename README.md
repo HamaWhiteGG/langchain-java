@@ -50,11 +50,12 @@ Prerequisites for building:
 * Unix-like environment (we use Linux, Mac OS X)
 * Maven (we recommend version 3.8.6 and require at least 3.5.4)
 
+ [![Maven Central](https://img.shields.io/maven-central/v/io.github.hamawhitegg/langchain-core)](https://maven-badges.herokuapp.com/maven-central/io.github.hamawhitegg/langchain-core)
 ```xml
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-core</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
