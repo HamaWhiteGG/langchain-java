@@ -21,13 +21,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Import GPG key
-        id: import-gpg
-        uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
       - name: Build with Maven
         run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
 
