@@ -27,8 +27,8 @@ jobs:
         env:
           GPG_TTY: $(tty)
 
-      - name: Build with Maven
-        run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSWORD  }}
+      - name: Install with Maven
+        run: mvn clean install -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSWORD }}
 
       - name: Build and generate Javadoc
         run: mvn javadoc:javadoc
@@ -41,13 +41,13 @@ jobs:
           git reset --hard
           git clean -df
           # Find all modules containing the target/site/apidocs directory
-          for dir in $(find . -type d -name target/site/apidocs); do
+          for dir in $(find . -type d -path '*target/site/apidocs'); do
             # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
-            module_dir=${dir:2:-19}
-            # Create corresponding directory
-            mkdir -p "$module_dir"
+            parent_dir=${dir%target/site/apidocs}
+            # Create corresponding directory in gh-pages
+            mkdir -p "${parent_dir}"
             # Copy Javadoc to corresponding directory
-            cp -R "$dir" "$module_dir"
+          cp -R "$dir"*. "${parent_dir}"
           done
           git add .
           git commit -m "Update Javadoc"
