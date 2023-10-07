@@ -35,8 +35,9 @@ jobs:
 
       - name: Deploy to gh-pages
         run: |
-          echo "Listing all directories containing target/site/apidocs"
+          mkdir -p /tmp/javadoc
           echo "<html><body><ul>" > /tmp/javadoc/index.html
+          echo "Listing all directories containing target/site/apidocs"
           for dir in $(find . -type d -path '*target/site/apidocs'); do
             echo "Processing $dir"
             # Remove the prefix './' and suffix 'target/site/apidocs', to get relative path of module
@@ -57,6 +58,24 @@ jobs:
           git add .
           git commit -m "Update Javadoc" || true 
           
+          cat << EOF > README.md
+          # Langchain-Java
+      
+          Welcome to the Langchain-Java project!
+      
+          ## API Documentation
+      
+          Our comprehensive API documentation is available at the following link:
+          
+          [https://hamawhitegg.github.io/langchain-java](https://hamawhitegg.github.io/langchain-java)
+      
+          This includes detailed information about the various modules, functionalities, and more within our project.
+
+          Enjoy exploring Langchain-Java!
+          EOF
+          git add README.md
+          git commit -m "Add README"
+
           # Make sure "Read and write permissions" are enabled in Settings -> Actions -> General -> Workflow permissions
           git push origin gh-pages --force
         env:
