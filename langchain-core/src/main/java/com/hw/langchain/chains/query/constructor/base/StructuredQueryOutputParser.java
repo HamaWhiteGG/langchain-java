@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.query.constructor.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.chains.query.constructor.ir.Comparator;
 import com.hw.langchain.chains.query.constructor.ir.Comparison;
 import com.hw.langchain.chains.query.constructor.ir.Operator;
@@ -40,7 +41,7 @@ public class StructuredQueryOutputParser extends BaseOutputParser<StructuredQuer
     @Override
     public StructuredQuery parse(String text) throws OutputParserException {
         try {
-            List<String> expectedKeys = List.of("query", "filter");
+            List<String> expectedKeys = ListUtil.of("query", "filter");
             Map<String, Object> parsed = parseAndCheckJsonMarkdown(text, expectedKeys);
             Comparison filter = astParse(parsed.get("filter").toString());
             return new StructuredQuery(parsed.get("query").toString(), filter, 0);

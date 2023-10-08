@@ -18,6 +18,8 @@
 
 package com.hw.langchain.agents.initialize;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.agents.agent.AgentExecutor;
 import com.hw.langchain.agents.agent.BaseSingleActionAgent;
 import com.hw.langchain.agents.agent.types.AgentType;
@@ -29,6 +31,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +51,7 @@ public class Initialize {
     }
 
     public static AgentExecutor initializeAgent(List<BaseTool> tools, BaseLanguageModel llm, AgentType agent) {
-        return initializeAgent(tools, llm, agent, null, Map.of(), Map.of());
+        return initializeAgent(tools, llm, agent, null, MapUtil.empty(), MapUtil.empty());
     }
 
     /**
@@ -79,11 +82,13 @@ public class Initialize {
                         "Got unknown agent type: " + agent + ". Valid types are: " + AGENT_TO_CLASS.keySet() + ".");
             }
             Class<? extends BaseSingleActionAgent> clazz = AGENT_TO_CLASS.get(agent);
-            agentKwargs = agentKwargs != null ? agentKwargs : Map.of();
-            agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLlmAndTools",
+            agentKwargs = agentKwargs != null ? agentKwargs : MapUtil.empty();
+            agentObj = (BaseSingleActionAgent) MethodUtils.invokeStaticMethod(clazz, "fromLLMAndTools",
                     llm, tools, agentKwargs);
         } else if (agentPath != null) {
-            agentObj = loadAgent(agentPath, Map.of("llm", llm, "tools", tools));
+            agentObj = loadAgent(agentPath, MapBuilder.create(new HashMap<String, Object>())
+                    .put("llm", llm)
+                    .put("tools", tools).map());
         } else {
             throw new IllegalArgumentException(
                     "Somehow both `agent` and `agentPath` are null, this should never happen.");

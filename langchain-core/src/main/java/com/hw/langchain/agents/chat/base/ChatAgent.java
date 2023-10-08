@@ -18,6 +18,9 @@
 
 package com.hw.langchain.agents.chat.base;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
+import com.google.common.collect.Lists;
 import com.hw.langchain.agents.agent.Agent;
 import com.hw.langchain.agents.agent.AgentOutputParser;
 import com.hw.langchain.agents.chat.output.parser.ChatOutputParser;
@@ -34,8 +37,10 @@ import com.hw.langchain.tools.base.BaseTool;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.agents.chat.prompt.Prompt.*;
 import static com.hw.langchain.agents.utils.Utils.validateToolsSingleInput;
@@ -62,7 +67,7 @@ public class ChatAgent extends Agent {
 
     @Override
     public String constructScratchpad(List<Pair<AgentAction, String>> intermediateSteps) {
-        var agentScratchpad = super.constructScratchpad(intermediateSteps);
+        Object agentScratchpad = super.constructScratchpad(intermediateSteps);
         if (!(agentScratchpad instanceof String)) {
             throw new IllegalArgumentException("agent_scratchpad should be of type String.");
         }
@@ -85,24 +90,24 @@ public class ChatAgent extends Agent {
 
     @Override
     public List<String> stop() {
-        return List.of("Observation:");
+        return Lists.newArrayList("Observation:");
     }
 
     public static BasePromptTemplate createPrompt(List<BaseTool> tools, String systemMessagePrefix,
             String systemMessageSuffix, String humanMessage, String formatInstructions, List<String> inputVariables) {
-        String toolNames = String.join(", ", tools.stream().map(BaseTool::getName).toList());
+        String toolNames = tools.stream().map(BaseTool::getName).collect(Collectors.joining(", "));
         String toolStrings =
-                String.join("\n", tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).toList());
+                tools.stream().map(tool -> tool.getName() + ": " + tool.getDescription()).collect(Collectors.joining("\n"));
 
-        formatInstructions = formatTemplate(formatInstructions, Map.of("tool_names", toolNames));
+        formatInstructions = formatTemplate(formatInstructions, MapUtil.of("tool_names", toolNames));
         String template =
                 String.join("\n\n", systemMessagePrefix, toolStrings, formatInstructions, systemMessageSuffix);
 
-        List<BaseMessagePromptTemplate> messages = List.of(
+        List<BaseMessagePromptTemplate> messages = Lists.newArrayList(
                 SystemMessagePromptTemplate.fromTemplate(template),
                 HumanMessagePromptTemplate.fromTemplate(humanMessage));
         if (inputVariables == null) {
-            inputVariables = List.of("input", "agent_scratchpad");
+            inputVariables = Lists.newArrayList("input", "agent_scratchpad");
         }
         return new ChatPromptTemplate(inputVariables, messages);
     }
@@ -124,11 +129,11 @@ public class ChatAgent extends Agent {
             List<String> inputVariables, Map<String, Object> kwargs) {
         validateTools(tools);
 
-        var prompt = createPrompt(tools, systemMessagePrefix, systemMessageSuffix, humanMessage, formatInstructions,
+        BasePromptTemplate prompt = createPrompt(tools, systemMessagePrefix, systemMessageSuffix, humanMessage, formatInstructions,
                 inputVariables);
-        var llmChain = new LLMChain(llm, prompt);
+        LLMChain llmChain = new LLMChain(llm, prompt);
 
-        var toolNames = tools.stream().map(BaseTool::getName).toList();
+        List<String> toolNames = tools.stream().map(BaseTool::getName).collect(Collectors.toList());
         outputParser = (outputParser != null) ? outputParser : getDefaultOutputParser(kwargs);
 
         return new ChatAgent(llmChain, toolNames, outputParser);

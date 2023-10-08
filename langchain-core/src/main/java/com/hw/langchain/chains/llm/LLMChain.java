@@ -18,11 +18,15 @@
 
 package com.hw.langchain.chains.llm;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.schema.*;
 
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Chain to run queries against LLMs
@@ -94,18 +99,18 @@ public class LLMChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     @Override
     protected Map<String, String> innerCall(Map<String, Object> inputs) {
-        LLMResult response = generate(List.of(inputs));
+        LLMResult response = generate(ListUtil.of(inputs));
         return createOutputs(response).get(0);
     }
 
     @Override
     protected Flux<Map<String, String>> asyncInnerCall(Map<String, Object> inputs) {
-        var response = asyncGenerate(List.of(inputs));
+        var response = asyncGenerate(ListUtil.of(inputs));
         return response.get(0).map(this::createAsyncOutputs);
     }
 
@@ -158,14 +163,15 @@ public class LLMChain extends Chain {
      */
     private List<Map<String, String>> createOutputs(LLMResult llmResult) {
         var result = llmResult.getGenerations().stream()
-                .map(generation -> Map.of(outputKey, outputParser.parseResult(generation),
-                        "full_generation", generation.toString()))
-                .toList();
+                .map(generation -> MapBuilder.create(new HashMap<String, String>())
+                        .put(outputKey, outputParser.parseResult(generation))
+                        .put("full_generation", generation.toString()).map())
+                .collect(Collectors.toList());
 
         if (returnFinalOnly) {
             result = result.stream()
-                    .map(r -> Map.of(outputKey, r.get(outputKey)))
-                    .toList();
+                    .map(r -> MapUtil.of(outputKey, r.get(outputKey)))
+                    .collect(Collectors.toList());
         }
         return result;
     }
@@ -174,10 +180,11 @@ public class LLMChain extends Chain {
      * Create outputs from response async.
      */
     private Map<String, String> createAsyncOutputs(AsyncLLMResult llmResult) {
-        Map<String, String> result = Map.of(outputKey, outputParser.parseResult(llmResult.getGenerations()),
-                "full_generation", llmResult.getGenerations().toString());
+        Map<String, String> result = MapBuilder.create(new HashMap<String,String>())
+                .put(outputKey, outputParser.parseResult(llmResult.getGenerations()))
+                .put("full_generation", llmResult.getGenerations().toString()).map();
         if (returnFinalOnly) {
-            result = Map.of(outputKey, result.get(outputKey));
+            result = MapUtil.of(outputKey, result.get(outputKey));
         }
         return result;
     }

@@ -18,10 +18,15 @@
 
 package com.hw.langchain.output.parsers.structured;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.schema.BaseOutputParser;
+import lombok.var;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.output.parsers.FormatInstructions.STRUCTURED_FORMAT_INSTRUCTIONS;
 import static com.hw.langchain.output.parsers.json.Json.parseAndCheckJsonMarkdown;
@@ -45,9 +50,10 @@ public class StructuredOutputParser extends BaseOutputParser<Map<String, Object>
     }
 
     private String getSubString(ResponseSchema schema) {
-        Map<String, Object> kwargs = Map.of("name", schema.getName(),
-                "description", schema.getDescription(),
-                "type", schema.getType());
+        Map<String, Object> kwargs = MapBuilder.create(new HashMap<String, Object>())
+                .put("name", schema.getName())
+                .put("description", schema.getDescription())
+                .put("type", schema.getType()).map();
         return formatTemplate(LINE_TEMPLATE, kwargs);
     }
 
@@ -55,13 +61,13 @@ public class StructuredOutputParser extends BaseOutputParser<Map<String, Object>
     public Map<String, Object> parse(String text) {
         var expectedKeys = responseSchemas.stream()
                 .map(ResponseSchema::getName)
-                .toList();
+                .collect(Collectors.toList());
         return parseAndCheckJsonMarkdown(text, expectedKeys);
     }
 
     @Override
     public String getFormatInstructions() {
-        var schemaStr = String.join("\n", responseSchemas.stream().map(this::getSubString).toList());
-        return formatTemplate(STRUCTURED_FORMAT_INSTRUCTIONS, Map.of("format", schemaStr));
+        var schemaStr = responseSchemas.stream().map(this::getSubString).collect(Collectors.joining("\n"));
+        return formatTemplate(STRUCTURED_FORMAT_INSTRUCTIONS, MapUtil.of("format", schemaStr));
     }
 }

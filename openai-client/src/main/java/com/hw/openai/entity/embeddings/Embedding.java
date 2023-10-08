@@ -19,9 +19,8 @@
 package com.hw.openai.entity.embeddings;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 

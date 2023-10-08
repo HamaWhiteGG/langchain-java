@@ -21,12 +21,14 @@ package com.hw.langchain.vectorstores.base;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.vectorstores.base.SearchType.SIMILARITY;
 
@@ -61,18 +63,21 @@ public abstract class VectorStore {
      * @return List of IDs of the added texts.
      */
     public List<String> addDocuments(List<Document> documents, Map<String, Object> kwargs) {
-        var texts = documents.stream().map(Document::getPageContent).toList();
-        var metadatas = documents.stream().map(Document::getMetadata).toList();
+        var texts = documents.stream().map(Document::getPageContent).collect(Collectors.toList());
+        var metadatas = documents.stream().map(Document::getMetadata).collect(Collectors.toList());
         return addTexts(texts, metadatas);
     }
 
     public List<Document> search(String query, SearchType searchType, Map<String, Object> filter) {
-        return switch (searchType) {
-            case SIMILARITY -> similaritySearch(query, filter);
-            case MMR -> maxMarginalRelevanceSearch(query);
-            default -> throw new IllegalArgumentException(
+        switch (searchType) {
+            case SIMILARITY :
+                return similaritySearch(query, filter);
+            case MMR :
+                return maxMarginalRelevanceSearch(query);
+            default :
+                throw new IllegalArgumentException(
                     "searchType of " + searchType + " not allowed. Expected searchType to be 'similarity' or 'mmr'.");
-        };
+        }
     }
 
     /**
@@ -189,8 +194,8 @@ public abstract class VectorStore {
      * Return VectorStore initialized from documents and embeddings.
      */
     public int fromDocuments(List<Document> documents, Embeddings embedding) {
-        List<String> texts = documents.stream().map(Document::getPageContent).toList();
-        List<Map<String, Object>> metadatas = documents.stream().map(Document::getMetadata).toList();
+        List<String> texts = documents.stream().map(Document::getPageContent).collect(Collectors.toList());
+        List<Map<String, Object>> metadatas = documents.stream().map(Document::getMetadata).collect(Collectors.toList());
         return fromTexts(texts, embedding, metadatas);
     }
 

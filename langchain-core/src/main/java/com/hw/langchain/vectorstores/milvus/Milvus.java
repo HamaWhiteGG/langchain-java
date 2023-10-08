@@ -18,11 +18,15 @@
 
 package com.hw.langchain.vectorstores.milvus;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.embeddings.base.Embeddings;
 import com.hw.langchain.schema.Document;
 import com.hw.langchain.vectorstores.base.VectorStore;
 
+import lombok.var;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -43,6 +47,7 @@ import io.milvus.response.SearchResultsWrapper;
 import lombok.Builder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.chains.query.constructor.JsonUtils.writeValueAsString;
 
@@ -205,7 +210,7 @@ public class Milvus extends VectorStore {
                     FieldType fieldType = FieldType.newBuilder()
                             .withName(key)
                             .withDataType(dataType)
-                            .withTypeParams(Map.of(Constant.VARCHAR_MAX_LENGTH, "65535"))
+                            .withTypeParams(MapUtil.of(Constant.VARCHAR_MAX_LENGTH, "65535"))
                             .build();
                     builder.addFieldType(fieldType);
                 }
@@ -215,7 +220,7 @@ public class Milvus extends VectorStore {
         builder.addFieldType(FieldType.newBuilder()
                 .withName(textField)
                 .withDataType(DataType.VarChar)
-                .withTypeParams(Map.of(Constant.VARCHAR_MAX_LENGTH, "65535"))
+                .withTypeParams(MapUtil.of(Constant.VARCHAR_MAX_LENGTH, "65535"))
                 .build());
         // create the primary key field
         builder.addFieldType(FieldType.newBuilder()
@@ -280,7 +285,9 @@ public class Milvus extends VectorStore {
      */
     private void createIndex() {
         if (getIndex() == null) {
-            Map<String, Object> extraParam = Map.of("M", 8, "efConstruction", 64);
+            Map<String, Object> extraParam = MapBuilder.create(new HashMap<String, Object>())
+                    .put("M", 8)
+                    .put("efConstruction", 64).map();
             CreateIndexParam requestParam = CreateIndexParam.newBuilder()
                     .withCollectionName(collectionName)
                     .withFieldName(vectorField)
@@ -323,7 +330,7 @@ public class Milvus extends VectorStore {
         List<List<Float>> embeddings = embeddingFunction.embedDocuments(texts);
         if (embeddings.isEmpty()) {
             LOG.warn("Nothing to insert, skipping.");
-            return List.of();
+            return ListUtil.of();
         }
 
         // if the collection hasn't been initialized yet, perform all steps to take so
@@ -392,7 +399,7 @@ public class Milvus extends VectorStore {
                 .withMetricType(MetricType.valueOf(searchParams.get(METRIC_TYPE).toString()))
                 .withOutFields(outputFields)
                 .withTopK(k)
-                .withVectors(List.of(embedding))
+                .withVectors(ListUtil.of(embedding))
                 .withVectorFieldName(vectorField)
                 .withParams(writeValueAsString(searchParams.get("params")))
                 .build();
@@ -416,7 +423,7 @@ public class Milvus extends VectorStore {
     @Override
     public List<Document> similaritySearch(String query, int k, Map<String, Object> filter) {
         List<Pair<Document, Float>> docsAndScores = similaritySearchWithScore(query, k, filter);
-        return docsAndScores.stream().map(Pair::getLeft).toList();
+        return docsAndScores.stream().map(Pair::getLeft).collect(Collectors.toList());
     }
 
     @Override

@@ -45,7 +45,7 @@ public class ConditionalPromptSelector extends BasePromptSelector {
 
     @Override
     public BasePromptTemplate getPrompt(BaseLanguageModel llm) {
-        for (var condition : conditionals) {
+        for (Pair<Predicate<BaseLanguageModel>, BasePromptTemplate> condition : conditionals) {
             if (condition.getLeft().test(llm)) {
                 return condition.getRight();
             }

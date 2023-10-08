@@ -23,6 +23,7 @@ import com.hw.langchain.schema.PromptValue;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.var;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,10 +80,10 @@ public abstract class BasePromptTemplate {
         var mergedVariables = new HashMap<String, Object>(partialVariables.size() + kwargs.size());
         // Add partial variables
         partialVariables.forEach((key, value) -> {
-            if (value instanceof String stringValue) {
-                mergedVariables.put(key, stringValue);
-            } else if (value instanceof Supplier<?> supplier) {
-                mergedVariables.put(key, supplier.get());
+            if (value instanceof String) {
+                mergedVariables.put(key, value);
+            } else if (value instanceof Supplier<?>) {
+                mergedVariables.put(key, ((Supplier<?>)value).get());
             }
         });
         // Add user variables

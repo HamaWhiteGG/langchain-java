@@ -18,6 +18,8 @@
 
 package com.hw.langchain.chains.retrieval.qa.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
@@ -25,6 +27,7 @@ import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
@@ -55,7 +58,7 @@ public abstract class BaseRetrievalQA extends Chain {
 
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     @Override
@@ -104,6 +107,6 @@ public abstract class BaseRetrievalQA extends Chain {
             inputs.put("question", question);
         }
         Flux<String> answer = combineDocumentsChain.asyncRun(inputs);
-        return answer.map(s -> Map.of(outputKey, s));
+        return answer.map(s -> MapUtil.of(outputKey, s));
     }
 }

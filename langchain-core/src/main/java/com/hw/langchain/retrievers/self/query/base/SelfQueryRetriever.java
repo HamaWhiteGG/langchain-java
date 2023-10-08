@@ -18,6 +18,7 @@
 
 package com.hw.langchain.retrievers.self.query.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -96,7 +97,7 @@ public class SelfQueryRetriever implements BaseRetriever {
 
     @Override
     public List<Document> getRelevantDocuments(String query) {
-        Map<String, Object> inputs = llmChain.prepInputs(Map.of("query", query));
+        Map<String, Object> inputs = llmChain.prepInputs(MapUtil.of("query", query));
         StructuredQuery structuredQuery = llmChain.predictAndParse(inputs);
         LOG.info("Structured Query: {}", structuredQuery);
 

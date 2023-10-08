@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chat.models.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
@@ -27,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Base LLM abstract class.
@@ -51,8 +53,8 @@ public abstract class LLM extends BaseLLM {
     protected LLMResult innerGenerate(List<String> prompts, List<String> stop) {
         List<List<Generation>> generations = prompts.stream().map(prompt -> {
             String text = innerCall(prompt, stop);
-            return List.of(new Generation(text));
-        }).toList();
+            return ListUtil.of(new Generation(text));
+        }).collect(Collectors.toList());
 
         return new LLMResult(generations);
     }

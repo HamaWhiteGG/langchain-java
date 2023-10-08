@@ -18,12 +18,14 @@
 
 package com.hw.openai;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.Message;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.embeddings.Embedding;
 
+import lombok.var;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -61,7 +63,7 @@ class AzureOpenAiClientTest {
     void testCompletion() {
         Completion completion = Completion.builder()
                 .model("text-davinci-003")
-                .prompt(List.of("Say this is a test"))
+                .prompt(ListUtil.of("Say this is a test"))
                 .maxTokens(700)
                 .temperature(0)
                 .build();
@@ -76,7 +78,7 @@ class AzureOpenAiClientTest {
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-35-turbo")
                 .temperature(0)
-                .messages(List.of(message))
+                .messages(ListUtil.of(message))
                 .build();
 
         assertThat(client.chatCompletion(chatCompletion)).isEqualTo("Hello there! How can I assist you today?");
@@ -86,7 +88,7 @@ class AzureOpenAiClientTest {
     void testEmbeddings() {
         var embedding = Embedding.builder()
                 .model("text-embedding-ada-002")
-                .input(List.of("The food was delicious and the waiter..."))
+                .input(ListUtil.of("The food was delicious and the waiter..."))
                 .build();
 
         var response = client.createEmbedding(embedding);

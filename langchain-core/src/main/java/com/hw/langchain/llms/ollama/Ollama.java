@@ -18,6 +18,9 @@
 
 package com.hw.langchain.llms.ollama;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
@@ -26,16 +29,15 @@ import com.hw.langchain.requests.TextRequestsWrapper;
 import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.GenerationChunk;
 import com.hw.langchain.schema.LLMResult;
-
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
 
@@ -146,7 +148,7 @@ public class Ollama extends BaseLLM {
     }
 
     public Ollama init() {
-        Map<String, String> headers = Map.of("Content-Type", "application/json");
+        Map<String, String> headers = MapUtil.of("Content-Type", "application/json");
         this.requestsWrapper = new TextRequestsWrapper(headers);
         return this;
     }
@@ -171,12 +173,12 @@ public class Ollama extends BaseLLM {
     }
 
     public List<String> createStream(String prompt, List<String> stop) {
-        Map<String, Object> body = Map.of(
-                "model", model,
-                "prompt", prompt,
-                "options", createParams(stop));
+        Map<String, Object> body = MapBuilder.create(new HashMap<String, Object>())
+                .put("model", model)
+                .put("prompt", prompt)
+                .put("options", createParams(stop)).map();
         String response = requestsWrapper.post(baseUrl + "/api/generate", body);
-        return response.lines().toList();
+        return StreamSupport.stream(LinesSpliterator.spliterator(response.getBytes()), false).collect(Collectors.toList());
     }
 
     /**
@@ -203,7 +205,7 @@ public class Ollama extends BaseLLM {
                     }
                 }
             }
-            generations.add(List.of(requireNonNull(finalChunk)));
+            generations.add(ListUtil.of(requireNonNull(finalChunk)));
         }
         return new LLMResult(generations);
     }
@@ -220,8 +222,7 @@ public class Ollama extends BaseLLM {
      * @return A GenerationChunk object containing the converted data.
      */
     public static GenerationChunk streamResponseToGenerationChunk(String streamResponse) {
-        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(streamResponse, new TypeReference<>() {
-        });
+        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(streamResponse, new TypeReference<Map<String, Object>>() {});
 
         Map<String, Object> generationInfo = null;
         if (parsedResponse.get("done").equals(true)) {
@@ -230,4 +231,106 @@ public class Ollama extends BaseLLM {
         String text = (String) parsedResponse.getOrDefault("response", "");
         return new GenerationChunk(text, generationInfo);
     }
+
+    public static char getChar(byte[] val, int index) {
+        return (char)(val[index] & 0xff);
+    }
+
+    public static String newString(byte[] val, int index, int len) {
+        if (len == 0) {
+            return "";
+        }
+        return new String(Arrays.copyOfRange(val, index, index + len), 0);
+    }
+
+    private static final class LinesSpliterator implements Spliterator<String> {
+        private byte[] value;
+        private int index;        // current index, modified on advance/split
+        private final int fence;  // one past last index
+
+        private LinesSpliterator(byte[] value, int start, int length) {
+            this.value = value;
+            this.index = start;
+            this.fence = start + length;
+        }
+
+        private int indexOfLineSeparator(int start) {
+            for (int current = start; current < fence; current++) {
+                char ch = getChar(value, current);
+                if (ch == '\n' || ch == '\r') {
+                    return current;
+                }
+            }
+            return fence;
+        }
+
+        private int skipLineSeparator(int start) {
+            if (start < fence) {
+                if (getChar(value, start) == '\r') {
+                    int next = start + 1;
+                    if (next < fence && getChar(value, next) == '\n') {
+                        return next + 1;
+                    }
+                }
+                return start + 1;
+            }
+            return fence;
+        }
+
+        private String next() {
+            int start = index;
+            int end = indexOfLineSeparator(start);
+            index = skipLineSeparator(end);
+            return newString(value, start, end - start);
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super String> action) {
+            if (action == null) {
+                throw new NullPointerException("tryAdvance action missing");
+            }
+            if (index != fence) {
+                action.accept(next());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super String> action) {
+            if (action == null) {
+                throw new NullPointerException("forEachRemaining action missing");
+            }
+            while (index != fence) {
+                action.accept(next());
+            }
+        }
+
+        @Override
+        public Spliterator<String> trySplit() {
+            int half = (fence + index) >>> 1;
+            int mid = skipLineSeparator(indexOfLineSeparator(half));
+            if (mid < fence) {
+                int start = index;
+                index = mid;
+                return new LinesSpliterator(value, start, mid - start);
+            }
+            return null;
+        }
+
+        @Override
+        public long estimateSize() {
+            return fence - index + 1;
+        }
+
+        @Override
+        public int characteristics() {
+            return Spliterator.ORDERED | Spliterator.IMMUTABLE | Spliterator.NONNULL;
+        }
+
+        static LinesSpliterator spliterator(byte[] value) {
+            return new LinesSpliterator(value, 0, value.length);
+        }
+    }
+
 }

@@ -18,6 +18,8 @@
 
 package com.hw.langchain.agents.load.tools;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.llm.math.base.LLMMathChain;
 import com.hw.langchain.tools.base.BaseTool;
@@ -53,14 +55,12 @@ public class LoadTools {
     }
 
     private static Map<String, Pair<Function<Map<String, Object>, BaseTool>, List<String>>> _EXTRA_OPTIONAL_TOOLS =
-            Map.of(
-                    "serpapi", Pair.of(LoadTools::getSerpapi, List.of("serpapi_api_key", "aiosession")));
+            MapUtil.of("serpapi", Pair.of(LoadTools::getSerpapi, ListUtil.of("serpapi_api_key", "aiosession")));
 
-    private static Map<String, Function<BaseLanguageModel, BaseTool>> _LLM_TOOLS = Map.of(
-            "llm-math", LoadTools::getLLMMath);
+    private static Map<String, Function<BaseLanguageModel, BaseTool>> _LLM_TOOLS = MapUtil.of("llm-math", LoadTools::getLLMMath);
 
     public static List<BaseTool> loadTools(List<String> toolNames, BaseLanguageModel llm) {
-        return loadTools(toolNames, llm, Map.of());
+        return loadTools(toolNames, llm, MapUtil.empty());
     }
 
     /**
@@ -78,7 +78,7 @@ public class LoadTools {
                 BaseTool tool = _LLM_TOOLS.get(name).apply(llm);
                 tools.add(tool);
             } else if (_EXTRA_OPTIONAL_TOOLS.containsKey(name)) {
-                var pair = _EXTRA_OPTIONAL_TOOLS.get(name);
+                Pair<Function<Map<String, Object>, BaseTool>, List<String>> pair = _EXTRA_OPTIONAL_TOOLS.get(name);
                 List<String> extraKeys = pair.getRight();
                 Map<String, Object> subKwargs = extraKeys.stream()
                         .filter(kwargs::containsKey)

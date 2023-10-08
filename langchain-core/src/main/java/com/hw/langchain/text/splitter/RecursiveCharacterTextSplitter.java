@@ -18,6 +18,7 @@
 
 package com.hw.langchain.text.splitter;
 
+import cn.hutool.core.collection.ListUtil;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
@@ -37,7 +38,7 @@ import static com.hw.langchain.text.splitter.TextSplitterUtils.splitTextWithRege
 public class RecursiveCharacterTextSplitter extends TextSplitter {
 
     @Builder.Default
-    protected List<String> separators = List.of("\n\n", "\n", " ", "");
+    protected List<String> separators = ListUtil.of("\n\n", "\n", " ", "");
 
     /**
      * Split incoming text and return chunks.

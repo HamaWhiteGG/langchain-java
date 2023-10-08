@@ -18,10 +18,10 @@
 
 package com.hw.langchain.utils;
 
+import io.github.resilience4j.retry.IntervalFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 
@@ -48,7 +48,7 @@ public class Resilience4jRetryUtils {
             double multiplier, Duration maxInterval) {
         RetryConfig retryConfig = RetryConfig.custom()
                 .maxAttempts(maxRetries)
-                .intervalFunction(IntervalFunction.ofExponentialBackoff(initialInterval, multiplier, maxInterval))
+                .intervalFunction(IntervalFunction.ofExponentialBackoff(initialInterval, multiplier))
                 .build();
         Retry retry = Retry.of("retryWithExponentialBackoff", retryConfig);
 

@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.openai;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
@@ -195,7 +196,7 @@ public class OpenAIChat extends BaseLLM {
                 .text(response.getChoices().get(0).getMessage().getContent())
                 .build();
 
-        generations.add(List.of(generation));
+        generations.add(ListUtil.of(generation));
 
         Map<String, Object> llmOutput = new HashMap<>(2);
         llmOutput.put("token_usage", response.getUsage());

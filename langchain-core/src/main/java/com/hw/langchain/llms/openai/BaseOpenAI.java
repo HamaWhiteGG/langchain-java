@@ -18,6 +18,8 @@
 
 package com.hw.langchain.llms.openai;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.llms.base.BaseLLM;
 import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.Generation;
@@ -32,6 +34,7 @@ import com.hw.openai.entity.completions.CompletionResp;
 import io.reactivex.Flowable;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
+import lombok.var;
 import okhttp3.Interceptor;
 import reactor.adapter.rxjava.RxJava2Adapter;
 import reactor.core.publisher.Flux;
@@ -207,7 +210,7 @@ public class BaseOpenAI extends BaseLLM {
             choices.addAll(response.getChoices());
         }
 
-        return createLlmResult(choices, prompts, Map.of());
+        return createLlmResult(choices, prompts, MapUtil.empty());
     }
 
     @Override
@@ -221,7 +224,7 @@ public class BaseOpenAI extends BaseLLM {
 
         return RxJava2Adapter.flowableToFlux(response).map(e -> {
             Generation generation = new Generation(e.getChoices().get(0).getText());
-            return new AsyncLLMResult(List.of(generation), null);
+            return new AsyncLLMResult(ListUtil.of(generation), null);
         });
     }
 

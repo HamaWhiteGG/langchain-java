@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.query.constructor;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
@@ -86,8 +87,8 @@ public class JsonUtils {
     private static DefaultPrettyPrinter getPrettyPrinter(int indent) {
         DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
         printer.indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance);
-        printer.indentObjectsWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE.withIndent(" ".repeat(indent)));
-        printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE.withIndent(" ".repeat(indent)));
+        printer.indentObjectsWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE.withIndent(StrUtil.repeat(" ", indent)));
+        printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE.withIndent(StrUtil.repeat(" ", indent)));
         return printer;
     }
 }

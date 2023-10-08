@@ -18,6 +18,10 @@
 
 package com.hw.langchain.chains.llm.math.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -28,6 +32,7 @@ import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -80,7 +85,7 @@ public class LLMMathChain extends Chain {
      */
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     /**
@@ -88,7 +93,7 @@ public class LLMMathChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     public String evaluateExpression(String expression) {
@@ -96,11 +101,13 @@ public class LLMMathChain extends Chain {
         PyObject result;
         try (PythonInterpreter interpreter = new PythonInterpreter()) {
             // Define local variables
-            var localDict = Map.of("pi", Math.PI, "e", Math.E);
+            Map<String,Object> localDict = MapBuilder.create(new HashMap<String, Object>())
+                    .put("pi", Math.PI)
+                    .put( "e", Math.E).map();
             // Set local variables in the interpreter
             localDict.forEach(interpreter::set);
-            // Evaluate the expression
-            result = interpreter.eval(expression.strip());
+            // Evaluate the expression using jython
+            result = interpreter.eval(StrUtil.strip(expression, " "));
         }
         // Convert the result to a string
         String output = result.toString();
@@ -109,7 +116,7 @@ public class LLMMathChain extends Chain {
     }
 
     public Map<String, String> processLLMResult(String llmOutput) {
-        llmOutput = llmOutput.strip();
+        llmOutput = StrUtil.strip(llmOutput, " ");
         Matcher textMatcher = TEXT_PATTERN.matcher(llmOutput);
         String answer;
         if (textMatcher.find()) {
@@ -123,12 +130,14 @@ public class LLMMathChain extends Chain {
         } else {
             throw new IllegalArgumentException("unknown format from LLM: " + llmOutput);
         }
-        return Map.of(this.outputKey, answer);
+        return MapUtil.of(this.outputKey, answer);
     }
 
     @Override
-    protected Map<String, String> innerCall(Map<String, Object> inputs) {
-        var kwargs = Map.of("question", inputs.get(inputKey), "stop", List.of("```output"));
+    public Map<String, String> innerCall(Map<String, Object> inputs) {
+        Map<String, Object> kwargs = MapBuilder.create(new HashMap<String, Object>())
+                .put("question", inputs.get(inputKey))
+                .put("stop", ListUtil.of("```output")).map();
         String llmOutput = llmChain.predict(kwargs);
         return processLLMResult(llmOutput);
     }

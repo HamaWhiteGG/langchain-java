@@ -18,6 +18,9 @@
 
 package com.hw.langchain.chat.models.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
+import com.google.common.collect.Lists;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.*;
 
@@ -25,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author HamaWhite
@@ -38,7 +42,7 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     private List<String> tags;
 
     public Map<String, Object> combineLlmOutputs(List<Map<String, Object>> llmOutputs) {
-        return Map.of();
+        return MapUtil.of();
     }
 
     public LLMResult generate(List<List<BaseMessage>> messages) {
@@ -51,16 +55,16 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     public LLMResult generate(List<List<BaseMessage>> messages, List<String> stop) {
         List<ChatResult> results = messages.stream()
                 .map(message -> innerGenerate(message, stop))
-                .toList();
+                .collect(Collectors.toList());
 
         List<Map<String, Object>> llmOutputs = results.stream()
                 .map(ChatResult::getLlmOutput)
-                .toList();
+                .collect(Collectors.toList());
         Map<String, Object> llmOutput = combineLlmOutputs(llmOutputs);
 
         List<List<ChatGeneration>> generations = results.stream()
                 .map(ChatResult::getGenerations)
-                .toList();
+                .collect(Collectors.toList());
         return new LLMResult(generations, llmOutput);
     }
 
@@ -68,7 +72,7 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
         List<List<BaseMessage>> promptMessages = prompts.stream()
                 .map(PromptValue::toMessages)
-                .toList();
+                .collect(Collectors.toList());
         return generate(promptMessages, stop);
     }
 
@@ -82,8 +86,9 @@ public abstract class BaseChatModel implements BaseLanguageModel {
     }
 
     public BaseMessage call(List<BaseMessage> messages, List<String> stop) {
-        var generation = generate(List.of(messages), stop).getGenerations().get(0).get(0);
-        if (generation instanceof ChatGeneration chatGeneration) {
+        Generation generation = generate(ListUtil.partition(messages, 1), stop).getGenerations().get(0).get(0);
+        if (generation instanceof ChatGeneration) {
+            ChatGeneration chatGeneration = (ChatGeneration) generation;
             return chatGeneration.getMessage();
         } else {
             throw new IllegalArgumentException("Unexpected generation type");
@@ -92,16 +97,16 @@ public abstract class BaseChatModel implements BaseLanguageModel {
 
     @Override
     public String predict(String text, List<String> stop) {
-        List<String> copyStop = stop != null ? List.copyOf(stop) : null;
+        List<String> copyStop = stop != null ? ListUtil.toList(stop) : null;
         BaseMessage message = new HumanMessage(text);
 
-        BaseMessage result = call(List.of(message), copyStop);
+        BaseMessage result = call(ListUtil.of(message), copyStop);
         return result.getContent();
     }
 
     @Override
     public BaseMessage predictMessages(List<BaseMessage> messages, List<String> stop) {
-        List<String> copyStop = stop != null ? List.copyOf(stop) : null;
+        List<String> copyStop = stop != null ? ListUtil.toList(stop) : null;
         return call(messages, copyStop);
     }
 

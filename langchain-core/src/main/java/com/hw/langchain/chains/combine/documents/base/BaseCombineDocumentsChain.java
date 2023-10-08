@@ -18,10 +18,12 @@
 
 package com.hw.langchain.chains.combine.documents.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 
 import reactor.core.publisher.Flux;
@@ -44,12 +46,12 @@ public abstract class BaseCombineDocumentsChain extends Chain {
 
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     /**
@@ -79,7 +81,7 @@ public abstract class BaseCombineDocumentsChain extends Chain {
         Map<String, Object> otherKeys = Maps.filterKeys(inputs, key -> !key.equals(inputKey));
         var result = this.combineDocs(docs, otherKeys);
 
-        var extraReturnDict = new HashMap<>(result.getRight());
+        HashMap<String, String> extraReturnDict = new HashMap<>(result.getRight());
         extraReturnDict.put(outputKey, result.getLeft());
         return extraReturnDict;
     }

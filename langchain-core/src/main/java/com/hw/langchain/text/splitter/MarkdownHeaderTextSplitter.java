@@ -18,13 +18,16 @@
 
 package com.hw.langchain.text.splitter;
 
+import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of splitting markdown files based on specified headers.
@@ -54,7 +57,7 @@ public class MarkdownHeaderTextSplitter {
         // Given the headers we want to split on, (e.g., "#, ##, etc") order by length
         this.headersToSplitOn = headersToSplitOn.stream()
                 .sorted(Comparator.<Pair<String, String>>comparingInt(e -> e.getKey().length()).reversed())
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -80,7 +83,7 @@ public class MarkdownHeaderTextSplitter {
         }
         return aggregatedChunks.stream()
                 .map(chunk -> new Document(chunk.getContent(), chunk.getMetadata()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -101,7 +104,7 @@ public class MarkdownHeaderTextSplitter {
         // Split the input text by newline character ("\n").
         String[] lines = text.split("\n");
         for (String line : lines) {
-            String strippedLine = line.strip();
+            String strippedLine = StrUtil.strip(line, " ");
             // Check each line against each of the header types (e.g., #, ##)
             boolean foundHeader = processLine(strippedLine, linesWithMetadata, currentContent, currentMetadata,
                     headerStack, initialMetadata);
@@ -120,7 +123,7 @@ public class MarkdownHeaderTextSplitter {
 
     private boolean processLine(String strippedLine, List<LineType> linesWithMetadata, List<String> currentContent,
             Map<String, Object> currentMetadata, List<HeaderType> headerStack, Map<String, String> initialMetadata) {
-        for (Pair<String, String> pair : headersToSplitOn) {
+        for (var pair : headersToSplitOn) {
             String sep = pair.getLeft();
             String name = pair.getValue();
             if (isHeaderToSplitOn(strippedLine, sep)) {
@@ -138,7 +141,7 @@ public class MarkdownHeaderTextSplitter {
                     }
                     // Push the current header to the stack
                     HeaderType header =
-                            new HeaderType(currentHeaderLevel, name, strippedLine.substring(sep.length()).strip());
+                            new HeaderType(currentHeaderLevel, name, StrUtil.strip(strippedLine.substring(sep.length()), " "));
                     headerStack.add(header);
                     // Update initialMetadata with the current header
                     initialMetadata.put(name, header.getData());
@@ -176,7 +179,7 @@ public class MarkdownHeaderTextSplitter {
         } else {
             return linesWithMetadata.stream()
                     .map(chunk -> new Document(chunk.getContent(), chunk.getMetadata()))
-                    .toList();
+                    .collect(Collectors.toList());
         }
     }
 }

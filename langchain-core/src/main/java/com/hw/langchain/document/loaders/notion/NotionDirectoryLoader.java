@@ -18,15 +18,20 @@
 
 package com.hw.langchain.document.loaders.notion;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.document.loaders.base.BaseLoader;
 import com.hw.langchain.exception.LangChainException;
 import com.hw.langchain.schema.Document;
+import jodd.io.PathUtil;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -44,11 +49,11 @@ public class NotionDirectoryLoader extends BaseLoader {
 
     @Override
     public List<Document> load() {
-        try (Stream<Path> pathStream = Files.walk(Path.of(filePath))) {
+        try (Stream<Path> pathStream = Files.walk(FileSystems.getDefault().getPath(filePath))) {
             return pathStream
                     .filter(p -> p.toString().endsWith(".md"))
                     .flatMap(this::processFile)
-                    .toList();
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new LangChainException(errorMessage(filePath), e);
         }
@@ -56,10 +61,10 @@ public class NotionDirectoryLoader extends BaseLoader {
 
     private Stream<Document> processFile(Path path) {
         try {
-            String text = Files.readString(path);
-            Map<String, Object> metadata = Map.of("source", path.toString());
+            String text = FileUtil.readUtf8String(path.toFile());
+            Map<String, Object> metadata = MapUtil.of("source", path.toString());
             return Stream.of(new Document(text, metadata));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new LangChainException(errorMessage(path.toString()), e);
         }
     }

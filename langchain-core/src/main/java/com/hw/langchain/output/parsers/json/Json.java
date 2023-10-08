@@ -18,6 +18,7 @@
 
 package com.hw.langchain.output.parsers.json;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,7 +55,8 @@ public class Json {
         String jsonStr = matcher.find() ? matcher.group(2) : jsonString;
 
         // Strip whitespace and newlines from the start and end
-        jsonStr = jsonStr.strip();
+        jsonStr = StrUtil.strip(jsonStr, " ");
+        jsonStr = StrUtil.strip(jsonStr, "\n");
         try {
             // Parse the JSON string into a JsonNode
             return new ObjectMapper().readTree(jsonStr);
@@ -78,7 +80,6 @@ public class Json {
                         "Got invalid return object. Expected key `%s` to be present, but got %s", key, jsonNode));
             }
         }
-        return new ObjectMapper().convertValue(jsonNode, new TypeReference<>() {
-        });
+        return new ObjectMapper().convertValue(jsonNode, new TypeReference<Map<String, Object>>() {});
     }
 }

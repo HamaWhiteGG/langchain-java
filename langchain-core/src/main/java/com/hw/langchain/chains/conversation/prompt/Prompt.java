@@ -18,23 +18,16 @@
 
 package com.hw.langchain.chains.conversation.prompt;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
-
-import java.util.List;
+import com.hw.langchain.utils.ResourceBundleUtils;
 
 /**
  * @author HamaWhite
  */
 public class Prompt {
 
-    private static String DEFAULT_TEMPLATE =
-            """
-                    The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+    private static String DEFAULT_TEMPLATE = ResourceBundleUtils.getString("prompt.chain.chat.template");
 
-                    Current conversation:
-                    {history}
-                    Human: {input}
-                    AI:""";
-
-    public static PromptTemplate PROMPT = new PromptTemplate(List.of("history", "input"), DEFAULT_TEMPLATE);
+    public static PromptTemplate PROMPT = new PromptTemplate(ListUtil.of("history", "input"), DEFAULT_TEMPLATE);
 }

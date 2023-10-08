@@ -18,6 +18,7 @@
 
 package com.hw.langchain.embeddings.openai;
 
+import cn.hutool.core.collection.ListUtil;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
 import com.hw.langchain.embeddings.base.Embeddings;
@@ -36,6 +37,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.hw.langchain.utils.Utils.getOrEnvOrDefault;
@@ -146,16 +148,16 @@ public class OpenAIEmbeddings implements Embeddings {
         List<List<Float>> batchedEmbeddings = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i += chunkSize) {
             List<?> input = tokens.subList(i, Math.min(i + chunkSize, tokens.size()));
-            var response = embedWithRetry(input);
+            EmbeddingResp response = embedWithRetry(input);
             response.getData().forEach(result -> batchedEmbeddings.add(result.getEmbedding()));
         }
 
         List<? extends List<List<Float>>> results = IntStream.range(0, texts.size())
                 .mapToObj(i -> new ArrayList<List<Float>>())
-                .toList();
+                .collect(Collectors.toList());
         List<? extends List<Integer>> numTokensInBatch = IntStream.range(0, texts.size())
                 .mapToObj(i -> new ArrayList<Integer>())
-                .toList();
+                .collect(Collectors.toList());
         for (int i = 0; i < indices.size(); i++) {
             int index = indices.get(i);
             results.get(index).add(batchedEmbeddings.get(i));
@@ -180,14 +182,14 @@ public class OpenAIEmbeddings implements Embeddings {
      */
     public List<Float> embeddingFunc(String text) {
         if (text.length() > embeddingCtxLength) {
-            return getLenSafeEmbeddings(List.of(text)).get(0);
+            return getLenSafeEmbeddings(ListUtil.of(text)).get(0);
         } else {
             if (model.endsWith("001")) {
                 // See: https://github.com/openai/openai-python/issues/418#issuecomment-1525939500
                 // replace newlines, which can negatively affect performance.
                 text = text.replace("\n", " ");
             }
-            return embedWithRetry(List.of(text)).getData().get(0).getEmbedding();
+            return embedWithRetry(ListUtil.of(text)).getData().get(0).getEmbedding();
         }
     }
 
@@ -216,7 +218,7 @@ public class OpenAIEmbeddings implements Embeddings {
     }
 
     public EmbeddingResp embedWithRetry(List<?> input) {
-        var embedding = Embedding.builder()
+        Embedding embedding = Embedding.builder()
                 .model(model)
                 .input(input)
                 .build();

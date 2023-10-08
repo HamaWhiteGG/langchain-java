@@ -18,6 +18,8 @@
 
 package com.hw.langchain.chains.sql.database.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -28,8 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.chains.sql.database.prompt.Prompt.DECIDER_PROMPT;
 import static com.hw.langchain.chains.sql.database.prompt.Prompt.PROMPT;
@@ -89,7 +93,7 @@ public class SQLDatabaseSequentialChain extends Chain {
      */
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     /**
@@ -97,19 +101,18 @@ public class SQLDatabaseSequentialChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     @Override
     protected Map<String, String> innerCall(Map<String, Object> inputs) {
         List<String> tableNameList = sqlChain.getDatabase().getUsableTableNames();
         String tableNames = String.join(", ", tableNameList);
-        var llmInputs = Map.of("query", inputs.get(inputKey),
-                "table_names", tableNames);
+        Map<String, Object> llmInputs = MapBuilder.create(new HashMap<String, Object>())
+                .put("query", inputs.get(inputKey))
+                .put("table_names", tableNames).map();
 
-        List<String> lowerCasedTableNames = tableNameList.stream()
-                .map(String::toLowerCase)
-                .toList();
+        List<String> lowerCasedTableNames = tableNameList.stream().map(String::toLowerCase).collect(Collectors.toList());
 
         List<String> tableNamesFromChain = deciderChain.predictAndParse(llmInputs);
 
@@ -120,7 +123,9 @@ public class SQLDatabaseSequentialChain extends Chain {
             }
         }
         LOG.info("Table names to use: {}", tableNamesToUse);
-        var newInputs = Map.of(sqlChain.getInputKey(), inputs.get(inputKey), "table_names_to_use", tableNamesToUse);
+        Map<String, Object> newInputs = MapBuilder.create(new HashMap<String, Object>())
+                .put(sqlChain.getInputKey(), inputs.get(inputKey))
+                .put("table_names_to_use", tableNamesToUse).map();
         return sqlChain.call(newInputs, true);
     }
 }

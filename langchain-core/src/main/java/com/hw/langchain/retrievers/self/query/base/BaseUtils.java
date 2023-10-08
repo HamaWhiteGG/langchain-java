@@ -18,6 +18,7 @@
 
 package com.hw.langchain.retrievers.self.query.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.chains.query.constructor.ir.Visitor;
 import com.hw.langchain.exception.LangChainException;
 import com.hw.langchain.retrievers.self.query.pinecone.PineconeTranslator;
@@ -34,7 +35,7 @@ public class BaseUtils {
     private BaseUtils() {
     }
 
-    private static final Map<Class<? extends VectorStore>, Class<? extends Visitor>> BUILTIN_TRANSLATORS = Map.of(
+    private static final Map<Class<? extends VectorStore>, Class<? extends Visitor>> BUILTIN_TRANSLATORS = MapUtil.of(
             Pinecone.class, PineconeTranslator.class);
 
     /**

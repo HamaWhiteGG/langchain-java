@@ -18,16 +18,19 @@
 
 package com.hw.langchain.chains.api.base;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.requests.TextRequestsWrapper;
+import lombok.var;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.hw.langchain.chains.api.prompt.Prompt.API_RESPONSE_PROMPT;
 import static com.hw.langchain.chains.api.prompt.Prompt.API_URL_PROMPT;
@@ -73,7 +76,7 @@ public class ApiChain extends Chain {
         List<String> inputVars = apiRequestChain.getPrompt().getInputVariables();
         Set<String> inputVarsSet = new HashSet<>(inputVars);
 
-        Set<String> expectedVars = Set.of(QUESTION_KEY, API_DOCS);
+        Set<String> expectedVars = CollUtil.newHashSet(QUESTION_KEY, API_DOCS);
         if (!inputVarsSet.equals(expectedVars)) {
             throw new IllegalArgumentException("Input variables should be " + expectedVars + ", got " + inputVars);
         }
@@ -86,7 +89,7 @@ public class ApiChain extends Chain {
         List<String> inputVars = apiAnswerChain.getPrompt().getInputVariables();
         Set<String> inputVarsSet = new HashSet<>(inputVars);
 
-        Set<String> expectedVars = Set.of(QUESTION_KEY, API_DOCS, "api_url", "api_response");
+        Set<String> expectedVars = CollUtil.newHashSet(QUESTION_KEY, API_DOCS, "api_url", "api_response");
         if (!inputVarsSet.equals(expectedVars)) {
             throw new IllegalArgumentException("Input variables should be " + expectedVars + ", got " + inputVars);
         }
@@ -94,24 +97,27 @@ public class ApiChain extends Chain {
 
     @Override
     public List<String> inputKeys() {
-        return List.of(QUESTION_KEY);
+        return ListUtil.of(QUESTION_KEY);
     }
 
     @Override
     public List<String> outputKeys() {
-        return List.of(OUTPUT_KEY);
+        return ListUtil.of(OUTPUT_KEY);
     }
 
     @Override
-    protected Map<String, String> innerCall(Map<String, Object> inputs) {
+    public Map<String, String> innerCall(Map<String, Object> inputs) {
         var question = inputs.get(QUESTION_KEY);
-        String apiUrl = apiRequestChain.predict(Map.of(QUESTION_KEY, question, API_DOCS, apiDocs));
-        apiUrl = apiUrl.strip();
+        String apiUrl = apiRequestChain.predict(MapBuilder.create(new HashMap<String, Object>()).put(QUESTION_KEY, question).put(API_DOCS, apiDocs).map());
+        apiUrl = StrUtil.strip(apiUrl, " ");
 
         String apiResponse = requestsWrapper.get(apiUrl);
-        String answer = apiAnswerChain.predict(Map.of(QUESTION_KEY, question, API_DOCS, apiDocs,
-                "api_url", apiUrl, "api_response", apiResponse));
-        return Map.of(OUTPUT_KEY, answer);
+        String answer = apiAnswerChain.predict(MapBuilder.create(new HashMap<String, Object>())
+                .put(QUESTION_KEY, question)
+                .put(API_DOCS, apiDocs)
+                .put("api_url", apiUrl)
+                .put("api_response", apiResponse).map());
+        return MapUtil.of(OUTPUT_KEY, answer);
     }
 
     public static ApiChain fromLlmAndApiDocs(BaseLanguageModel llm, String apiDocs) {

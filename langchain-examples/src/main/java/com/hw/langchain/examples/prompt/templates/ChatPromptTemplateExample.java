@@ -18,13 +18,15 @@
 
 package com.hw.langchain.examples.prompt.templates;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
 import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.langchain.prompts.chat.ChatPromptTemplate;
 import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
+import lombok.var;
 
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
@@ -41,9 +43,12 @@ public class ChatPromptTemplateExample {
         var humanTemplate = "{text}";
         var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
 
-        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
-        var output = chatPrompt.formatMessages(Map.of("input_language", "English", "output_language", "French",
-                "text", "I love programming."));
+        var chatPrompt = ChatPromptTemplate.fromMessages(ListUtil.of(systemMessagePrompt, humanMessagePrompt));
+        var output = chatPrompt.formatMessages(
+                MapBuilder.create(new HashMap<String, Object>())
+                .put("input_language", "English")
+                .put("output_language", "French")
+                .put("text", "I love programming.").map());
         println(output);
     }
 }

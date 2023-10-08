@@ -18,11 +18,13 @@
 
 package com.hw.langchain.chains.summarize;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.document.loaders.WebBaseLoader;
 import com.hw.langchain.llms.openai.OpenAIChat;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,7 @@ class SummarizeUtilsTest {
                 .build()
                 .init();
 
-        var loader = new WebBaseLoader(List.of("https://lilianweng.github.io/posts/2023-06-23-agent/"));
+        var loader = new WebBaseLoader(ListUtil.of("https://lilianweng.github.io/posts/2023-06-23-agent/"));
         docs = loader.load();
     }
 

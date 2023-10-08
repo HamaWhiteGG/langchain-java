@@ -18,15 +18,18 @@
 
 package com.hw.pinecone;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.Database;
 import com.hw.pinecone.entity.index.IndexDescription;
 import com.hw.pinecone.entity.index.Status;
 import com.hw.pinecone.entity.vector.*;
 
+import lombok.var;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 
+import javax.swing.plaf.ListUI;
 import java.time.Duration;
 import java.util.List;
 
@@ -137,9 +140,9 @@ class PineconeClientTest {
 
     @Test
     void testVectors() {
-        Vector v1 = new Vector("v1", List.of(1F, 3F, 5F));
-        Vector v2 = new Vector("v2", List.of(5F, 3F, 1F));
-        UpsertRequest upsertRequest = new UpsertRequest(List.of(v1, v2), NAMESPACE);
+        Vector v1 = new Vector("v1", ListUtil.of(1F, 3F, 5F));
+        Vector v2 = new Vector("v2", ListUtil.of(5F, 3F, 1F));
+        UpsertRequest upsertRequest = new UpsertRequest(ListUtil.of(v1, v2), NAMESPACE);
 
         UpsertResponse upsertResponse = index.upsert(upsertRequest);
         assertNotNull(upsertResponse, "upsertResponse should not be null");
@@ -150,7 +153,7 @@ class PineconeClientTest {
         assertTrue(statsResponse.getNamespaces().containsKey(NAMESPACE));
 
         QueryRequest queryRequest = QueryRequest.builder()
-                .vector(List.of(1F, 2F, 2F))
+                .vector(ListUtil.of(1F, 2F, 2F))
                 .topK(1)
                 .namespace(NAMESPACE)
                 .build();
@@ -159,7 +162,7 @@ class PineconeClientTest {
         assertNotNull(queryResponse, "queryResponse should not be null");
 
         FetchRequest fetchRequest = FetchRequest.builder()
-                .ids(List.of("v1", "v2"))
+                .ids(ListUtil.of("v1", "v2"))
                 .namespace(NAMESPACE)
                 .build();
         FetchResponse fetchResponse = index.fetch(fetchRequest);
@@ -167,7 +170,7 @@ class PineconeClientTest {
         assertEquals(2, fetchResponse.getVectors().size());
 
         DeleteRequest deleteRequest = DeleteRequest.builder()
-                .ids(List.of("v1"))
+                .ids(ListUtil.of("v1"))
                 .namespace(NAMESPACE)
                 .build();
         index.delete(deleteRequest);

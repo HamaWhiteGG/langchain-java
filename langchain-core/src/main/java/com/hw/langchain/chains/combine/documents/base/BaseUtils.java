@@ -23,8 +23,10 @@ import com.google.common.collect.Sets;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.schema.Document;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author HamaWhite
@@ -46,9 +48,9 @@ public class BaseUtils {
         missingMetadata.removeAll(baseInfo.keySet());
 
         if (!missingMetadata.isEmpty()) {
-            var requiredMetadata = prompt.getInputVariables().stream()
+            List<String> requiredMetadata = prompt.getInputVariables().stream()
                     .filter(iv -> !"page_content".equals(iv))
-                    .toList();
+                    .collect(Collectors.toList());
 
             throw new IllegalArgumentException(
                     "Document prompt requires documents to have metadata variables: " + requiredMetadata

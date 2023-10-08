@@ -18,10 +18,13 @@
 
 package com.hw.langchain.prompts.chat;
 
+import cn.hutool.core.collection.ListUtil;
+import com.google.common.collect.Lists;
 import com.hw.langchain.schema.BaseMessage;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Prompt template that assumes variable is already list of messages.
@@ -38,16 +41,21 @@ public class MessagesPlaceholder extends BaseMessagePromptTemplate {
 
     @Override
     public List<BaseMessage> formatMessages(Map<String, Object> kwargs) {
-        var value = kwargs.get(variableName);
-        if (!(value instanceof List<?> messages && messages.stream().allMatch(BaseMessage.class::isInstance))) {
-            throw new IllegalArgumentException(
-                    "Variable " + variableName + " should be a list of base messages, got " + value);
+        Object value = kwargs.get(variableName);
+        List<?> messages;
+        if (value instanceof List<?>) {
+            messages = (List<?>) value;
+            if(!messages.stream().allMatch(BaseMessage.class::isInstance)){
+                throw new IllegalArgumentException(
+                        "Variable " + variableName + " should be a list of base messages, got " + value);
+            }
+            return messages.stream().map(BaseMessage.class::cast).collect(Collectors.toList());
         }
-        return messages.stream().map(BaseMessage.class::cast).toList();
+        return Lists.newArrayList();
     }
 
     @Override
     public List<String> inputVariables() {
-        return List.of(variableName);
+        return ListUtil.of(variableName);
     }
 }

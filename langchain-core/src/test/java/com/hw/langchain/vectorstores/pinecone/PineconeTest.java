@@ -25,6 +25,7 @@ import com.hw.pinecone.PineconeClient;
 import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.IndexDescription;
 
+import lombok.var;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 
@@ -126,14 +127,15 @@ public class PineconeTest {
         var docs = pinecone.similaritySearch(query);
 
         String expected =
-                """
-                        Tonight. I call on the Senate to: Pass the Freedom to Vote Act. Pass the John Lewis Voting Rights Act. And while you’re at it, pass the Disclose Act so Americans can know who is funding our elections.\s
-
-                        Tonight, I’d like to honor someone who has dedicated his life to serve this country: Justice Stephen Breyer—an Army veteran, Constitutional scholar, and retiring Justice of the United States Supreme Court. Justice Breyer, thank you for your service.\s
-
-                        One of the most serious constitutional responsibilities a President has is nominating someone to serve on the United States Supreme Court.\s
-
-                        And I did that 4 days ago, when I nominated Circuit Court of Appeals Judge Ketanji Brown Jackson. One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence.""";
+                "" +
+                        "     Tonight. I call on the Senate to: Pass the Freedom to Vote Act. Pass the John Lewis Voting Rights Act. And while you’re at it, pass the Disclose Act so Americans can know who is funding our elections.s\n" +
+                        "\n" +
+                        "                        Tonight, I’d like to honor someone who has dedicated his life to serve this country: Justice Stephen Breyer—an Army veteran, Constitutional scholar, and retiring Justice of the United States Supreme Court. Justice Breyer, thank you for your service.s\n" +
+                        "\n" +
+                        "                        One of the most serious constitutional responsibilities a President has is nominating someone to serve on the United States Supreme Court.s\n" +
+                        "\n" +
+                        "                        And I did that 4 days ago, when I nominated Circuit Court of Appeals Judge Ketanji Brown Jackson. One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence." +
+                        "";
 
         assertThat(docs).isNotNull().hasSize(4);
         assertThat(docs.get(0).getPageContent()).isEqualTo(expected);

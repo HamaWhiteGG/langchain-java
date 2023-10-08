@@ -18,6 +18,7 @@
 
 package com.hw.langchain.vectorstores.utils;
 
+import cn.hutool.core.collection.ListUtil;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -34,7 +35,7 @@ public class Nd4jUtils {
     }
 
     public static INDArray createFromList(List<Float> list) {
-        Float[][] array = listToArray(List.of(list));
+        Float[][] array = listToArray(ListUtil.of(list));
         return Nd4j.createFromArray(array);
     }
 }

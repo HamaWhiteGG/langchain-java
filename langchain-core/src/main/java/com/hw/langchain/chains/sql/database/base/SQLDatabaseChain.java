@@ -18,6 +18,8 @@
 
 package com.hw.langchain.chains.sql.database.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chains.llm.LLMChain;
@@ -106,7 +108,7 @@ public class SQLDatabaseChain extends Chain {
      */
     @Override
     public List<String> inputKeys() {
-        return List.of(inputKey);
+        return ListUtil.of(inputKey);
     }
 
     /**
@@ -114,14 +116,14 @@ public class SQLDatabaseChain extends Chain {
      */
     @Override
     public List<String> outputKeys() {
-        return List.of(outputKey);
+        return ListUtil.of(outputKey);
     }
 
     @Override
     protected Map<String, String> innerCall(Map<String, Object> inputs) {
         String inputText = inputs.get(this.inputKey) + "\nSQLQuery:";
         // If not present, then defaults to null which is all tables.
-        var tableNamesToUse = (List<String>) inputs.get("table_names_to_use");
+        List<String> tableNamesToUse = (List<String>) inputs.get("table_names_to_use");
         String tableInfo = database.getTableInfo(tableNamesToUse);
 
         Map<String, Object> llmInputs = new HashMap<>();
@@ -129,7 +131,7 @@ public class SQLDatabaseChain extends Chain {
         llmInputs.put("top_k", topK);
         llmInputs.put("dialect", database.getDialect());
         llmInputs.put("table_info", tableInfo);
-        llmInputs.put("stop", List.of("\nSQLResult:"));
+        llmInputs.put("stop", ListUtil.of("\nSQLResult:"));
 
         String sqlCmd = llmChain.predict(llmInputs);
         LOG.info("SQL command:\n {}", sqlCmd);
@@ -150,6 +152,6 @@ public class SQLDatabaseChain extends Chain {
             finalResult = llmChain.predict(llmInputs).trim();
         }
         LOG.info("Final Result: \n{}", finalResult);
-        return Map.of(outputKey, finalResult);
+        return MapUtil.of(outputKey, finalResult);
     }
 }

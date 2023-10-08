@@ -18,10 +18,14 @@
 
 package com.hw.langchain.document.loaders.directory;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.PathUtil;
 import com.hw.langchain.document.loaders.text.TextLoader;
 
+import lombok.var;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +40,7 @@ class DirectoryLoaderTest {
         String path = "../docs/extras/modules/";
 
         var loader = DirectoryLoader.builder()
-                .path(Path.of(path))
+                .path((new File(path)).toPath())
                 .loaderCls(TextLoader.class)
                 .build();
 

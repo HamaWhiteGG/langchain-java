@@ -18,6 +18,7 @@
 
 package com.hw.langchain.prompts.chat;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.exception.LangChainException;
 import com.hw.langchain.prompts.base.StringPromptTemplate;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
@@ -51,7 +52,7 @@ public abstract class BaseStringMessagePromptTemplate extends BaseMessagePromptT
 
     @Override
     public List<BaseMessage> formatMessages(Map<String, Object> kwargs) {
-        return List.of(this.format(kwargs));
+        return ListUtil.of(this.format(kwargs));
     }
 
     @Override

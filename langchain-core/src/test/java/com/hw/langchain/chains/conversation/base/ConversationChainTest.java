@@ -18,6 +18,8 @@
 
 package com.hw.langchain.chains.conversation.base;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.memory.buffer.ConversationBufferMemory;
@@ -26,6 +28,7 @@ import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.MessagesPlaceholder;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -53,18 +56,18 @@ class ConversationChainTest {
 
         var conversation = new ConversationChain(llm);
 
-        var output = conversation.predict(Map.of("input", "Hi there!"));
+        var output = conversation.predict(MapUtil.of("input", "Hi there!"));
         LOG.info("Finished chain.\n{}", output);
         assertNotNull(output, "Output should not be null");
 
-        output = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        output = conversation.predict(MapUtil.of("input", "I'm doing well! Just having a conversation with an AI."));
         LOG.info("Finished chain.\n{}", output);
         assertNotNull(output, "Output should not be null");
     }
 
     @Test
     void testConversationChainWithChatModel() {
-        var prompt = ChatPromptTemplate.fromMessages(List.of(
+        var prompt = ChatPromptTemplate.fromMessages(ListUtil.of(
                 SystemMessagePromptTemplate.fromTemplate(
                         "The following is a friendly conversation between a human and an AI. The AI is talkative and " +
                                 "provides lots of specific details from its context. If the AI does not know the " +
@@ -76,17 +79,17 @@ class ConversationChainTest {
         var memory = new ConversationBufferMemory(true);
         var conversation = new ConversationChain(chat, prompt, memory);
 
-        var output1 = conversation.predict(Map.of("input", "Hi there!"));
+        var output1 = conversation.predict(MapUtil.of("input", "Hi there!"));
         // Hello! How can I assist you today?
         LOG.info("output1: \n{}", output1);
         assertNotNull(output1, "output1 should not be null");
 
-        var output2 = conversation.predict(Map.of("input", "I'm doing well! Just having a conversation with an AI."));
+        var output2 = conversation.predict(MapUtil.of("input", "I'm doing well! Just having a conversation with an AI."));
         // That sounds like fun! I'm happy to chat with you. What would you like to talk about?
         LOG.info("output2: \n{}", output2);
         assertNotNull(output2, "output2 should not be null");
 
-        var output3 = conversation.predict(Map.of("input", "Tell me about yourself."));
+        var output3 = conversation.predict(MapUtil.of("input", "Tell me about yourself."));
         // Sure! I am an AI language model created by OpenAI. I was trained on a large dataset ...
         LOG.info("output3: \n{}", output3);
         assertNotNull(output3, "output3 should not be null");

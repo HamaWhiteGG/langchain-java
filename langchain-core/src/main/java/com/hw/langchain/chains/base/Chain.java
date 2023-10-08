@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 import com.hw.langchain.schema.BaseMemory;
 
@@ -197,7 +198,7 @@ public abstract class Chain {
                                     "eg `chain(Map.of('foo', 1, 'bar', 2))`",
                             inputKeys));
         }
-        return Map.of(new ArrayList<>(inputKeys).get(0), input);
+        return MapUtil.of(new ArrayList<>(inputKeys).get(0), input);
     }
 
     /**

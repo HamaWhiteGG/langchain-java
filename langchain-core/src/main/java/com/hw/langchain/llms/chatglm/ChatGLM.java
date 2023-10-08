@@ -18,6 +18,9 @@
 
 package com.hw.langchain.llms.chatglm;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.chat.models.base.LLM;
@@ -31,6 +34,7 @@ import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +88,7 @@ public class ChatGLM extends LLM {
     private TextRequestsWrapper requestsWrapper;
 
     public ChatGLM init() {
-        Map<String, String> headers = Map.of("Content-Type", "application/json");
+        Map<String, String> headers = MapUtil.of("Content-Type", "application/json");
         this.requestsWrapper = new TextRequestsWrapper(headers);
         return this;
     }
@@ -96,26 +100,25 @@ public class ChatGLM extends LLM {
 
     @Override
     public String innerCall(String prompt, List<String> stop) {
-        Map<String, Object> payload = Map.of(
-                "prompt", prompt,
-                "temperature", temperature,
-                "history", history,
-                "max_length", maxToken,
-                "top_p", topP);
+        Map<String, Object> payload = MapBuilder.create(new HashMap<String, Object>())
+                .put("prompt", prompt)
+                .put("temperature", temperature)
+                .put("history", history)
+                .put("max_length", maxToken)
+                .put("top_p", topP).map();
 
         LOG.debug("ChatGLM payload: {}", payload);
         String response = requestsWrapper.post(endpointUrl, payload);
         LOG.debug("ChatGLM response: {}", response);
 
-        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<>() {
-        });
+        Map<String, Object> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<Map<String, Object>>() {});
         String text = parsedResponse.get("response").toString();
 
         if (CollectionUtils.isNotEmpty(stop)) {
             text = enforceStopTokens(text, stop);
         }
         if (withHistory) {
-            history.add(List.of(text));
+            history.add(ListUtil.of(text));
         }
         return text;
     }

@@ -18,6 +18,7 @@
 
 package com.hw.langchain.vectorstores.fake.embeddings;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.embeddings.base.Embeddings;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class FakeEmbeddings implements Embeddings {
 
-    public static final List<String> FAKE_TEXTS = List.of("foo", "bar", "baz");
+    public static final List<String> FAKE_TEXTS = ListUtil.of("foo", "bar", "baz");
 
     /**
      * Return simple embeddings. Embeddings encode each text as its index.

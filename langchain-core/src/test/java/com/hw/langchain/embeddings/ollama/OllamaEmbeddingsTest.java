@@ -18,6 +18,7 @@
 
 package com.hw.langchain.embeddings.ollama;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

@@ -18,11 +18,14 @@
 
 package com.hw.langchain.agents.types;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.agents.agent.BaseSingleActionAgent;
 import com.hw.langchain.agents.agent.types.AgentType;
 import com.hw.langchain.agents.chat.base.ChatAgent;
 import com.hw.langchain.agents.mrkl.base.ZeroShotAgent;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,7 +33,8 @@ import java.util.Map;
  */
 public class Types {
 
-    public static final Map<AgentType, Class<? extends BaseSingleActionAgent>> AGENT_TO_CLASS = Map.of(
-            AgentType.ZERO_SHOT_REACT_DESCRIPTION, ZeroShotAgent.class,
-            AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, ChatAgent.class);
+    public static final Map<AgentType, Class<? extends BaseSingleActionAgent>> AGENT_TO_CLASS =
+            MapBuilder.create(new HashMap<AgentType, Class<? extends BaseSingleActionAgent>>())
+                    .put(AgentType.ZERO_SHOT_REACT_DESCRIPTION, ZeroShotAgent.class)
+                    .put(AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, ChatAgent.class).map();
 }

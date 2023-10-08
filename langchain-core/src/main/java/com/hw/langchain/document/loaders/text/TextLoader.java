@@ -18,6 +18,10 @@
 
 package com.hw.langchain.document.loaders.text;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.PathUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.document.loaders.base.BaseLoader;
 import com.hw.langchain.document.loaders.helpers.FileEncoding;
 import com.hw.langchain.exception.LangChainException;
@@ -28,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -74,25 +79,19 @@ public class TextLoader extends BaseLoader {
     public List<Document> load() {
         String text;
         try {
-            text = Files.readString(Path.of(filePath), encoding);
-        } catch (IOException e) {
-            if (autodetectEncoding) {
-                text = loadWithDetectedEncoding(filePath);
-            } else {
-                throw new LangChainException(errorMessage(filePath), e);
-            }
+            text = FileUtil.readString(FileSystems.getDefault().getPath(filePath).toFile(), encoding);
         } catch (Exception e) {
             throw new LangChainException(errorMessage(filePath), e);
         }
-        Map<String, Object> metadata = Map.of("source", filePath);
-        return List.of(new Document(text, metadata));
+        Map<String, Object> metadata = MapUtil.of("source", filePath);
+        return ListUtil.of(new Document(text, metadata));
     }
 
     private String loadWithDetectedEncoding(String filePath) {
         try {
             FileEncoding detected = detectFileEncodings(filePath);
             LOG.debug("Trying encoding: {}", detected.getEncoding());
-            return Files.readString(Path.of(filePath), detected.getEncoding());
+            return FileUtil.readString(FileSystems.getDefault().getPath(filePath).toFile(), detected.getEncoding());
         } catch (IOException e) {
             throw new LangChainException(errorMessage(filePath), e);
         }

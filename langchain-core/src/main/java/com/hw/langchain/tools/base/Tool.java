@@ -18,8 +18,10 @@
 
 package com.hw.langchain.tools.base;
 
+import cn.hutool.core.map.MapUtil;
 import com.google.common.collect.Maps;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.EqualsAndHashCode;
@@ -52,7 +54,7 @@ public class Tool extends BaseTool {
     public Map<String, Object> args() {
         // For backwards compatibility, if the function signature is ambiguous,
         // assume it takes a single string input.
-        return Map.of("tool_input", Map.of("type", "string"));
+        return MapUtil.of("tool_input", MapUtil.of("type", "string"));
     }
 
     @Override

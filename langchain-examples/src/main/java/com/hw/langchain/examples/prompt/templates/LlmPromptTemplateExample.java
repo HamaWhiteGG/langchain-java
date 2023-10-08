@@ -18,10 +18,11 @@
 
 package com.hw.langchain.examples.prompt.templates;
 
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
+import lombok.var;
 
-import java.util.Map;
 
 import static com.hw.langchain.examples.utils.PrintUtils.println;
 
@@ -33,7 +34,7 @@ public class LlmPromptTemplateExample {
 
     public static void main(String[] args) {
         var prompt = PromptTemplate.fromTemplate("What is a good name for a company that makes {product}?");
-        var output = prompt.format(Map.of("product", "colorful socks"));
+        var output = prompt.format(MapUtil.of("product", "colorful socks"));
         println(output);
     }
 }

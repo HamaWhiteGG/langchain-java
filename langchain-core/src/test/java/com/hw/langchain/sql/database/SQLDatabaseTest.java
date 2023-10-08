@@ -18,6 +18,8 @@
 
 package com.hw.langchain.sql.database;
 
+import cn.hutool.core.collection.ListUtil;
+import lombok.var;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -39,73 +41,75 @@ class SQLDatabaseTest extends BasicDatabaseTest {
     @Test
     void testGetUsableTableNames() {
         var actual = database.getUsableTableNames();
-        var expected = List.of("students", "parents");
+        var expected = ListUtil.of("students", "parents");
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
     @Test
     void testGetTableDdl() {
         var actual = database.getTableDdl("students");
-        var expected = """
-
-                CREATE TABLE students (
-                	id INTEGER(32),
-                	name CHARACTER VARYING(64),
-                	score INTEGER(32) COMMENT 'math score',
-                	teacher_note CHARACTER VARYING(256)
-                ) COMMENT 'student score table'
-
-                """;
+        var expected = "" +
+                "" +
+                "                CREATE TABLE students (\n" +
+                "                \tid INTEGER(32),\n" +
+                "                \tname CHARACTER VARYING(64),\n" +
+                "                \tscore INTEGER(32) COMMENT 'math score',\n" +
+                "                \tteacher_note CHARACTER VARYING(256)\n" +
+                "                ) COMMENT 'student score table'\n" +
+                "" +
+                "";
         assertEquals(expected, actual);
     }
 
     @Test
     void testGetSampleRows() {
         var actual = database.getSampleRows("students");
-        var expected = """
-                3 rows from students table:
-                id	name	score	teacher_note
-                1	Alex	100	Alex did perfectly every day in the class.
-                2	Alice	70	Alice needs a lot of improvements.
-                3	Jack	75	Event it is not the best, Jack has already improved.""";
+        var expected = "" +
+                "3 rows from students table:\n" +
+                "id\tname\tscore\tteacher_note\n" +
+                "1\tAlex\t100\tAlex did perfectly every day in the class.\n" +
+                "2\tAlice\t70\tAlice needs a lot of improvements.\n" +
+                "3\tJack\t75\tEvent it is not the best, Jack has already improved." +
+                "";
         assertEquals(expected, actual);
     }
 
     @Test
     void testGetTableInfo() {
         var actual = database.getTableInfo(null);
-        var expected = """
-
-                CREATE TABLE parents (
-                	id INTEGER(32),
-                	student_name CHARACTER VARYING(64),
-                	parent_name CHARACTER VARYING(64),
-                	parent_mobile CHARACTER VARYING(16)
-                )
-
-                /*
-                3 rows from parents table:
-                id	student_name	parent_name	parent_mobile
-                1	Alex	Barry	088121
-                2	Alice	Jessica	088122
-                3	Jack	Simon	088123
-                */
-
-
-                CREATE TABLE students (
-                	id INTEGER(32),
-                	name CHARACTER VARYING(64),
-                	score INTEGER(32) COMMENT 'math score',
-                	teacher_note CHARACTER VARYING(256)
-                ) COMMENT 'student score table'
-
-                /*
-                3 rows from students table:
-                id	name	score	teacher_note
-                1	Alex	100	Alex did perfectly every day in the class.
-                2	Alice	70	Alice needs a lot of improvements.
-                3	Jack	75	Event it is not the best, Jack has already improved.
-                */""";
+        var expected = "" +
+                "\n" +
+                "                CREATE TABLE parents (\n" +
+                "                \tid INTEGER(32),\n" +
+                "                \tstudent_name CHARACTER VARYING(64),\n" +
+                "                \tparent_name CHARACTER VARYING(64),\n" +
+                "                \tparent_mobile CHARACTER VARYING(16)\n" +
+                "                )\n" +
+                "\n" +
+                "                /*\n" +
+                "                3 rows from parents table:\n" +
+                "                id\tstudent_name\tparent_name\tparent_mobile\n" +
+                "                1\tAlex\tBarry\t088121\n" +
+                "                2\tAlice\tJessica\t088122\n" +
+                "                3\tJack\tSimon\t088123\n" +
+                "                */\n" +
+                "\n" +
+                "\n" +
+                "                CREATE TABLE students (\n" +
+                "                \tid INTEGER(32),\n" +
+                "                \tname CHARACTER VARYING(64),\n" +
+                "                \tscore INTEGER(32) COMMENT 'math score',\n" +
+                "                \tteacher_note CHARACTER VARYING(256)\n" +
+                "                ) COMMENT 'student score table'\n" +
+                "\n" +
+                "                /*\n" +
+                "                3 rows from students table:\n" +
+                "                id\tname\tscore\tteacher_note\n" +
+                "                1\tAlex\t100\tAlex did perfectly every day in the class.\n" +
+                "                2\tAlice\t70\tAlice needs a lot of improvements.\n" +
+                "                3\tJack\t75\tEvent it is not the best, Jack has already improved.\n" +
+                "                */" +
+                "";
         assertEquals(expected, actual);
     }
 }

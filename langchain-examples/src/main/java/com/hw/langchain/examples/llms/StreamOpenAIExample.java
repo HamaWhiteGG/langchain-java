@@ -18,6 +18,10 @@
 
 package com.hw.langchain.examples.llms;
 
+import cn.hutool.core.collection.ListUtil;
+import com.hw.openai.entity.completions.Completion;
+
+import java.util.List;
 import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.langchain.llms.openai.OpenAI;
 

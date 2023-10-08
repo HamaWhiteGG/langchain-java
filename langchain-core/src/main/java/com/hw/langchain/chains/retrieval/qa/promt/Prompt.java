@@ -18,7 +18,9 @@
 
 package com.hw.langchain.chains.retrieval.qa.promt;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
+import com.hw.langchain.utils.ResourceBundleUtils;
 
 import java.util.List;
 
@@ -30,15 +32,8 @@ public class Prompt {
     private Prompt() {
     }
 
-    private static final String TEMPLATE =
-            """
-                    Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    private static final String TEMPLATE = ResourceBundleUtils.getString("prompt.chain.retrieval.template");
 
-                    {context}
-
-                    Question: {question}
-                    Helpful Answer:""";
-
-    public static final PromptTemplate PROMPT_TEMPLATE = new PromptTemplate(List.of("context", "question"), TEMPLATE);
+    public static final PromptTemplate PROMPT_TEMPLATE = new PromptTemplate(ListUtil.of("context", "question"), TEMPLATE);
 
 }

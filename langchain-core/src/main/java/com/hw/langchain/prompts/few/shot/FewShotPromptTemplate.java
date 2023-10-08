@@ -28,6 +28,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hw.langchain.prompts.utils.FormatUtils.formatTemplate;
 
@@ -96,11 +97,11 @@ public class FewShotPromptTemplate extends StringPromptTemplate {
         List<Map<String, Object>> exampleList = getExamples();
         exampleList = exampleList.stream()
                 .map(example -> Maps.filterKeys(example, examplePrompt.getInputVariables()::contains))
-                .toList();
+                .collect(Collectors.toList());
         // Format the examples.
         List<String> exampleStrings = exampleList.stream()
                 .map(examplePrompt::format)
-                .toList();
+                .collect(Collectors.toList());
         // Create the overall template.
         List<String> pieces = Lists.newArrayList(prefix);
         pieces.addAll(exampleStrings);

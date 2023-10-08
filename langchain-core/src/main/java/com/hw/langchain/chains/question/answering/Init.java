@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.question.answering;
 
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.ChainType;
 import com.hw.langchain.chains.combine.documents.base.BaseCombineDocumentsChain;
@@ -40,7 +41,7 @@ public class Init {
         throw new IllegalStateException("Utility class");
     }
 
-    private static final Map<ChainType, Function<BaseLanguageModel, BaseCombineDocumentsChain>> LOADER_MAPPING = Map.of(
+    private static final Map<ChainType, Function<BaseLanguageModel, BaseCombineDocumentsChain>> LOADER_MAPPING = MapUtil.of(
             STUFF, Init::loadStuffChain);
 
     public static StuffDocumentsChain loadStuffChain(BaseLanguageModel llm) {

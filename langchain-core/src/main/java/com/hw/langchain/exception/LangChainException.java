@@ -18,7 +18,6 @@
 
 package com.hw.langchain.exception;
 
-import java.io.Serial;
 
 /**
  * LangChainException
@@ -27,7 +26,6 @@ import java.io.Serial;
  */
 public class LangChainException extends RuntimeException {
 
-    @Serial
     private static final long serialVersionUID = 193141189399279147L;
 
     /**

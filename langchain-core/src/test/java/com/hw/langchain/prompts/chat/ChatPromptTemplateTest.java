@@ -18,12 +18,16 @@
 
 package com.hw.langchain.prompts.chat;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
 import com.hw.langchain.schema.BaseMessage;
 import com.hw.langchain.schema.HumanMessage;
 import com.hw.langchain.schema.SystemMessage;
 
+import lombok.var;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +46,13 @@ class ChatPromptTemplateTest {
         var humanTemplate = "{text}";
         var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
 
-        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
-        List<BaseMessage> actual = chatPrompt.formatMessages(Map.of("input_language", "English",
-                "output_language", "French",
-                "text", "I love programming."));
+        var chatPrompt = ChatPromptTemplate.fromMessages(ListUtil.of(systemMessagePrompt, humanMessagePrompt));
+        List<BaseMessage> actual = chatPrompt.formatMessages(MapBuilder.create(new HashMap<String, Object>())
+                .put("input_language", "English")
+                .put("output_language", "French")
+                .put("text", "I love programming.").map());
 
-        List<BaseMessage> expected = List.of(
+        List<BaseMessage> expected = ListUtil.of(
                 new SystemMessage("You are a helpful assistant that translates English to French."),
                 new HumanMessage("I love programming."));
         assertEquals(expected, actual);

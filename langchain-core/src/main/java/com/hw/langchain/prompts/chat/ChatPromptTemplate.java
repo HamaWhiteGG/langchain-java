@@ -18,7 +18,9 @@
 
 package com.hw.langchain.prompts.chat;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.schema.BaseMessage;
+import lombok.var;
 
 import java.util.*;
 
@@ -46,8 +48,8 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
     private void validateInputVariables() {
         Set<String> inputVars = new HashSet<>();
         for (var message : messages) {
-            if (message instanceof BaseMessagePromptTemplate promptTemplate) {
-                inputVars.addAll(promptTemplate.inputVariables());
+            if (message instanceof BaseMessagePromptTemplate) {
+                inputVars.addAll(((BaseMessagePromptTemplate)message).inputVariables());
             }
         }
         if (partialVariables != null) {
@@ -59,7 +61,7 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
                         .format("Got mismatched inputVariables. Expected: %s. Got: %s", inputVars, inputVariables));
             }
         } else {
-            inputVariables = List.copyOf(inputVars);
+            inputVariables = ListUtil.toList(inputVars);
         }
     }
 
@@ -68,10 +70,11 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
         kwargs = mergePartialAndUserVariables(kwargs);
         List<BaseMessage> result = new ArrayList<>();
         for (var messageTemplate : messages) {
-            if (messageTemplate instanceof BaseMessage baseMessage) {
-                result.add(baseMessage);
-            } else if (messageTemplate instanceof BaseMessagePromptTemplate promptTemplate) {
+            if (messageTemplate instanceof BaseMessage) {
+                result.add((BaseMessage) messageTemplate);
+            } else if (messageTemplate instanceof BaseMessagePromptTemplate) {
                 var relParams = new HashMap<String, Object>();
+                BaseMessagePromptTemplate promptTemplate = (BaseMessagePromptTemplate) messageTemplate;
                 kwargs.forEach((key, value) -> {
                     if (promptTemplate.inputVariables().contains(key)) {
                         relParams.put(key, value);
@@ -88,8 +91,8 @@ public class ChatPromptTemplate extends BaseChatPromptTemplate {
     public static ChatPromptTemplate fromMessages(List<?> messages) {
         Set<String> inputVars = new HashSet<>();
         for (var message : messages) {
-            if (message instanceof BaseMessagePromptTemplate template) {
-                inputVars.addAll(template.inputVariables());
+            if (message instanceof BaseMessagePromptTemplate) {
+                inputVars.addAll(((BaseMessagePromptTemplate)message).inputVariables());
             }
         }
         return new ChatPromptTemplate(new ArrayList<>(inputVars), messages);

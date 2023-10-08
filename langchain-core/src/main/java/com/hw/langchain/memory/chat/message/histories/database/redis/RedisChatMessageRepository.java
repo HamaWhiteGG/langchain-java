@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangxiaojia002
@@ -74,10 +75,9 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
         List<String> messageJSonStrList = messageQueue.readAll();
         return messageJSonStrList.stream().map(x -> {
             Map<String, Object> data =
-                    JsonUtils.convertFromJsonStr(x, new TypeReference<>() {
-                    });
+                    JsonUtils.convertFromJsonStr(x, new TypeReference<Map<String, Object>>() {});
             return BaseMessage.fromMap(data);
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     @Override

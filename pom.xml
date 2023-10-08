@@ -15,8 +15,9 @@
         <module>langchain-core</module>
         <module>serpapi-client</module>
         <module>pinecone-client</module>
-        <module>langchain-examples</module>
-        <module>langchain-bigdata</module>
+        <module>restapi-client</module>
+<!--        <module>langchain-examples</module>-->
+<!--        <module>langchain-bigdata</module>-->
     </modules>
 
     <properties>
@@ -27,11 +28,10 @@
         <milvus.version>2.2.9</milvus.version>
         <jython.version>2.7.3</jython.version>
         <jsoup.version>1.16.1</jsoup.version>
+        <lombok.version>1.18.6</lombok.version>
         <rxjava.version>2.2.21</rxjava.version>
-        <nd4j.version>1.0.0-M2.1</nd4j.version>
-        <lombok.version>1.18.28</lombok.version>
         <jtokkit.version>0.5.0</jtokkit.version>
-        <nd4j.version>1.0.0-M2.1</nd4j.version>
+        <nd4j.version>1.0.0-beta6</nd4j.version>
         <guava.version>32.0.1-jre</guava.version>
         <assertj.version>3.24.2</assertj.version>
         <okhttp3.version>3.14.9</okhttp3.version>
@@ -39,23 +39,24 @@
         <slf4j-api.version>1.7.32</slf4j-api.version>
         <awaitility.version>4.2.0</awaitility.version>
         <reflections.version>0.10.2</reflections.version>
-        <resilience4j.version>2.1.0</resilience4j.version>
+        <resilience4j.version>0.13.2</resilience4j.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
         <commons-text.version>1.10.0</commons-text.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <jackson-annotation.version>2.15.1</jackson-annotation.version>
+        <jackson-databind.version>2.13.2</jackson-databind.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <redisson.version>3.17.3</redisson.version>
         <netty-resolver.version>4.1.43.Final</netty-resolver.version>
         <reactor-core.version>3.5.8</reactor-core.version>
         <reactor-adapter.version>3.5.1</reactor-adapter.version>
         <mockito-core.version>3.12.4</mockito-core.version>
+        <hutool-core.version>5.8.9</hutool-core.version>
         <google-api-client.version>2.2.0</google-api-client.version>
         <google-api-customsearch.version>v1-rev20230702-2.0.0</google-api-customsearch.version>
 
         <scala.binary.version>2.12</scala.binary.version>
-        <target.java.version>17</target.java.version>
+        <target.java.version>8</target.java.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
         <spotless-maven-plugin.version>2.27.1</spotless-maven-plugin.version>
@@ -73,6 +74,31 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>io.github.hamawhitegg</groupId>
+                <artifactId>openai-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hamawhitegg</groupId>
+                <artifactId>serpapi-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hamawhitegg</groupId>
+                <artifactId>pinecone-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hamawhitegg</groupId>
+                <artifactId>restapi-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.squareup.retrofit2</groupId>
                 <artifactId>retrofit</artifactId>
@@ -106,8 +132,8 @@
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotation.version}</version>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
             </dependency>
 
             <dependency>
@@ -302,219 +328,242 @@
                 <version>${mockito-core.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-core.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>${target.java.version}</source>
-                        <target>${target.java.version}</target>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>${spotless-maven-plugin.version}</version>
-                    <configuration>
-                        <java>
-                            <eclipse>
-                                <file>style/spotless-formatter.xml</file>
-                            </eclipse>
-                            <licenseHeader>
-                                <file>style/license-header</file>
-                            </licenseHeader>
-
-                            <!-- \# refers to the static imports -->
-                            <importOrder>
-                                <order>com,org,,javax,java,scala,\#</order>
-                            </importOrder>
-
-                            <removeUnusedImports />
-                        </java>
-                        <pom>
-                            <sortPom>
-                                <encoding>UTF-8</encoding>
-                                <nrOfIndentSpace>4</nrOfIndentSpace>
-                                <keepBlankLines>true</keepBlankLines>
-                                <indentBlankLines>false</indentBlankLines>
-                                <indentSchemaLocation>true</indentSchemaLocation>
-                                <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
-                                <sortModules>false</sortModules>
-                                <sortExecutions>false</sortExecutions>
-                                <predefinedSortOrder>custom_1</predefinedSortOrder>
-                                <expandEmptyElements>false</expandEmptyElements>
-                                <sortProperties>false</sortProperties>
-                            </sortPom>
-                        </pom>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <phase>compile</phase>
-                        </execution>
-                    </executions>
+                    <version>3.10.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus-staging-maven-plugin.version}</version>
-                    <extensions>${nexus-staging-maven-plugin.executions}</extensions>
-                    <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven-source-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven-javadoc-plugin.version}</version>
-                    <configuration>
-                        <locale>en</locale>
-                        <encoding>UTF-8</encoding>
-                        <docencoding>UTF-8</docencoding>
-                        <doclint>none</doclint>
-                        <additionalJOptions>
-                            <additionalJOption>-J-Duser.language=en</additionalJOption>
-                            <additionalJOption>-J-Duser.region=US</additionalJOption>
-                        </additionalJOptions>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <configuration>
-                                <doclint>none</doclint>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${maven-gpg-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                            <phase>verify</phase>
-                            <configuration>
-                                <!-- Prevent gpg from using pinentry programs -->
-                                <gpgArguments>
-                                    <arg>--pinentry-mode</arg>
-                                    <arg>loopback</arg>
-                                </gpgArguments>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>${maven-deploy-plugin.version}</version>
+                    <version>3.0.0</version>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>${versions-maven-plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
-    <url>https://github.com/HamaWhiteGG/langchain-java</url>
+    <!--    <build>-->
+<!--        <pluginManagement>-->
+<!--            <plugins>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                    <version>${maven-compiler-plugin.version}</version>-->
+<!--                    <configuration>-->
+<!--                        <source>${target.java.version}</source>-->
+<!--                        <target>${target.java.version}</target>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+<!--                <plugin>-->
+<!--                    <groupId>com.diffplug.spotless</groupId>-->
+<!--                    <artifactId>spotless-maven-plugin</artifactId>-->
+<!--                    <version>${spotless-maven-plugin.version}</version>-->
+<!--                    <configuration>-->
+<!--                        <java>-->
+<!--                            <eclipse>-->
+<!--                                <file>style/spotless-formatter.xml</file>-->
+<!--                            </eclipse>-->
+<!--                            <licenseHeader>-->
+<!--                                <file>style/license-header</file>-->
+<!--                            </licenseHeader>-->
 
-    <developers>
-        <developer>
-            <name>HamaWhite</name>
-            <email>baisongxx@gmail.com</email>
-        </developer>
-    </developers>
+<!--                            &lt;!&ndash; \# refers to the static imports &ndash;&gt;-->
+<!--                            <importOrder>-->
+<!--                                <order>com,org,,javax,java,scala,\#</order>-->
+<!--                            </importOrder>-->
 
-    <scm>
-        <connection>scm:git@github.com:HamaWhiteGG/langchain-java.git</connection>
-        <developerConnection>scm:git@github.com:HamaWhiteGG/langchain-java.git</developerConnection>
-        <url>https://github.com/HamaWhiteGG/langchain-java</url>
-    </scm>
+<!--                            <removeUnusedImports />-->
+<!--                        </java>-->
+<!--                        <pom>-->
+<!--                            <sortPom>-->
+<!--                                <encoding>UTF-8</encoding>-->
+<!--                                <nrOfIndentSpace>4</nrOfIndentSpace>-->
+<!--                                <keepBlankLines>true</keepBlankLines>-->
+<!--                                <indentBlankLines>false</indentBlankLines>-->
+<!--                                <indentSchemaLocation>true</indentSchemaLocation>-->
+<!--                                <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>-->
+<!--                                <sortModules>false</sortModules>-->
+<!--                                <sortExecutions>false</sortExecutions>-->
+<!--                                <predefinedSortOrder>custom_1</predefinedSortOrder>-->
+<!--                                <expandEmptyElements>false</expandEmptyElements>-->
+<!--                                <sortProperties>false</sortProperties>-->
+<!--                            </sortPom>-->
+<!--                        </pom>-->
+<!--                    </configuration>-->
+<!--                    <executions>-->
+<!--&lt;!&ndash;                        <execution>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <goals>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <goal>check</goal>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </goals>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <phase>compile</phase>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </execution>&ndash;&gt;-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                    <version>${maven-surefire-plugin.version}</version>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.sonatype.plugins</groupId>-->
+<!--                    <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--                    <version>${nexus-staging-maven-plugin.version}</version>-->
+<!--                    <extensions>true</extensions>-->
+<!--                    <configuration>-->
+<!--                        <serverId>ossrh</serverId>-->
+<!--                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
+<!--                        <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-source-plugin</artifactId>-->
+<!--                    <version>${maven-source-plugin.version}</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>attach-sources</id>-->
+<!--                            <goals>-->
+<!--                                <goal>jar-no-fork</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                    <version>${maven-javadoc-plugin.version}</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>attach-javadocs</id>-->
+<!--                            <goals>-->
+<!--                                <goal>jar</goal>-->
+<!--                            </goals>-->
+<!--                            <configuration>-->
+<!--                                <doclint>none</doclint>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                    <version>${maven-gpg-plugin.version}</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>sign-artifacts</id>-->
+<!--                            <goals>-->
+<!--                                <goal>sign</goal>-->
+<!--                            </goals>-->
+<!--                            <phase>verify</phase>-->
+<!--                            <configuration>-->
+<!--                                &lt;!&ndash; Prevent gpg from using pinentry programs &ndash;&gt;-->
+<!--                                <gpgArguments>-->
+<!--                                    <arg>&#45;&#45;pinentry-mode</arg>-->
+<!--                                    <arg>loopback</arg>-->
+<!--                                </gpgArguments>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-deploy-plugin</artifactId>-->
+<!--                    <version>${maven-deploy-plugin.version}</version>-->
+<!--                </plugin>-->
 
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/HamaWhiteGG/langchain-java/issues</url>
-    </issueManagement>
+<!--                <plugin>-->
+<!--                    <groupId>org.codehaus.mojo</groupId>-->
+<!--                    <artifactId>versions-maven-plugin</artifactId>-->
+<!--                    <version>${versions-maven-plugin.version}</version>-->
+<!--                </plugin>-->
+<!--            </plugins>-->
+<!--        </pluginManagement>-->
 
-    <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.sonatype.plugins</groupId>-->
+<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-source-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-gpg-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>versions-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-deploy-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+<!--    <licenses>-->
+<!--        <license>-->
+<!--            <name>The Apache Software License, Version 2.0</name>-->
+<!--            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>-->
+<!--        </license>-->
+<!--    </licenses>-->
+
+<!--    <developers>-->
+<!--        <developer>-->
+<!--            <name>HamaWhite</name>-->
+<!--            <email>baisongxx@gmail.com</email>-->
+<!--        </developer>-->
+<!--    </developers>-->
+
+<!--    <scm>-->
+<!--        <connection>scm:git@github.com:HamaWhiteGG/langchain-java.git</connection>-->
+<!--        <developerConnection>scm:git@github.com:HamaWhiteGG/langchain-java.git</developerConnection>-->
+<!--        <url>https://github.com/HamaWhiteGG/langchain-java</url>-->
+<!--    </scm>-->
+
+<!--    <issueManagement>-->
+<!--        <system>Github Issue</system>-->
+<!--        <url>https://github.com/HamaWhiteGG/langchain-java/issues</url>-->
+<!--    </issueManagement>-->
+
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </snapshotRepository>-->
+<!--    </distributionManagement>-->
 </project>

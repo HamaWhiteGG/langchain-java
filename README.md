@@ -1,4 +1,4 @@
-# 🦜️ LangChain Java
+# 🦜️ LangChain.Java
 
 Java version of LangChain, while empowering LLM for Big Data.
 

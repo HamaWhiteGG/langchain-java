@@ -18,6 +18,9 @@
 
 package com.hw.langchain.chains.llm;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.chains.base.Chain;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
@@ -27,6 +30,7 @@ import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
+import lombok.var;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -67,7 +71,7 @@ class LLMChainTest {
 
     @Test
     void testLLMChainWithOneInputVariables() {
-        PromptTemplate prompt = new PromptTemplate(List.of("product"),
+        PromptTemplate prompt = new PromptTemplate(ListUtil.of("product"),
                 "What is a good name for a company that makes {product}?");
 
         Chain chain = new LLMChain(llm, prompt);
@@ -92,11 +96,13 @@ class LLMChainTest {
 
     @Test
     void testLLMChainWithMultipleInputVariables() {
-        PromptTemplate prompt = new PromptTemplate(List.of("company", "product"),
+        PromptTemplate prompt = new PromptTemplate(ListUtil.of("company", "product"),
                 "What is a good name for {company} that makes {product}?");
 
         Chain chain = new LLMChain(llm, prompt);
-        String actual = chain.run(Map.of("company", "ABC Startup", "product", "colorful socks"));
+        String actual = chain.run(MapBuilder.create()
+                .put("company", "ABC Startup")
+                .put("product", "colorful socks").map());
 
         String expected = "\n\nSocktastic!";
         assertEquals(expected, actual);
@@ -104,60 +110,59 @@ class LLMChainTest {
 
     @Test
     void testLLMChainForNLP2SQL() {
-        String template =
-                """
-                        You are a H2 expert. Given an input question, first create a syntactically correct H2 query to run, then look at the results of the query and return the answer to the input question.
-                        Unless the user specifies in the question a specific number of examples to obtain, query for at most 5 results using the LIMIT clause as per H2. You can order the results to return the most informative data in the database.
-                        Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in backticks (`) to denote them as delimited identifiers.
-                        Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
-                        Pay attention to use CURDATE() function to get the current date, if the question involves "today".
-
-                        Use the following format:
-
-                        Question: Question here
-                        SQLQuery: SQL Query to run
-                        SQLResult: Result of the SQLQuery
-                        Answer: Final answer here
-
-                        Only use the following tables:
-
-                        CREATE TABLE parents (
-                        	id INTEGER(32),
-                        	student_name CHARACTER VARYING(64),
-                        	parent_name CHARACTER VARYING(64),
-                        	parent_mobile CHARACTER VARYING(16)
-                        )
-
-                        /*
-                        3 rows from parents table:
-                        id	student_name	parent_name	parent_mobile
-                        1	Alex	Barry	088121
-                        2	Alice	Jessica	088122
-                        3	Jack	Simon	088123
-                        */
-
-
-                        CREATE TABLE students (
-                        	id INTEGER(32),
-                        	name CHARACTER VARYING(64),
-                        	score INTEGER(32) COMMENT 'math score',
-                        	teacher_note CHARACTER VARYING(256)
-                        ) COMMENT 'student score table'
-
-                        /*
-                        3 rows from students table:
-                        id	name	score	teacher_note
-                        1	Alex	100	Alex did perfectly every day in the class.
-                        2	Alice	70	Alice needs a lot of improvements.
-                        3	Jack	75	Event it is not the best, Jack has already improved.
-                        */
-
-                        Question: Who got zero score? Show me her parent's contact information.
-                        SQLQuery:""";
-        PromptTemplate prompt = new PromptTemplate(List.of(), template);
+        String template = "              " +
+                "                        You are a H2 expert. Given an input question, first create a syntactically correct H2 query to run, then look at the results of the query and return the answer to the input question.\n" +
+                "                        Unless the user specifies in the question a specific number of examples to obtain, query for at most 5 results using the LIMIT clause as per H2. You can order the results to return the most informative data in the database.\n" +
+                "                        Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in backticks (`) to denote them as delimited identifiers.\n" +
+                "                        Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.\n" +
+                "                        Pay attention to use CURDATE() function to get the current date, if the question involves \"today\".\n" +
+                "\n" +
+                "                        Use the following format:\n" +
+                "\n" +
+                "                        Question: Question here\n" +
+                "                        SQLQuery: SQL Query to run\n" +
+                "                        SQLResult: Result of the SQLQuery\n" +
+                "                        Answer: Final answer here\n" +
+                "\n" +
+                "                        Only use the following tables:\n" +
+                "\n" +
+                "                        CREATE TABLE parents (\n" +
+                "                        \tid INTEGER(32),\n" +
+                "                        \tstudent_name CHARACTER VARYING(64),\n" +
+                "                        \tparent_name CHARACTER VARYING(64),\n" +
+                "                        \tparent_mobile CHARACTER VARYING(16)\n" +
+                "                        )\n" +
+                "\n" +
+                "                        /*\n" +
+                "                        3 rows from parents table:\n" +
+                "                        id\tstudent_name\tparent_name\tparent_mobile\n" +
+                "                        1\tAlex\tBarry\t088121\n" +
+                "                        2\tAlice\tJessica\t088122\n" +
+                "                        3\tJack\tSimon\t088123\n" +
+                "                        */\n" +
+                "\n" +
+                "\n" +
+                "                        CREATE TABLE students (\n" +
+                "                        \tid INTEGER(32),\n" +
+                "                        \tname CHARACTER VARYING(64),\n" +
+                "                        \tscore INTEGER(32) COMMENT 'math score',\n" +
+                "                        \tteacher_note CHARACTER VARYING(256)\n" +
+                "                        ) COMMENT 'student score table'\n" +
+                "\n" +
+                "                        /*\n" +
+                "                        3 rows from students table:\n" +
+                "                        id\tname\tscore\tteacher_note\n" +
+                "                        1\tAlex\t100\tAlex did perfectly every day in the class.\n" +
+                "                        2\tAlice\t70\tAlice needs a lot of improvements.\n" +
+                "                        3\tJack\t75\tEvent it is not the best, Jack has already improved.\n" +
+                "                        */\n" +
+                "\n" +
+                "                        Question: Who got zero score? Show me her parent's contact information.\n" +
+                "                        SQLQuery:";
+        PromptTemplate prompt = new PromptTemplate(ListUtil.of(), template);
 
         Chain chain = new LLMChain(llm, prompt);
-        String actual = chain.run(Map.of("stop", List.of("\nSQLResult:")));
+        String actual = chain.run(MapUtil.of("stop", ListUtil.of("\nSQLResult:")));
         String expected =
                 " SELECT `parent_name`, `parent_mobile` FROM `parents` WHERE `student_name` IN (SELECT `name` FROM `students` WHERE `score` = 0) LIMIT 5;";
         assertEquals(expected, actual);
@@ -171,12 +176,13 @@ class LLMChainTest {
         var humanTemplate = "{text}";
         var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
 
-        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
+        var chatPrompt = ChatPromptTemplate.fromMessages(ListUtil.of(systemMessagePrompt, humanMessagePrompt));
 
         var chain = new LLMChain(chat, chatPrompt);
-        String actual = chain.run(Map.of("input_language", "English",
-                "output_language", "French",
-                "text", "I love programming."));
+        String actual = chain.run(MapBuilder.create()
+                .put("input_language", "English")
+                .put("output_language", "French")
+                .put("text", "I love programming.").map());
 
         String expected = "J'adore la programmation.";
         assertEquals(expected, actual);

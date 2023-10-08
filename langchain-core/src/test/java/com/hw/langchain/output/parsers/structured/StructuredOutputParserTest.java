@@ -18,6 +18,9 @@
 
 package com.hw.langchain.output.parsers.structured;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.chat.models.openai.ChatOpenAI;
 import com.hw.langchain.llms.openai.OpenAI;
 import com.hw.langchain.prompts.chat.ChatPromptTemplate;
@@ -25,6 +28,7 @@ import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 import com.hw.langchain.schema.OutputParserException;
 
+import lombok.var;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +47,7 @@ class StructuredOutputParserTest {
 
     @Test
     void testParse() {
-        var responseSchemas = List.of(
+        var responseSchemas = ListUtil.of(
                 new ResponseSchema("name", "desc"),
                 new ResponseSchema("age", "desc"));
         var parser = StructuredOutputParser.fromResponseSchemas(responseSchemas);
@@ -51,13 +55,15 @@ class StructuredOutputParserTest {
         var text = "```json\n{\"name\": \"John\", \"age\": 30}\n```";
         var result = parser.parse(text);
 
-        var expectedResult = Map.of("name", "John", "age", 30);
+        var expectedResult = MapBuilder.create()
+                .put("name", "John")
+                .put( "age", 30).map();
         assertEquals(expectedResult, result);
     }
 
     @Test
     void testInvalidJsonInput() {
-        var responseSchemas = List.of(
+        var responseSchemas = ListUtil.of(
                 new ResponseSchema("name", "desc"),
                 new ResponseSchema("age", "desc"));
         var parser = StructuredOutputParser.fromResponseSchemas(responseSchemas);
@@ -67,7 +73,7 @@ class StructuredOutputParserTest {
     }
 
     private StructuredOutputParser createOutputParser() {
-        List<ResponseSchema> responseSchemas = List.of(
+        List<ResponseSchema> responseSchemas = ListUtil.of(
                 new ResponseSchema("answer", "answer to the user's question"),
                 new ResponseSchema("source", "source used to answer the user's question, should be a website."));
         return StructuredOutputParser.fromResponseSchemas(responseSchemas);
@@ -79,16 +85,17 @@ class StructuredOutputParserTest {
         var outputParser = createOutputParser();
         var prompt = new PromptTemplate(
                 "answer the users question as best as possible.\n{format_instructions}\n{question}",
-                List.of("question"),
-                Map.of("format_instructions", outputParser.getFormatInstructions()));
+                ListUtil.of("question"),
+                MapUtil.of("format_instructions", outputParser.getFormatInstructions()));
 
         var llm = OpenAI.builder().temperature(0).build().init();
-        var input = prompt.formatPrompt(Map.of("question", "what's the capital of france?"));
+        var input = prompt.formatPrompt(MapUtil.of("question", "what's the capital of france?"));
         var output = llm.call(input.toString());
 
         var actual = outputParser.parse(output);
-        var expected = Map.of("answer", "Paris",
-                "source", "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html");
+        var expected = MapBuilder.create()
+                .put("answer", "Paris")
+                .put("source", "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html").map();
         assertEquals(expected, actual);
     }
 
@@ -98,19 +105,20 @@ class StructuredOutputParserTest {
         var outputParser = createOutputParser();
 
         var prompt = new ChatPromptTemplate(
-                List.of("question"),
-                List.of(HumanMessagePromptTemplate.fromTemplate(
+                ListUtil.of("question"),
+                ListUtil.of(HumanMessagePromptTemplate.fromTemplate(
                         "answer the users question as best as possible.\n{format_instructions}\n{question}")),
-                Map.of("format_instructions", outputParser.getFormatInstructions()));
+                MapUtil.of("format_instructions", outputParser.getFormatInstructions()));
 
         var chatModel = ChatOpenAI.builder().temperature(0).build().init();
 
-        var input = prompt.formatPrompt(Map.of("question", "what's the capital of france?"));
+        var input = prompt.formatPrompt(MapUtil.of("question", "what's the capital of france?"));
         var output = chatModel.call(input.toMessages());
 
         var actual = outputParser.parse(output.getContent());
-        var expected = Map.of("answer", "The capital of France is Paris.",
-                "source", "https://en.wikipedia.org/wiki/Paris");
+        var expected = MapBuilder.create()
+                .put("answer", "The capital of France is Paris.")
+                .put("source", "https://en.wikipedia.org/wiki/Paris").map();
         assertEquals(expected, actual);
     }
 }

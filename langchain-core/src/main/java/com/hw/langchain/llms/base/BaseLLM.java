@@ -18,6 +18,7 @@
 
 package com.hw.langchain.llms.base;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.AsyncLLMResult;
 import com.hw.langchain.schema.BaseMessage;
@@ -28,6 +29,7 @@ import lombok.experimental.SuperBuilder;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LLM wrapper should take in a prompt and return a string.
@@ -54,7 +56,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
      * Check Cache and run the LLM on the given prompt and input.
      */
     public String call(String prompt, List<String> stop) {
-        return generate(List.of(prompt), stop).getGenerations().get(0).get(0).getText();
+        return generate(ListUtil.of(prompt), stop).getGenerations().get(0).get(0).getText();
     }
 
     public String call(String prompt) {
@@ -72,7 +74,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
     public LLMResult generatePrompt(List<PromptValue> prompts, List<String> stop) {
         List<String> promptStrings = prompts.stream()
                 .map(PromptValue::toString)
-                .toList();
+                .collect(Collectors.toList());
         return generate(promptStrings, stop);
     }
 
@@ -80,8 +82,8 @@ public abstract class BaseLLM implements BaseLanguageModel {
     public List<Flux<AsyncLLMResult>> asyncGeneratePrompt(List<PromptValue> prompts, List<String> stop) {
         List<String> promptStrings = prompts.stream()
                 .map(PromptValue::toString)
-                .toList();
-        return promptStrings.stream().map(s -> asyncInnerGenerate(List.of(s), stop)).toList();
+                .collect(Collectors.toList());
+        return promptStrings.stream().map(s -> asyncInnerGenerate(ListUtil.of(s), stop)).collect(Collectors.toList());
     }
 
     @Override
@@ -91,7 +93,7 @@ public abstract class BaseLLM implements BaseLanguageModel {
 
     @Override
     public Flux<String> asyncPredict(String text, List<String> stop) {
-        return asyncInnerGenerate(List.of(text), stop).map(result -> result.getGenerations().get(0).getText());
+        return asyncInnerGenerate(ListUtil.of(text), stop).map(result -> result.getGenerations().get(0).getText());
     }
 
     @Override

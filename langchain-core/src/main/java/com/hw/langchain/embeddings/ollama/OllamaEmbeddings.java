@@ -18,6 +18,8 @@
 
 package com.hw.langchain.embeddings.ollama;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hw.langchain.chains.query.constructor.JsonUtils;
 import com.hw.langchain.embeddings.base.Embeddings;
@@ -26,8 +28,10 @@ import com.hw.langchain.requests.TextRequestsWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author HamaWhite
@@ -45,14 +49,14 @@ public class OllamaEmbeddings implements Embeddings {
     private TextRequestsWrapper requestsWrapper;
 
     public OllamaEmbeddings init() {
-        Map<String, String> headers = Map.of("Content-Type", "application/json");
+        Map<String, String> headers = MapUtil.of("Content-Type", "application/json");
         this.requestsWrapper = new TextRequestsWrapper(headers);
         return this;
     }
 
     @Override
     public List<List<Float>> embedDocuments(List<String> texts) {
-        return texts.stream().map(this::embeddings).toList();
+        return texts.stream().map(this::embeddings).collect(Collectors.toList());
     }
 
     @Override
@@ -61,10 +65,11 @@ public class OllamaEmbeddings implements Embeddings {
     }
 
     private List<Float> embeddings(String prompt) {
-        Map<String, Object> body = Map.of("model", model, "prompt", prompt);
+        Map<String, Object> body = MapBuilder.create(new HashMap<String, Object>())
+                .put("model", model)
+                .put("prompt", prompt).map();
         String response = requestsWrapper.post(baseUrl + "/api/embeddings", body);
-        Map<String, List<Float>> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<>() {
-        });
+        Map<String, List<Float>> parsedResponse = JsonUtils.convertFromJsonStr(response, new TypeReference<Map<String, List<Float>>>() {});
         return parsedResponse.get("embedding");
     }
 }

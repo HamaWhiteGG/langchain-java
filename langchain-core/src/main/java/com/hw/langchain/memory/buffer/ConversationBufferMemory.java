@@ -18,6 +18,8 @@
 
 package com.hw.langchain.memory.buffer;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.hw.langchain.memory.chat.memory.BaseChatMemory;
 import com.hw.langchain.schema.BaseChatMessageHistory;
 import com.hw.langchain.schema.BaseMessage;
@@ -72,7 +74,7 @@ public class ConversationBufferMemory extends BaseChatMemory {
      */
     @Override
     public List<String> memoryVariables() {
-        return List.of(memoryKey);
+        return ListUtil.of(memoryKey);
     }
 
     /**
@@ -80,6 +82,6 @@ public class ConversationBufferMemory extends BaseChatMemory {
      */
     @Override
     public Map<String, Object> loadMemoryVariables(Map<String, Object> inputs) {
-        return Map.of(memoryKey, buffer());
+        return MapUtil.of(memoryKey, buffer());
     }
 }

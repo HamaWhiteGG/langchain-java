@@ -18,6 +18,7 @@
 
 package com.hw.langchain.agents.agent;
 
+import com.google.common.collect.Lists;
 import com.hw.langchain.base.language.BaseLanguageModel;
 import com.hw.langchain.schema.AgentAction;
 import com.hw.langchain.schema.AgentFinish;
@@ -43,7 +44,7 @@ public abstract class BaseSingleActionAgent {
     public abstract List<String> inputKeys();
 
     public List<String> returnValues() {
-        return List.of("output");
+        return Lists.newArrayList("output");
     }
 
     /**

@@ -18,6 +18,7 @@
 
 package com.hw.langchain.chains.question.answering;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.chains.prompt.selector.BasePromptSelector;
 import com.hw.langchain.chains.prompt.selector.ConditionalPromptSelector;
 import com.hw.langchain.chains.prompt.selector.PromptSelectorUtils;
@@ -27,6 +28,7 @@ import com.hw.langchain.prompts.chat.HumanMessagePromptTemplate;
 import com.hw.langchain.prompts.chat.SystemMessagePromptTemplate;
 import com.hw.langchain.prompts.prompt.PromptTemplate;
 
+import com.hw.langchain.utils.ResourceBundleUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -39,30 +41,19 @@ public class StuffPrompt {
     private StuffPrompt() {
     }
 
-    private static final String PROMPT_TEMPLATE =
-            """
-                    Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    private static final String PROMPT_TEMPLATE = ResourceBundleUtils.getString("prompt.chain.staff.template");
 
-                    {context}
+    public static final PromptTemplate PROMPT = new PromptTemplate(ListUtil.of("context", "question"), PROMPT_TEMPLATE);
 
-                    Question: {question}
-                    Helpful Answer:""";
+    private static final String SYSTEM_TEMPLATE = ResourceBundleUtils.getString("prompt.chain.staff.system.template");
 
-    public static final PromptTemplate PROMPT = new PromptTemplate(List.of("context", "question"), PROMPT_TEMPLATE);
-
-    private static final String SYSTEM_TEMPLATE = """
-            Use the following pieces of context to answer the users question.
-            If you don't know the answer, just say that you don't know, don't try to make up an answer.
-            ----------------
-            {context}""";
-
-    private static final List<?> MESSAGES = List.of(
+    private static final List<?> MESSAGES = ListUtil.of(
             SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
             HumanMessagePromptTemplate.fromTemplate("{question}"));
 
     private static final BasePromptTemplate CHAT_PROMPT = ChatPromptTemplate.fromMessages(MESSAGES);
 
     public static final BasePromptSelector PROMPT_SELECTOR =
-            new ConditionalPromptSelector(PROMPT, List.of(Pair.of(PromptSelectorUtils::isChatModel, CHAT_PROMPT)));
+            new ConditionalPromptSelector(PROMPT, ListUtil.of(Pair.of(PromptSelectorUtils::isChatModel, CHAT_PROMPT)));
 
 }

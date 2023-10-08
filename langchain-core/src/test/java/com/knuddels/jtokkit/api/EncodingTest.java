@@ -18,6 +18,7 @@
 
 package com.knuddels.jtokkit.api;
 
+import cn.hutool.core.collection.ListUtil;
 import com.hw.langchain.exception.LangChainException;
 import com.knuddels.jtokkit.Encodings;
 
@@ -43,7 +44,7 @@ class EncodingTest {
         String text = "This is a sample sentence.";
 
         List<Integer> encoded = enc.encode(text);
-        assertEquals(List.of(2028, 374, 264, 6205, 11914, 13), encoded);
+        assertEquals(ListUtil.of(2028, 374, 264, 6205, 11914, 13), encoded);
 
         String decoded = enc.decode(encoded);
         assertEquals(text, decoded);
