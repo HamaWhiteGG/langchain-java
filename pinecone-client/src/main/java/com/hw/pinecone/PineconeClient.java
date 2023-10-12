@@ -18,6 +18,7 @@
 
 package com.hw.pinecone;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hw.pinecone.entity.index.CreateIndexRequest;
 import com.hw.pinecone.entity.index.IndexDescription;
@@ -127,8 +128,7 @@ public class PineconeClient implements Closeable {
         httpClient = httpClientBuilder.build();
 
         // Used for automatic discovery and registration of Jackson modules
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
+        ObjectMapper objectMapper = defaultObjectMapper();
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -136,6 +136,15 @@ public class PineconeClient implements Closeable {
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(httpClient)
                 .build();
+    }
+
+    public static ObjectMapper defaultObjectMapper() {
+        // Used for automatic discovery and registration of Jackson modules
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        // Ignore unknown fields
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
     }
 
     /**
