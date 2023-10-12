@@ -385,3 +385,7 @@ This is an active open-source project. We are always open to people who want to 
 
 Contact [me](mailto:baisongxx@gmail.com) if you are looking for implementation tasks that fit your skills.
 
+## 9. Reward
+If the project has been helpful to you, you can treat me to a cup of coffee.
+<img src="https://github.com/HamaWhiteGG/langchain-java/blob/main/docs/images/Appreciation%20code.png" alt="Appreciation code" style="width:40%;">
+> This is a WeChat appreciation code.
