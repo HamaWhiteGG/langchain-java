@@ -39,7 +39,7 @@ public class OpenAI extends BaseOpenAI {
         checkArgument(!(stream && n > 1), "Cannot stream results when n > 1.");
         checkArgument(!(stream && bestOf > 1), "Cannot stream results when bestOf > 1.");
 
-        openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY","");
+        openaiApiKey = Utils.getOrEnvOrDefault(openaiApiKey, "OPENAI_API_KEY");
         openaiApiBase = Utils.getOrEnvOrDefault(openaiApiBase, "OPENAI_API_BASE", "");
         openaiOrganization = Utils.getOrEnvOrDefault(openaiOrganization, "OPENAI_ORGANIZATION", "");
         openaiProxy = Utils.getOrEnvOrDefault(openaiProxy, "OPENAI_PROXY", "");
