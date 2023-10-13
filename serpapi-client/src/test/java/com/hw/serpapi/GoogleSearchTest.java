@@ -51,7 +51,7 @@ class GoogleSearchTest {
 
     @Test
     void testReturnSearchResultSnippet() {
-        SerpApiSearch search = new GoogleSearch("46e4196f9e63981ef415ee6c370fefe05b26f7518abac391f1aeb5391218e6ac");
+        SerpApiSearch search = new GoogleSearch();
 
         Map<String, String> parameter = new HashMap<>();
         parameter.put("engine", "google");
