@@ -18,6 +18,8 @@
 
 package com.hw.langchain.utilities;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -122,7 +124,7 @@ public class GoogleSearchAPIWrapper {
         List<Result> results = googleSearchResults(query, num);
 
         if (CollectionUtils.isEmpty(results)) {
-            return List.of(Map.of("Result", "No good Google Search Result was found"));
+            return ListUtil.of(MapUtil.of("Result", "No good Google Search Result was found"));
         }
         return results.stream().map(result -> {
             Map<String, String> metadataResult = Maps.newHashMap();
@@ -133,7 +135,7 @@ public class GoogleSearchAPIWrapper {
                 metadataResult.put("snippet", result.getSnippet());
             }
             return metadataResult;
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     public static Builder builder() {

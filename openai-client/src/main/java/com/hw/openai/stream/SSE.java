@@ -19,12 +19,21 @@
 package com.hw.openai.stream;
 
 
+import lombok.Data;
+
 /**
  * @author HamaWhite
  */
-public record SSE(String data) {
+@Data
+public class SSE {
 
     private static final String DONE_DATA = "[DONE]";
+
+    private String data;
+
+    public SSE(String data) {
+        this.data = data;
+    }
 
     public boolean isDone() {
         return DONE_DATA.equalsIgnoreCase(this.data);

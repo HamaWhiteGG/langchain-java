@@ -350,7 +350,7 @@ public class OpenAiClient implements Closeable {
      * @param clazz   Class of type T to return
      */
     private <T> Flowable<T> stream(Call<ResponseBody> apiCall, Class<T> clazz) {
-        return stream(apiCall).map(sse -> objectMapper.readValue(sse.data(), clazz));
+        return stream(apiCall).map(sse -> objectMapper.readValue(sse.getData(), clazz));
     }
 
     /**

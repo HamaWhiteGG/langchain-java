@@ -25,6 +25,7 @@ import com.hw.langchain.chains.llm.LLMChain;
 import com.hw.langchain.prompts.base.BasePromptTemplate;
 import com.hw.langchain.schema.Document;
 
+import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 
 import reactor.core.publisher.Flux;
@@ -123,7 +124,7 @@ public class StuffDocumentsChain extends BaseCombineDocumentsChain {
     @Override
     public Flux<Pair<String, Map<String, String>>> asyncCombineDocs(List<Document> docs, Map<String, Object> kwargs) {
         var inputs = getInputs(docs, kwargs);
-        return llmChain.asyncPredict(inputs).map(s -> Pair.of(s, Map.of()));
+        return llmChain.asyncPredict(inputs).map(s -> Pair.of(s, MapUtil.empty()));
     }
 
     @Override

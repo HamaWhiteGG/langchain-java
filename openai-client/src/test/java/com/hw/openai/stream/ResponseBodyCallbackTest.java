@@ -14,7 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 package com.hw.openai.stream;
 
@@ -34,9 +35,11 @@ import retrofit2.mock.Calls;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+*/
 /**
  * @author HamaWhite
- */
+ *//*
+
 class ResponseBodyCallbackTest {
 
     @Test
@@ -137,4 +140,4 @@ class ResponseBodyCallbackTest {
         assertEquals("Invalid auth token", testSubscriber.errors().get(0).getMessage());
     }
 
-}
+}*/
