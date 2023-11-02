@@ -34,7 +34,7 @@ public class ChatAgentExample {
 
     public static void main(String[] args) {
         // The language model we're going to use to control the agent.
-        var chat = ChatOpenAI.builder().temperature(0).build().init();
+        var chat = ChatOpenAI.builder().temperature(0).model("gpt-4").build().init();
 
         // The tools we'll give the Agent access to. Note that the 'llm-math' tool uses an LLM, so we need to pass that
         // in.
@@ -44,7 +44,11 @@ public class ChatAgentExample {
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
         var agent = initializeAgent(tools, chat, AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION);
 
+        // var query = "Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?";
+        var query = "How many countries and regions participated in the 2023 Hangzhou Asian Games?" +
+                "What is that number raised to the .023 power?";
+
         // Now let's test it out!
-        agent.run("Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?");
+        agent.run(query);
     }
 }

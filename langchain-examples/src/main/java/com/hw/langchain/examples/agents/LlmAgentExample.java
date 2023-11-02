@@ -44,8 +44,12 @@ public class LlmAgentExample {
         // Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
         var agent = initializeAgent(tools, llm, AgentType.ZERO_SHOT_REACT_DESCRIPTION);
 
+        // var query = "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the
+        // .023 power?";
+        var query = "How many countries and regions participated in the 2022 Hangzhou Asian Games?" +
+                "What is that number raised to the .023 power?";
+
         // Let's test it out!
-        agent.run(
-                "What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?");
+        agent.run(query);
     }
 }
