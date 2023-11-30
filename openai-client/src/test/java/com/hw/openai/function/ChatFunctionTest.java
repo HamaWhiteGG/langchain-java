@@ -84,7 +84,6 @@ class ChatFunctionTest extends OpenAiClientTest {
         ChatChoice chatChoice = response.getChoices().get(0);
         LOG.info("result: {}", chatChoice);
         assertThat(chatChoice).isNotNull();
-
         assertEquals("tool_calls", chatChoice.getFinishReason());
 
         Function function = chatChoice.getMessage().getToolCalls().get(0).getFunction();
@@ -97,7 +96,7 @@ class ChatFunctionTest extends OpenAiClientTest {
                 }""";
         assertEquals(expectedArguments, function.getArguments());
 
-        // register execute
+        // execute function
         WeatherResponse weatherResponse =
                 FunctionExecutor.execute(function.getName(), Weather.class, function.getArguments());
         LOG.info("result: {}", weatherResponse);
