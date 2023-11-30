@@ -14,8 +14,8 @@ This is the Java language implementation of LangChain, which makes it as easy as
 
 The following example in the [langchain-example](langchain-examples/src/main/java/com/hw/langchain/examples).
 
-- [SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
-- [API Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
+- [SQL Chain](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
+- [API Chain](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ApiChainExample.java)
 - [RAG Milvus](langchain-examples/src/main/java/com/hw/langchain/examples/chains/MilvusExample.java)
 - [RAG Pinecone](langchain-examples/src/main/java/com/hw/langchain/examples/chains/RetrievalQaExample.java)
 - [Summarization](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SummarizationExample.java)
@@ -80,6 +80,7 @@ var llm = OpenAI.builder()
 ### 3.3 LLMs
 Get predictions from a language model. The basic building block of LangChain is the LLM, which takes in text and generates more text.
 
+[OpenAI Example](langchain-examples/src/main/java/com/hw/langchain/examples/llms/OpenAIExample.java)
 ```java
 var llm = OpenAI.builder()
         .temperature(0.9f)
@@ -97,7 +98,7 @@ Feetful of Fun
 
 Chat models are a variation on language models. While chat models use language models under the hood, the interface they expose is a bit different: rather than expose a "text in, text out" API, they expose an interface where "chat messages" are the inputs and outputs.
 
-
+[OpenAI Chat Example](langchain-examples/src/main/java/com/hw/langchain/examples/chat/models/ChatExample.java)
 ```java
 var chat = ChatOpenAI.builder()
         .temperature(0)
@@ -114,6 +115,7 @@ AIMessage{content='J'adore la programmation.', additionalKwargs={}}
 
 It is useful to understand how chat models are different from a normal LLM, but it can often be handy to just be able to treat them the same. LangChain makes that easy by also exposing an interface through which you can interact with a chat model as you would a normal LLM. You can access this through the `predict` interface.
 
+[OpenAI Chat Example](langchain-examples/src/main/java/com/hw/langchain/examples/chat/models/ChatExample.java)
 ```java
 var output = chat.predict("Translate this sentence from English to French. I love programming.");
 println(output);
@@ -128,7 +130,11 @@ Now that we've got a model and a prompt template, we'll want to combine the two.
 
 #### 3.5.1 LLMs
 The simplest and most common type of chain is an LLMChain, which passes an input first to a PromptTemplate and then to an LLM. We can construct an LLM chain from our existing model and prompt template.
+
+[LLM Chain Example](langchain-examples/src/main/java/com/hw/langchain/examples/chains/LlmChainExample.java)
 ```java
+var prompt = PromptTemplate.fromTemplate("What is a good name for a company that makes {product}?");
+
 var chain = new LLMChain(llm, prompt);
 var result = chain.run("colorful socks");
 println(result);
@@ -138,21 +144,28 @@ Feetful of Fun
 ```
 #### 3.5.2 Chat models
 The `LLMChain` can be used with chat models as well:
+
+[LLM Chat Chain Example](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ChatChainExample.java)
 ```java
-var chain = new LLMChain(chat, chatPrompt);
-var result = chain.run(Map.of("input_language", "English", "output_language", "French", "text", "I love programming."));
-println(result);
+var template = "You are a helpful assistant that translates {input_language} to {output_language}.";
+        var systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
+        var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate("{text}");
+        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
+
+        var chain = new LLMChain(chat, chatPrompt);
+        var result = chain.run(Map.of("input_language", "English", "output_language", "French", "text", "I love programming."));
+        println(result);
 ```
 ```shell
 J'adore la programmation.
 ```
 
-#### 3.5.3 SQL Chains Example
+#### 3.5.1 SQL Chains Example
 LLMs make it possible to interact with SQL databases using natural language, and LangChain offers SQL Chains to build and run SQL queries based on natural language prompts.
 
 ![SQL chains.png](https://github.com/HamaWhiteGG/langchain-java/blob/dev/data/images/SQL%20chains.png)
 
-[SQL Chains](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
+[SQL Chain Example](langchain-examples/src/main/java/com/hw/langchain/examples/chains/SqlChainExample.java)
 ```java
 var database = SQLDatabase.fromUri("jdbc:mysql://127.0.0.1:3306/demo", "xxx", "xxx");
 
@@ -195,7 +208,7 @@ export SERPAPI_API_KEY=xxx
 To augment OpenAI's knowledge beyond 2021 and computational abilities through the use of the Search and Calculator tools.
 ![Google agent example.png](https://github.com/HamaWhiteGG/langchain-java/blob/dev/data/images/Google%20agent%20example.png)
 
-[Google Search Agent](langchain-examples/src/main/java/com/hw/langchain/examples/agents/ChatAgentExample.java)
+[Google Search Agent Example](langchain-examples/src/main/java/com/hw/langchain/examples/agents/ChatAgentExample.java)
 ```java
 // the 'llm-math' tool uses an LLM
 var tools = loadTools(List.of("serpapi", "llm-math"), llm);
