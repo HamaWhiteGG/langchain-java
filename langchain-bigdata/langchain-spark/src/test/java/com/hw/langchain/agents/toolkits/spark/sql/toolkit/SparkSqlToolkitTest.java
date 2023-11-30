@@ -66,7 +66,7 @@ class SparkSqlToolkitTest {
         spark.sql("CREATE DATABASE IF NOT EXISTS " + SCHEMA);
         spark.sql("USE " + SCHEMA);
 
-        String csvFilePath = "../../docs/extras/modules/titanic.csv";
+        String csvFilePath = "../../data/extras/modules/titanic.csv";
         Dataset<Row> df = spark.read()
                 .option("header", "true")
                 .option("inferSchema", "true")

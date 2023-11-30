@@ -105,7 +105,7 @@ public class PineconeTest {
     @Test
     @Order(1)
     public void testFromDocuments() {
-        String filePath = "../docs/extras/modules/state_of_the_union.txt";
+        String filePath = "../data/extras/modules/state_of_the_union.txt";
         var loader = new TextLoader(filePath);
         var documents = loader.load();
         var textSplitter = CharacterTextSplitter.builder().chunkSize(1000).chunkOverlap(0).build();
