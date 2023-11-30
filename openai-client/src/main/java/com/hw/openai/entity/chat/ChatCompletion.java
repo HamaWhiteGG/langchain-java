@@ -83,6 +83,12 @@ public class ChatCompletion implements Serializable {
     private boolean stream;
 
     /**
+     * This feature is in Beta. If specified, our system will make a best effort to sample deterministically,
+     * such that repeated requests with the same seed and parameters should return the same result.
+     */
+    private Integer seed;
+
+    /**
      * Up to 4 sequences where the API will stop generating further tokens.
      */
     private List<String> stop;
@@ -119,4 +125,19 @@ public class ChatCompletion implements Serializable {
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
      */
     private String user;
+
+    /**
+     * A list of tools the model may call. Currently, only functions are supported as a tool.
+     * Use this to provide a list of functions the model may generate JSON inputs for.
+     */
+    private List<Tool> tools;
+
+    /**
+     * Controls which (if any) function is called by the model. none means the model will not call a function and
+     * instead generates a message.
+     * <p>
+     * none is the default when no functions are present. auto is the default if functions are present.
+     */
+    @JsonProperty("tool_choice")
+    private String toolChoice;
 }

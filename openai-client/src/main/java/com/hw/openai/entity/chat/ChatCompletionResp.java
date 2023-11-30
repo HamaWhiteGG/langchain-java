@@ -18,6 +18,7 @@
 
 package com.hw.openai.entity.chat;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hw.openai.entity.completions.Usage;
 
 import lombok.Data;
@@ -38,6 +39,13 @@ public class ChatCompletionResp {
     private Long created;
 
     private String model;
+
+    /**
+     * This fingerprint represents the backend configuration that the model runs with. Can be used in conjunction with
+     * the seed request parameter to understand when backend changes have been made that might impact determinism.
+     */
+    @JsonProperty("system_fingerprint")
+    private String systemFingerprint;
 
     private List<ChatChoice> choices;
 
