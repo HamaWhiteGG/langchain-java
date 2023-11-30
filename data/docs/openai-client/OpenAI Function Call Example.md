@@ -155,7 +155,7 @@ Function function = chatChoice.getMessage().getToolCalls().get(0).getFunction();
 
 // execute function
 WeatherResponse weatherResponse = FunctionExecutor.execute(function.getName(), Weather.class, function.getArguments());
-System.out.println()
+System.out.println(weatherResponse)
 ```
 
 The final result is:
