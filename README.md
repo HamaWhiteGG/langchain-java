@@ -1,6 +1,8 @@
 # 🦜️ LangChain Java
 
-Java version of LangChain, while empowering LLM for BigData. It's the bridge to the world of LLM in the BigData(almost Java stack) field.
+Java version of LangChain, while empowering LLM for BigData. 
+
+It serves as a bridge to the realm of LLM within the Big Data domain, primarily in the Java stack.
 ![Introduction to Langchain-Java.png](https://github.com/HamaWhiteGG/langchain-java/blob/dev/data/images/Introduction%20to%20Langchain-Java.png)
 
 > If you are interested, you can add me on WeChat: HamaWhite, or send email to [me](mailto:baisongxx@gmail.com).
