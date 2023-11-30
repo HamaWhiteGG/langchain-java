@@ -41,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author HamaWhite
  */
 @Disabled("Test requires costly OpenAI calls, can be run manually.")
-class OpenAiClientTest {
+public class OpenAiClientTest {
 
-    private static OpenAiClient client;
+    protected static OpenAiClient client;
 
     @BeforeAll
     static void setup() {

@@ -18,29 +18,25 @@
 
 package com.hw.openai.entity.chat;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**
- * ChatChoice
  * @author HamaWhite
  */
 @Data
-public class ChatChoice {
+public class ToolCall {
 
     private Integer index;
 
-    @JsonAlias("delta")
-    private Message message;
+    /**
+     * The ID of the tool call.
+     */
+    private String id;
 
     /**
-     * The reason the model stopped generating tokens. This will be stopped if the model hit a natural stop point or a
-     * provided stop sequence, length if the maximum number of tokens specified in the request was reached,
-     * content_filter if content was omitted due to a flag from our content filters, tool_calls if the model called a
-     * tool, or function_call (deprecated) if the model called a function.
+     * The type of the tool. Currently, only function is supported.
      */
-    @JsonProperty("finish_reason")
-    private String finishReason;
+    private String type;
+
+    private Function function;
 }
