@@ -38,7 +38,7 @@ import static com.hw.langchain.examples.utils.PrintUtils.println;
 public class MilvusExample {
 
     public static void main(String[] args) {
-        var filePath = "docs/extras/modules/state_of_the_union.txt";
+        var filePath = "data/extras/modules/state_of_the_union.txt";
         var loader = new TextLoader(filePath);
         var documents = loader.load();
         var textSplitter = CharacterTextSplitter.builder().chunkSize(1000).chunkOverlap(0).build();

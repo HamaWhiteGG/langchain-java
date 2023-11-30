@@ -30,7 +30,7 @@ class NotionDirectoryLoaderTest {
 
     @Test
     void testLoad() {
-        String path = "../docs/extras/use_cases/question_answering/notion_db/";
+        String path = "../data/extras/use_cases/question_answering/notion_db/";
 
         var loader = new NotionDirectoryLoader(path);
         var docs = loader.load();

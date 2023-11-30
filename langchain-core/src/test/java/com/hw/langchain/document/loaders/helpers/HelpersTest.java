@@ -33,7 +33,7 @@ class HelpersTest {
 
     @Test
     void testDetectFileEncodings() throws IOException {
-        String filePath = "../docs/extras/modules/state_of_the_union.txt";
+        String filePath = "../data/extras/modules/state_of_the_union.txt";
         var detectedEncoding = detectFileEncodings(filePath);
 
         var expectedEncoding = new FileEncoding(UTF_8, 100, null);

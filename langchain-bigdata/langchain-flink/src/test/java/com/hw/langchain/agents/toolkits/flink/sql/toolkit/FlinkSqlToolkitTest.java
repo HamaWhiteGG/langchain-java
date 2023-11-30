@@ -83,7 +83,7 @@ class FlinkSqlToolkitTest {
                     Embarked        STRING
                 ) WITH (
                     'connector' = 'filesystem',
-                    'path' = '../../docs/extras/modules/titanic_flink.csv',
+                    'path' = '../../data/extras/modules/titanic_flink.csv',
                     'format' = 'csv'
                 )""");
     }

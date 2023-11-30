@@ -33,7 +33,7 @@ class DirectoryLoaderTest {
 
     @Test
     void testLoad() {
-        String path = "../docs/extras/modules/";
+        String path = "../data/extras/modules/";
 
         var loader = DirectoryLoader.builder()
                 .path(Path.of(path))

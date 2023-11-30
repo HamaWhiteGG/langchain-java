@@ -49,7 +49,7 @@ public class RetrievalMarkdownExample {
 
     public static void main(String[] args) {
         // Load Notion page as a markdown file
-        String path = "docs/extras/use_cases/question_answering/notion_db/";
+        String path = "data/extras/use_cases/question_answering/notion_db/";
         var loader = new NotionDirectoryLoader(path);
         var docs = loader.load();
         var mdFile = docs.get(0).getPageContent();
