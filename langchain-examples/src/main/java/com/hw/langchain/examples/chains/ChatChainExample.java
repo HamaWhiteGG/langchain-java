@@ -44,8 +44,7 @@ public class ChatChainExample {
 
         var template = "You are a helpful assistant that translates {input_language} to {output_language}.";
         var systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
-        var humanTemplate = "{text}";
-        var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
+        var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate("{text}");
         var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
 
         var chain = new LLMChain(chat, chatPrompt);
