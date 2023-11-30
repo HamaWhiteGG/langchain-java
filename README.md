@@ -114,8 +114,6 @@ AIMessage{content='J'adore la programmation.', additionalKwargs={}}
 ```
 
 It is useful to understand how chat models are different from a normal LLM, but it can often be handy to just be able to treat them the same. LangChain makes that easy by also exposing an interface through which you can interact with a chat model as you would a normal LLM. You can access this through the `predict` interface.
-
-[OpenAI Chat Example](langchain-examples/src/main/java/com/hw/langchain/examples/chat/models/ChatExample.java)
 ```java
 var output = chat.predict("Translate this sentence from English to French. I love programming.");
 println(output);
@@ -148,13 +146,13 @@ The `LLMChain` can be used with chat models as well:
 [LLM Chat Chain Example](langchain-examples/src/main/java/com/hw/langchain/examples/chains/ChatChainExample.java)
 ```java
 var template = "You are a helpful assistant that translates {input_language} to {output_language}.";
-        var systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
-        var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate("{text}");
-        var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
+var systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
+var humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate("{text}");
+var chatPrompt = ChatPromptTemplate.fromMessages(List.of(systemMessagePrompt, humanMessagePrompt));
 
-        var chain = new LLMChain(chat, chatPrompt);
-        var result = chain.run(Map.of("input_language", "English", "output_language", "French", "text", "I love programming."));
-        println(result);
+var chain = new LLMChain(chat, chatPrompt);
+var result = chain.run(Map.of("input_language", "English", "output_language", "French", "text", "I love programming."));
+println(result);
 ```
 ```shell
 J'adore la programmation.
