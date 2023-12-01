@@ -15,6 +15,9 @@ Java libraries for using OpenAI's GPT APIS.
 ```
 * Java 17 or later
 
+## Docs
+- [OpenAI Function Call Example](https://github.com/HamaWhiteGG/langchain-java/blob/main/data/docs/openai-client/OpenAI%20Function%20Call%20Example.md)
+
 ## References
 
 - [https://github.com/TheoKanning/openai-java](https://github.com/TheoKanning/openai-java):
