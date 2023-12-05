@@ -50,7 +50,7 @@ Prerequisites for building:
 <dependency>
     <groupId>io.github.hamawhitegg</groupId>
     <artifactId>langchain-core</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 </dependency>
 ```
 
