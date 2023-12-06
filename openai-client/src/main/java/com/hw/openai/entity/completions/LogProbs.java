@@ -22,19 +22,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * Choice
  * @author HamaWhite
  */
 @Data
-public class Choice {
+public class LogProbs {
 
-    private String text;
+    List<String> tokens;
 
-    private Integer index;
+    @JsonProperty("token_logprobs")
+    List<Double> tokenLogprobs;
 
-    private LogProbs logprobs;
+    @JsonProperty("top_logprobs")
+    List<Map<String, Double>> topLogprobs;
 
-    @JsonProperty("finish_reason")
-    private String finishReason;
+    @JsonProperty("text_offset")
+    List<Integer> textOffset;
 }
