@@ -24,6 +24,8 @@ import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
+import com.hw.openai.entity.image.CreateImageRequest;
+import com.hw.openai.entity.image.ImageResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 
@@ -142,4 +144,11 @@ public interface OpenAiService {
             @Query("api-version") String apiVersion,
             @Body Embedding embedding);
 
+    /**
+     * Creates an image given a prompt.
+     * @param request the create image request
+     * @return A Single emitting the response containing the generated image.
+     */
+    @POST("images/generations")
+    Single<ImageResp> createImage(@Body CreateImageRequest request);
 }

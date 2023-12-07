@@ -30,6 +30,8 @@ import com.hw.openai.entity.completions.CompletionChunk;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
+import com.hw.openai.entity.image.CreateImageRequest;
+import com.hw.openai.entity.image.ImageResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
 import com.hw.openai.exception.OpenAiException;
@@ -311,6 +313,16 @@ public class OpenAiClient implements Closeable {
         return isAzureApiType()
                 ? execute(service.createEmbedding(embedding.getModel(), openaiApiVersion, embedding))
                 : execute(service.createEmbedding(embedding));
+    }
+
+    /**
+     * Creates an image given a prompt.
+     *
+     * @param request the create image request
+     * @return the image result response
+     */
+    public ImageResp createImage(CreateImageRequest request) {
+        return execute(service.createImage(request));
     }
 
     /**
