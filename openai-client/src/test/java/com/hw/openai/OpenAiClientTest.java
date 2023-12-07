@@ -48,6 +48,7 @@ public class OpenAiClientTest {
     @BeforeAll
     static void setup() {
         client = OpenAiClient.builder()
+                .requestTimeout(30)
                 .build()
                 .init();
     }
