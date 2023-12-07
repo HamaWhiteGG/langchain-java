@@ -30,7 +30,7 @@ import com.hw.openai.entity.completions.CompletionChunk;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
-import com.hw.openai.entity.image.CreateImageRequest;
+import com.hw.openai.entity.image.CreateImageReq;
 import com.hw.openai.entity.image.ImageResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
@@ -321,7 +321,7 @@ public class OpenAiClient implements Closeable {
      * @param request the create image request
      * @return the image result response
      */
-    public ImageResp createImage(CreateImageRequest request) {
+    public ImageResp createImage(CreateImageReq request) {
         return execute(service.createImage(request));
     }
 

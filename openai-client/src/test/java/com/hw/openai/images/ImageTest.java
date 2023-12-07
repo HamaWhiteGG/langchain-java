@@ -19,7 +19,7 @@
 package com.hw.openai.images;
 
 import com.hw.openai.OpenAiClientTest;
-import com.hw.openai.entity.image.CreateImageRequest;
+import com.hw.openai.entity.image.CreateImageReq;
 import com.hw.openai.entity.image.Image;
 
 import org.junit.jupiter.api.Disabled;
@@ -42,7 +42,7 @@ public class ImageTest extends OpenAiClientTest {
 
     @Test
     void testCreateImage() {
-        CreateImageRequest request = CreateImageRequest.builder()
+        CreateImageReq request = CreateImageReq.builder()
                 .model("dall-e-3")
                 .prompt("A cute baby sea otter")
                 .n(1)

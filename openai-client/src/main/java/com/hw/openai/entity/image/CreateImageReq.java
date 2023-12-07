@@ -31,7 +31,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateImageRequest {
+public class CreateImageReq {
 
     /**
      * A text description of the desired image(s).
@@ -64,7 +64,7 @@ public class CreateImageRequest {
      */
     @JsonProperty("response_format")
     @Builder.Default
-    private ImageResponseFormat responseFormat = ImageResponseFormat.URL;
+    private ImageRespFormat responseFormat = ImageRespFormat.URL;
 
     /**
      * The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024 for dall-e-2.

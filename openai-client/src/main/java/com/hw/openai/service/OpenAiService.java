@@ -24,7 +24,7 @@ import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.completions.CompletionResp;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.embeddings.EmbeddingResp;
-import com.hw.openai.entity.image.CreateImageRequest;
+import com.hw.openai.entity.image.CreateImageReq;
 import com.hw.openai.entity.image.ImageResp;
 import com.hw.openai.entity.models.Model;
 import com.hw.openai.entity.models.ModelResp;
@@ -150,5 +150,5 @@ public interface OpenAiService {
      * @return A Single emitting the response containing the generated image.
      */
     @POST("images/generations")
-    Single<ImageResp> createImage(@Body CreateImageRequest request);
+    Single<ImageResp> createImage(@Body CreateImageReq request);
 }

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * @author HamaWhite
  */
-public enum ImageResponseFormat {
+public enum ImageRespFormat {
 
     URL("url"),
 
@@ -32,7 +32,7 @@ public enum ImageResponseFormat {
 
     private final String value;
 
-    ImageResponseFormat(String value) {
+    ImageRespFormat(String value) {
         this.value = value;
     }
 
@@ -42,8 +42,8 @@ public enum ImageResponseFormat {
     }
 
     @JsonCreator
-    public static ImageResponseFormat fromValue(String value) {
-        for (ImageResponseFormat item : ImageResponseFormat.values()) {
+    public static ImageRespFormat fromValue(String value) {
+        for (ImageRespFormat item : ImageRespFormat.values()) {
             if (item.value.equalsIgnoreCase(value)) {
                 return item;
             }
