@@ -40,13 +40,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message implements Serializable {
+public class ChatMessage implements Serializable {
 
     /**
      * The role of the author of this message. One of system, user, or assistant.
      */
     @NotNull
-    private Role role;
+    private ChatMessageRole role;
 
     /**
      * The contents of the message.
@@ -67,34 +67,45 @@ public class Message implements Serializable {
     @JsonProperty("tool_calls")
     private List<ToolCall> toolCalls;
 
-    public Message(Role role, String content) {
+    public ChatMessage(String content) {
+        this.content = content;
+    }
+
+    public ChatMessage(ChatMessageRole role, String content) {
         this.role = role;
         this.content = content;
     }
 
-    public Message(Role role, String content, String name) {
+    public ChatMessage(ChatMessageRole role, String content, String name) {
         this.role = role;
         this.content = content;
         this.name = name;
     }
 
-    public static Message of(String role, String content) {
-        return new Message(Role.fromValue(role), content);
+    public ChatMessage(ChatMessage source) {
+        this.role = source.role;
+        this.content = source.content;
+        this.name = source.name;
+        this.toolCalls = source.toolCalls;
     }
 
-    public static Message of(String content) {
-        return new Message(Role.USER, content);
+    public static ChatMessage of(String role, String content) {
+        return new ChatMessage(ChatMessageRole.fromValue(role), content);
     }
 
-    public static Message ofSystem(String content) {
-        return new Message(Role.SYSTEM, content);
+    public static ChatMessage of(String content) {
+        return new ChatMessage(ChatMessageRole.USER, content);
     }
 
-    public static Message ofAssistant(String content) {
-        return new Message(Role.ASSISTANT, content);
+    public static ChatMessage ofSystem(String content) {
+        return new ChatMessage(ChatMessageRole.SYSTEM, content);
     }
 
-    public static Message ofFunction(String content, String name) {
-        return new Message(Role.FUNCTION, content, name);
+    public static ChatMessage ofAssistant(String content) {
+        return new ChatMessage(ChatMessageRole.ASSISTANT, content);
+    }
+
+    public static ChatMessage ofFunction(String content, String name) {
+        return new ChatMessage(ChatMessageRole.FUNCTION, content, name);
     }
 }

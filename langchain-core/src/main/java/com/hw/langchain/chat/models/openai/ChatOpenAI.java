@@ -26,7 +26,7 @@ import com.hw.openai.OpenAiClient;
 import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
-import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.chat.ChatMessage;
 import com.hw.openai.entity.completions.Usage;
 
 import lombok.Builder;
@@ -185,7 +185,7 @@ public class ChatOpenAI extends BaseChatModel {
         return createChatResult(response);
     }
 
-    public List<Message> convertMessages(List<BaseMessage> messages) {
+    public List<ChatMessage> convertMessages(List<BaseMessage> messages) {
         return messages.stream()
                 .map(OpenAI::convertLangChainToOpenAI)
                 .toList();

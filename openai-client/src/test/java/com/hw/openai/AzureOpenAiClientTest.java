@@ -20,7 +20,7 @@ package com.hw.openai;
 
 import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
-import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.chat.ChatMessage;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.embeddings.Embedding;
 
@@ -71,7 +71,7 @@ class AzureOpenAiClientTest {
 
     @Test
     void testChatCompletion() {
-        Message message = Message.of("Hello!");
+        ChatMessage message = ChatMessage.of("Hello!");
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-35-turbo")

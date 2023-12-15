@@ -70,7 +70,7 @@ class ChatFunctionTest extends OpenAiClientTest {
                 .parameters(ChatParameterUtils.generate(Weather.class))
                 .build();
 
-        Message message = Message.of("What is the weather like in Boston?");
+        ChatMessage message = ChatMessage.of("What is the weather like in Boston?");
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-4")
@@ -86,7 +86,7 @@ class ChatFunctionTest extends OpenAiClientTest {
         assertThat(chatChoice).isNotNull();
         assertEquals("tool_calls", chatChoice.getFinishReason());
 
-        Function function = chatChoice.getMessage().getToolCalls().get(0).getFunction();
+        FunctionCall function = chatChoice.getMessage().getToolCalls().get(0).getFunction();
         // name=get_current_weather, arguments={ "location": "Boston" }
         assertEquals(functionName, function.getName());
 

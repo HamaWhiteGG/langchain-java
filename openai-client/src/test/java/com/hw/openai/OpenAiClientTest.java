@@ -19,7 +19,7 @@
 package com.hw.openai;
 
 import com.hw.openai.entity.chat.ChatCompletion;
-import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.chat.ChatMessage;
 import com.hw.openai.entity.completions.Completion;
 import com.hw.openai.entity.embeddings.Embedding;
 import com.hw.openai.entity.models.Model;
@@ -115,7 +115,7 @@ public class OpenAiClientTest {
 
     @Test
     void testChatCompletion() {
-        Message message = Message.of("Hello!");
+        ChatMessage message = ChatMessage.of("Hello!");
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-3.5-turbo")
@@ -128,7 +128,7 @@ public class OpenAiClientTest {
 
     @Test
     void testStreamChatCompletion() {
-        Message message = Message.of("Hello!");
+        ChatMessage message = ChatMessage.of("Hello!");
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-3.5-turbo")

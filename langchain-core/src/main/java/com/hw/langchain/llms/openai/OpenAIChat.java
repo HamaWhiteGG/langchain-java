@@ -27,7 +27,7 @@ import com.hw.openai.OpenAiClient;
 import com.hw.openai.common.OpenaiApiType;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
-import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.chat.ChatMessage;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
@@ -128,7 +128,7 @@ public class OpenAIChat extends BaseLLM {
      * Series of messages for Chat input.
      */
     @Builder.Default
-    private List<Message> prefixMessages = new ArrayList<>();
+    private List<ChatMessage> prefixMessages = new ArrayList<>();
 
     /**
      * Timeout for requests to OpenAI completion API. Default is 16 seconds.
@@ -173,7 +173,7 @@ public class OpenAIChat extends BaseLLM {
 
     @Override
     protected LLMResult innerGenerate(List<String> prompts, List<String> stop) {
-        List<Message> messages = getChatMessages(prompts);
+        List<ChatMessage> messages = getChatMessages(prompts);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model(model)
@@ -209,10 +209,10 @@ public class OpenAIChat extends BaseLLM {
         throw new UnsupportedOperationException("not supported yet.");
     }
 
-    private List<Message> getChatMessages(List<String> prompts) {
+    private List<ChatMessage> getChatMessages(List<String> prompts) {
         checkArgument(prompts.size() == 1, "OpenAIChat currently only supports single prompt, got %s", prompts);
-        List<Message> messages = new ArrayList<>(prefixMessages);
-        messages.add(Message.of(prompts.get(0)));
+        List<ChatMessage> messages = new ArrayList<>(prefixMessages);
+        messages.add(ChatMessage.of(prompts.get(0)));
         return messages;
     }
 }

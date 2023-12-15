@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ChatCompletion
+ * Chat conversation.
  * @author HamaWhite
  */
 @Data
@@ -49,7 +49,7 @@ public class ChatCompletion implements Serializable {
      * A list of messages describing the conversation so far.
      */
     @NotEmpty
-    private List<Message> messages;
+    private List<ChatMessage> messages;
 
     /**
      * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random,

@@ -33,7 +33,7 @@ public class ChatChoice {
     private Integer index;
 
     @JsonAlias("delta")
-    private Message message;
+    private ChatMessage message;
 
     /**
      * The reason the model stopped generating tokens. This will be stopped if the model hit a natural stop point or a
