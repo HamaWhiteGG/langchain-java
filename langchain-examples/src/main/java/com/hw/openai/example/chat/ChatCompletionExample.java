@@ -22,7 +22,7 @@ import com.hw.langchain.examples.runner.RunnableExample;
 import com.hw.openai.OpenAiClient;
 import com.hw.openai.entity.chat.ChatCompletion;
 import com.hw.openai.entity.chat.ChatCompletionResp;
-import com.hw.openai.entity.chat.Message;
+import com.hw.openai.entity.chat.ChatMessage;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class ChatCompletionExample {
                 .build()
                 .init();
 
-        Message message = Message.of("Introduce West Lake in Hangzhou, China.");
+        ChatMessage message = ChatMessage.of("Introduce West Lake in Hangzhou, China.");
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model("gpt-4")
                 .temperature(0)

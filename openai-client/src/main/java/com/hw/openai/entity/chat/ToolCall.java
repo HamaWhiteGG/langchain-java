@@ -38,5 +38,5 @@ public class ToolCall {
      */
     private String type;
 
-    private Function function;
+    private FunctionCall function;
 }

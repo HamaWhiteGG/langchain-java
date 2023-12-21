@@ -19,8 +19,8 @@
 package com.hw.langchain.chat.models.openai;
 
 import com.hw.langchain.schema.*;
-import com.hw.openai.entity.chat.Message;
-import com.hw.openai.entity.chat.Role;
+import com.hw.openai.entity.chat.ChatMessage;
+import com.hw.openai.entity.chat.ChatMessageRole;
 
 /**
  * @author HamaWhite
@@ -30,24 +30,24 @@ public class OpenAI {
     private OpenAI() {
     }
 
-    public static Message convertLangChainToOpenAI(BaseMessage message) {
-        if (message instanceof ChatMessage chatMessage) {
-            return Message.of(chatMessage.getRole(), message.getContent());
+    public static ChatMessage convertLangChainToOpenAI(BaseMessage message) {
+        if (message instanceof com.hw.langchain.schema.ChatMessage chatMessage) {
+            return ChatMessage.of(chatMessage.getRole(), message.getContent());
         } else if (message instanceof HumanMessage) {
-            return Message.of(message.getContent());
+            return ChatMessage.of(message.getContent());
         } else if (message instanceof AIMessage) {
-            return Message.ofAssistant(message.getContent());
+            return ChatMessage.ofAssistant(message.getContent());
         } else if (message instanceof SystemMessage) {
-            return Message.ofSystem(message.getContent());
+            return ChatMessage.ofSystem(message.getContent());
         } else if (message instanceof FunctionMessage functionMessage) {
-            return Message.ofFunction(message.getContent(), functionMessage.getName());
+            return ChatMessage.ofFunction(message.getContent(), functionMessage.getName());
         } else {
             throw new IllegalArgumentException("Got unknown type " + message.getClass().getSimpleName());
         }
     }
 
-    public static BaseMessage convertOpenAiToLangChain(Message message) {
-        Role role = message.getRole();
+    public static BaseMessage convertOpenAiToLangChain(ChatMessage message) {
+        ChatMessageRole role = message.getRole();
         String content = message.getContent();
         switch (role) {
             case USER -> {
@@ -61,7 +61,7 @@ public class OpenAI {
                 return new SystemMessage(content);
             }
             default -> {
-                return new ChatMessage(content, role.getValue());
+                return new com.hw.langchain.schema.ChatMessage(content, role.getValue());
             }
         }
     }
