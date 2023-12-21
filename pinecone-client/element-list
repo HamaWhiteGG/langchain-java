@@ -1,0 +1,4 @@
+com.hw.pinecone
+com.hw.pinecone.entity.index
+com.hw.pinecone.entity.vector
+com.hw.pinecone.service

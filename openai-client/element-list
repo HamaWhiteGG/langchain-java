@@ -1,0 +1,12 @@
+com.hw.openai
+com.hw.openai.common
+com.hw.openai.entity.chat
+com.hw.openai.entity.completions
+com.hw.openai.entity.embeddings
+com.hw.openai.entity.image
+com.hw.openai.entity.models
+com.hw.openai.exception
+com.hw.openai.function
+com.hw.openai.service
+com.hw.openai.stream
+com.hw.openai.utils

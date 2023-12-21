@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.hw.serpapi","l":"GoogleSearch"},{"p":"com.hw.serpapi","l":"ParameterStringBuilder"},{"p":"com.hw.serpapi","l":"SerpApiHttpClient"},{"p":"com.hw.serpapi","l":"SerpApiSearch"},{"p":"com.hw.serpapi","l":"SerpApiSearchException"}];updateSearchResults();

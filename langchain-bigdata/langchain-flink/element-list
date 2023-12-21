@@ -1,0 +1,6 @@
+com.hw.langchain.agents.toolkits.flink.sql.base
+com.hw.langchain.agents.toolkits.flink.sql.prompt
+com.hw.langchain.agents.toolkits.flink.sql.toolkit
+com.hw.langchain.tools.flink.sql.prompt
+com.hw.langchain.tools.flink.sql.tool
+com.hw.langchain.utilities.flink.sql
