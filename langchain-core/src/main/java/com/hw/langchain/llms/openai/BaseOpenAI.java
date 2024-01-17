@@ -55,7 +55,7 @@ public class BaseOpenAI extends BaseLLM {
      * Model name to use.
      */
     @Builder.Default
-    protected String model = "text-davinci-003";
+    protected String model = "gpt-3.5-turbo";
 
     /**
      * What sampling temperature to use.
