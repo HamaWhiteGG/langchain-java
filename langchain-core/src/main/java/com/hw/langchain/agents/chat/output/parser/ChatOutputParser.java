@@ -38,6 +38,9 @@ public class ChatOutputParser extends AgentOutputParser {
 
     private static final String FINAL_ANSWER_ACTION = "Final Answer:";
 
+    private static Gson GSON_JSON = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
     @Override
     public AgentResult parse(String text) {
         boolean includesAnswer = text.contains(FINAL_ANSWER_ACTION);
@@ -45,8 +48,10 @@ public class ChatOutputParser extends AgentOutputParser {
             String action = text.split("```")[1];
             Type mapType = new TypeToken<Map<String, Object>>() {
             }.getType();
-            Map<String, Object> response = new Gson().fromJson(action.strip(), mapType);
-
+            /*
+             * 20230308:修复通过GSON反序列化时将long类型的数值错误的转成了double类型科学计数法
+             * */
+            Map<String, Object> response = GSON_JSON.fromJson(action.strip(),mapType);
             boolean includesAction = response.containsKey("action") && response.containsKey("action_input");
             if (includesAnswer && includesAction) {
                 throw new OutputParserException(
