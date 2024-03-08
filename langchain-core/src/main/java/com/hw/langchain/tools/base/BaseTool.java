@@ -91,13 +91,15 @@ public abstract class BaseTool {
     public abstract Object innerRun(String args, Map<String, Object> kwargs);
 
     public Pair<Object[], Map<String, Object>> toArgsAndKwargs(Object toolInput) {
-        if (toolInput instanceof String) {
-            return Pair.of(new Object[]{toolInput}, Maps.newHashMap());
-        } else {
-            @SuppressWarnings("unchecked")
+        /*
+        * 20230308:入参为Map时转换，否则不进行转换
+        * 原逻辑入参为非String和非Map时会出现将toolInput强转为Map报错
+        * */
+        if(toolInput instanceof Map){
             Map<String, Object> mapInput = (Map<String, Object>) toolInput;
             return Pair.of(new Object[]{}, mapInput);
         }
+        return Pair.of(new Object[]{toolInput}, Maps.newHashMap());
     }
 
     /**
